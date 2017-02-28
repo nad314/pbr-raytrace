@@ -33,9 +33,9 @@ namespace core {
 
 		const vec4s specular = mix(vec4s(0.04f), base, metallic);
 		//const vec4s specular = ior*base;
-		const vec4s specfresnel = fresnel_factor(specular, ndv.m.m128_f32[0]);
+		const vec4s specfresnel = fresnelFactor(specular, ndv.m.m128_f32[0]);
 		//return specfresnel;
-		vec4s specref = cooktorrance_specular(ndl.m.m128_f32[0], ndv.m.m128_f32[0], ndh.m.m128_f32[0], specfresnel, roughness);
+		vec4s specref = GGX_BRDF(ndl, ndv, ndh, specfresnel, roughness);
 		specref *= ndl;
 		//return specref;
 
@@ -44,7 +44,7 @@ namespace core {
 		vec4s reflected_light = vec4s(specref)*A;
 		vec4s diffuse_light = vec4s(diffref)*A;
 		
-		vec4s iblspec = vec4s(0.99f).min(fresnel_factor(specular, ndv.m.m128_f32[0]));
+		vec4s iblspec = vec4s(0.99f).min(fresnelFactor(specular, ndv.m.m128_f32[0]));
 		reflected_light += envspec * iblspec;
 		diffuse_light += envdiff * (vec4s(1.0f) - envspec);
 		

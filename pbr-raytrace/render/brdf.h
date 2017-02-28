@@ -5,30 +5,45 @@ namespace core {
 		return x * (_t(1.0f) - a) + y * a;
 	}
 
-	inline float D_GGX(const float& roughness, const float& NdH) {
-		const float m = roughness * roughness;
-		const float m2 = m * m;
-		const float d = (NdH * m2 - NdH) * NdH + 1.0f;
-		return m2 / (M_PI * d * d);
+	inline vec4s dGGX(const vec4s& roughness, const vec4s& NdH) {
+		const vec4s m = roughness * roughness;
+		const vec4s m2 = m * m;
+		const vec4s d = (NdH * m2 - NdH) * NdH + 1.0f;
+		return m2 / (d * d * M_PI);
 	}
 
-	inline float G_schlick(const float& roughness, const float& NdV, const float& NdL) {
-		const float fac = (float)(1.0f / M_PI);
-		float k = roughness * roughness * fac;
-		float V = NdV * (1.0f - k) + k;
-		float L = NdL * (1.0f - k) + k;
+	inline vec4s gSchlick(const vec4s& roughness, const vec4s& NdV, const vec4s& NdL) {
+		const vec4s fac = _mm_rcp_ps(_mm_set1_ps(M_PI));
+		const vec4s k = roughness * roughness * fac;
+		const vec4s V = NdV * (vec4s(1.0f) - k) + k;
+		const vec4s L = NdL * (vec4s(1.0f) - k) + k;
 		return NdL * NdV / (V * L);
 	}
 
-	inline vec4s cooktorrance_specular(const float NdL, const float NdV, const float NdH, const vec4s fresnel, const float roughness) {
-		const float D = D_GGX(roughness, NdH);
-		const float G = G_schlick(roughness, NdV, NdL);
-		return fresnel * G * D / (NdL * NdV * 4.0f);
+	inline vec4s gSchlickPart(const vec4s& roughness, const vec4s& NdV, const vec4s& NdL) {
+		const vec4s V_PI = _mm_set1_ps(M_PI);
+		const vec4s k = roughness * roughness / V_PI;
+		const vec4s vk = vec4s(1.0f) - k;
+		return (NdV * vk + k) * (NdL * vk + k) * V_PI;
 	}
 
-	inline vec4s fresnel_factor(const vec4s& f0, const float& product) {
-		return f0 + (vec4s(1.0f) - f0)*pow(1.0f - product, 5.0f);
-		//return mix(f0, base, (float)pow(1.01f - product, 5.0f));
+	inline vec4s GGX_BRDF(const vec4s& NdL, const vec4s& NdV, const vec4s& NdH, const vec4s& fresnel, const vec4s& roughness) {
+		const vec4s D = dGGX(roughness, NdH);
+		const vec4s G = gSchlick(roughness, NdV, NdL);
+		return fresnel * G * D / (NdL * NdV * M_PI);
+	}
+
+	inline vec4s GGX_BRDF_Fast(const vec4s& NdL, const vec4s& NdV, const vec4s& NdH, const vec4s& fresnel, const vec4s& roughness) {
+		const vec4s D = dGGX(roughness, NdH);
+		const vec4s G = gSchlickPart(roughness, NdV, NdL);
+		return fresnel * G * D;
+	}
+
+	inline vec4s fresnelFactor(const vec4s& f0, const vec4s& product) {
+		const vec4s v1 = vec4s(1.0f);
+		const vec4s p1 = v1 - product;
+		const vec4s p2 = p1*p1;
+		return f0 + (v1 - f0)*p2*p2*p1; // *pow(1.0f - product, 5.0f);
 	}
 
 	inline vec4s reflect(const vec4s& r, const vec4s& n) {
@@ -85,8 +100,14 @@ namespace core {
 		return imageLinear(img, x, y);
 	}
 
-	inline vec4s mcrotate(const vec4s v, const float roughness) {
+	inline vec4s mcrotate(const vec4s& v, const vec4s& roughness) {
 		const vec4s rv = vec4s((float)(rand() % 1000 - 500), (float)(rand() % 1000 - 500), (float)(rand() % 1000 - 500), 500.0f) / 500.0f * roughness;
 		return (v + rv).normalized3d();
 	}
+
+	inline vec4s mcrotate(const vec4s& v) {
+		const vec4s rv = vec4s((float)(rand() % 1000 - 500), (float)(rand() % 1000 - 500), (float)(rand() % 1000 - 500), 500.0f) / 500.0f;
+		return (v + rv).normalized3d();
+	}
+
 }
