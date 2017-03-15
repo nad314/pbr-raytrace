@@ -1,93 +1,71 @@
 ﻿#include <main>
 
+#ifndef __WIN
+template<>
+#endif
 MainWindow* core::Getter<MainWindow>::getter = NULL;
 
 void MainWindow::onOpening() {
-	WindowForm::onOpening();
+	Form::onOpening();
 	setTitle("Core Renderer");
-	setSize(900, 640);
+	setSize(900, 616);
+	setMinSize(900, 616);
 	addExStyle(WS_EX_ACCEPTFILES);
 	set(*this);
 }
 
 void MainWindow::onOpened() {
-	WindowForm::onOpened();
+	Form::onOpened();
 
-	rwnd.setParent(this);
-	rwnd.open();
-	core::vec4i r = getClientRect();
-	rwnd.move(r.z - r.x, r.w - r.y);
+	push(statusbar.setSurfaceRect(vec4i(3, height - 24, width - 3, height - 4)).openSurface());
+	push(sidebar.setSurfaceRect(vec4i(width - 256, 46, width - 8, height - 32)).openSurface());
+	push(menubar.setSurfaceRect(vec4i(8, 8, width - 8, 38)).openSurface());
 
-	statusbar.setParent(this);
-	statusbar.open();
-	statusbar.move(vec4i(3, height - 24, width - 3, height - 4));
-
-	sidebar.setParent(this);
-	sidebar.open();
-	sidebar.move(vec4i(width - 256, 70, width - 8, height - 32));
-
-	menubar.setParent(this);
-	menubar.open();
-	menubar.move(vec4i(8, 32, width - 8, 62));
-
-	SetFocus(rwnd);
+	push(rwnd.setSurfaceRect(vec4i(0,0, width, height)).openSurface());
+	rwnd.move(width, height);
 }
 
 void MainWindow::onClosing() {
-	WindowForm::onClosing();
-	menubar.close();
-	sidebar.close();
-	statusbar.close();
-	rwnd.close();
+	Form::onClosing();
 }
 
 int MainWindow::onResize(const core::eventInfo &e) {
-	WindowForm::onResize(e);
+	Form::onResize(e);
 	if (width < 1 || height < 1)
 		return e;
-	core::vec4i r = getClientRect();
-	rwnd.move(r.z-r.x, r.w-r.y);
-	statusbar.move(vec4i(3, height - 24, width - 3, height - 4));
-	sidebar.move(vec4i(width - 256, 70, width - 8, height - 32));
-	menubar.move(vec4i(8, 32, width - 8, 62));
+	statusbar.moveSurface(vec4i(3, height - 24, width - 3, height - 4));
+	sidebar.moveSurface(vec4i(width - 256, 46, width - 8, height - 32));
+	menubar.moveSurface(vec4i(8, 8, width - 8, 38));
+	rwnd.move(width, height);
 	return e;
 }
 
 void MainWindow::onEndPaint(const core::eventInfo& e) {
-	WindowForm::onEndPaint(e);
+	Form::onEndPaint(e);
 	/*
-	core::Renderer::drawRect(rwnd.getChildRect().expand(1), core::Color(31, 31, 31, 255), *this);
-	core::Renderer::drawRect(sidebar.getChildRect().expand(1), core::Color(31, 31, 31, 255), *this);
+	core::Renderer::drawRect(rwnd.getSurfaceRect().expand(1), core::Color(31, 31, 31, 255), *this);
+	core::Renderer::drawRect(sidebar.getSurfaceRect().expand(1), core::Color(31, 31, 31, 255), *this);
 	*/
 }
 
-int MainWindow::onGetMinMaxInfo(const core::eventInfo& e) {
-	LPMINMAXINFO lpMMI = (LPMINMAXINFO)e.lP;
-	lpMMI->ptMinTrackSize.x = 900;
-	lpMMI->ptMinTrackSize.y = 640;
-	return e;
-}
-
-
 int MainWindow::onDropFiles(const core::eventInfo& e) {
-	char path[256];
-	if (DragQueryFileA((HDROP)e.wP, 0, path, 256)) {
-		DragFinish((HDROP)e.wP);
-		Storage::get().load(path);
-		rwnd.view.home();
-		Controller& c = Controller::get();
-		c.wg->pushTask<core::msRenderTask>(&c.storage->pbvh, &rwnd.view, c.samples);
-		c.invalidate();
-	}
-	return e;
-}
+	std::string path = e.droppedFile();
+	std::string ext = core::Path::getExt(path);
 
-int MainWindow::onActivate(const core::eventInfo& e) {
-	WindowForm::onActivate(e);
-	if (e.wP != 0 && rwnd.isOpened()) {
-		SetForegroundWindow(rwnd);
-		SetActiveWindow(rwnd);
-		SetFocus(rwnd);
+	if (ext == "hdr") {
+		if (Storage::get().volumetricShader.hdri.loadHDR(path.c_str()))
+			Storage::get().volumetricShader.hdri.tonemap();
+		Controller::get().clearSIMDImage();
+		Controller::get().invalidate();
 	}
-	return 0;
+	else if (ext == "png"){
+		Storage::get().volumetricShader.hdri.loadPNG(path.c_str());
+		Controller::get().clearSIMDImage();
+		Controller::get().invalidate();
+	} else Storage::get().load(path.c_str());
+
+	rwnd.view.home();
+	Controller& c = Controller::get();
+	c.invalidate();
+	return e;
 }

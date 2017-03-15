@@ -55,18 +55,24 @@ namespace core {
 	}
 
 	inline vec4s imageNearest(const simdImage& img, const int& x, const int& y) {
-		return img.at_c(x, y);
+		int X = abs(x);
+		int Y = abs(y);
+		if (X>=img.width)
+			X = 0;
+		if (Y>=img.height)
+			Y = 0;
+		return img.at_c(X, Y);
 	}
 
 	inline vec4s imageLinear(const Image& img, const float& x, const float& y) {
 		const float u = x - 0.5f;
 		const float v = y - 0.5f;
-		const int ix = (int)u%(img.width - 1);
-		const int iy = (int)v%(img.height - 1);
+		const int ix = (int)u%(img.width);
+		const int iy = (int)v%(img.height);
 		const float ru = u - ix;
 		const float rv = v - iy;
-		const int iix = (ix + 1) % (img.width - 1);
-		const int iiy = (iy + 1) % (img.height - 1);
+		const int iix = (ix + 1) % (img.width);
+		const int iiy = (iy + 1) % (img.height);
 
 		return (imageNearest(img, ix, iy)*(1.0f - ru) + imageNearest(img, iix, iy)*ru)*(1.0f - rv) +
 			(imageNearest(img, ix, iiy)*(1.0f - ru) + imageNearest(img, iix, iiy)*ru)*rv;
@@ -75,12 +81,12 @@ namespace core {
 	inline vec4s imageLinear(const simdImage& img, const float& x, const float& y) {
 		const float u = x - 0.5f;
 		const float v = y - 0.5f;
-		const int ix = (int)u % (img.width - 1);
-		const int iy = (int)v % (img.height - 1);
+		const int ix = (int)u % (img.width);
+		const int iy = (int)v % (img.height);
 		const float ru = u - ix;
 		const float rv = v - iy;
-		const int iix = (ix + 1) % (img.width - 1);
-		const int iiy = (iy + 1) % (img.height - 1);
+		const int iix = (ix + 1) % (img.width);
+		const int iiy = (iy + 1) % (img.height);
 
 		return (imageNearest(img, ix, iy)*(1.0f - ru) + imageNearest(img, iix, iy)*ru)*(1.0f - rv) +
 			(imageNearest(img, ix, iiy)*(1.0f - ru) + imageNearest(img, iix, iiy)*ru)*rv;
@@ -101,12 +107,12 @@ namespace core {
 	}
 
 	inline vec4s mcrotate(const vec4s& v, const vec4s& roughness) {
-		const vec4s rv = vec4s((float)(rand() % 1000 - 500), (float)(rand() % 1000 - 500), (float)(rand() % 1000 - 500), 500.0f) / 500.0f * roughness;
+		const vec4s rv = core::RanduinWrynn::topdeck() * roughness;
 		return (v + rv).normalized3d();
 	}
 
 	inline vec4s mcrotate(const vec4s& v) {
-		const vec4s rv = vec4s((float)(rand() % 1000 - 500), (float)(rand() % 1000 - 500), (float)(rand() % 1000 - 500), 500.0f) / 500.0f;
+		const vec4s rv = core::RanduinWrynn::topdeck();
 		return (v + rv).normalized3d();
 	}
 

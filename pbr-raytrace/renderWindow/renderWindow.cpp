@@ -1,49 +1,54 @@
 #include <main>
 
 void RenderWindow::onOpening() {
-	setTitle("Core Frame");
-	setClass("CoreFrame");
-	setStyle(WS_CHILD | WS_VISIBLE);
-	setFlags(0);
+	RenderSurface::onOpening();
 }
 
 void RenderWindow::onOpened() {
+	RenderSurface::onOpened();
+	const int width = surfaceWidth();
+	const int height = surfaceHeight();
 	if (width == 0 || height == 0) 
 		return;
 	view.make(width, height);
 	view.home();
-	GL::createContext(*this);
-	GL::init(*this);
 }
 
-int RenderWindow::onResize(const core::eventInfo& e) {
-	Window::onResize(e);
+int RenderWindow::onReshape() {
+	//RenderSurface::onReshape();
+	const int width = surfaceWidth();
+	const int height = surfaceHeight();
 	if (width == 0 || height == 0)
-		return e;
+		return 0;
 	view.make(width, height);
+	view.clear();
 	//view.home();
 	view.updateMatrix();
-	GL::ortho(*this);
 
+	if (!alive)
+		return 0;
 	Controller& c = Controller::get();
 	c.makeSIMDImage();
-	c.clearSIMDImage();
-	c.wg->pushTask<core::msRenderTask>(&c.storage->pbvh, &view, c.samples);
 	c.invalidate();
 }
 
 
 void RenderWindow::move(int xw, int yw) {
-	const int titleBar = 32;
+	const int titleBar = 8;
 	const int menuBar = 30;
 	const int sideBar = 256;
 	const int statusBar = 24;
 	const int borderSize = 8;
-	xw -= borderSize*2 + sideBar;
-	yw -= borderSize*2 + titleBar + menuBar + statusBar;
-	MoveWindow(hWnd, borderSize, borderSize + titleBar + menuBar, xw, yw, true);
-	width = xw; 
-	height = yw;
+	xw -= borderSize + sideBar;
+	yw -= borderSize + statusBar;
+
+	Rect r = vec4i(borderSize, borderSize + titleBar + menuBar, xw, yw);
+	//setSurfaceRect(r);
+	//onReshape();
+
+	//RenderSurface::resizeSurface(r);
+	//invalidate();
+	RenderSurface::moveSurface(r);
 }
 
 

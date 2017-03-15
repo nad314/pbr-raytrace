@@ -1,14 +1,19 @@
 #include <main>
 
+#ifndef __WIN
+template<>
+#endif
 Controller* core::Getter<Controller>::getter = NULL;
 
-Controller::Controller(core::Window* p, Storage* st) {
+Controller::Controller(core::RenderSurface* p, Storage* st) {
 	set(*this);
 	storage = st;
 	parent = p;
+	p->attach(this);
 	view = &(static_cast<RenderWindow*>(parent))->view;
 	samples = 2;
-	wg = new core::Renderer::WorkerGroup;
+	wg = new core::Renderer::WorkerGroup();
+	makeSIMDImage();
 	timer.start();
 }
 
@@ -26,7 +31,7 @@ int Controller::onLButtonDown(const core::eventInfo& e) {
 	wg->pushTask<core::progRenderTask>(&storage->pbvh, view);
 	++Storage::get().renderedSamples;*/
 	invalidate();
-	SetCapture(*parent);
+	parent->setCapture();
 	return e;
 }
 
@@ -37,7 +42,7 @@ int Controller::onLButtonUp(const core::eventInfo& e) {
 	wg->pushTask<core::progRenderTask>(&storage->pbvh, view);
 	++Storage::get().renderedSamples;
 	invalidate();*/
-	ReleaseCapture();
+	parent->releaseCapture();
 	return e;
 }
 
@@ -51,7 +56,7 @@ int Controller::onRButtonDown(const core::eventInfo& e) {
 	wg->pushTask<core::progRenderTask>(&storage->pbvh, view);
 	++Storage::get().renderedSamples;*/
 	invalidate();
-	SetCapture(*parent);
+	parent->setCapture();
 	return e;
 }
 
@@ -62,7 +67,7 @@ int Controller::onRButtonUp(const core::eventInfo& e) {
 	wg->pushTask<core::progRenderTask>(&storage->pbvh, view);
 	++Storage::get().renderedSamples;
 	invalidate();*/
-	ReleaseCapture();
+	parent->releaseCapture();
 	return e;
 }
 
@@ -138,6 +143,7 @@ int Controller::onMouseMove(const core::eventInfo& e) {
 int Controller::onKeyDown(const core::eventInfo& e) {
 	if (benchMode)
 		return e;
+#ifdef __WIN
 	switch (e.wP) {
 	case VK_F12: {
 		break;
@@ -172,13 +178,6 @@ int Controller::onKeyDown(const core::eventInfo& e) {
 		core::Path::popDir();
 		core::Image img = view->img;
 		img.flipV();
-		/*
-		std::string path = core::Path::getSaveFileName("PNG\0*.png\0\0");
-		if (path != "") {
-			path = core::Path::pushExt("png", path);
-			img.savePng(path.c_str());
-		}
-		*/
 		break;
 	}
 	case VK_F11: {
@@ -222,6 +221,7 @@ int Controller::onKeyDown(const core::eventInfo& e) {
 	}
 	default: break;
 	}
+#endif
 	return e;
 }
 
@@ -233,7 +233,8 @@ void Controller::home() {
 
 void Controller::makeSIMDImage() {
 	Storage& data = Storage::get();
-	data.simdFrame.make(parent->width, parent->height);
+	if (parent)
+		data.simdFrame.make(parent->surfaceWidth(), parent->surfaceHeight());
 	clearSIMDImage();
 }
 

@@ -1,8 +1,8 @@
 #pragma once
-class Controller: public core::SIMD, public core::EventListener, public::core::Getter<Controller> {
+class Controller: public core::SIMD, public core::EventKernel, public::core::Getter<Controller> {
 public:
 	Storage* storage;
-	core::Window* parent;
+	core::RenderSurface* parent;
 	core::simdView* view;
 	bool valid = 0;
 	core::vec2i mouse;
@@ -15,11 +15,10 @@ public:
 	core::Timer<float> timer;
 	bool benchMode = false;
 	
-	Controller(core::Window* p, Storage* st);
+	Controller(core::RenderSurface* p, Storage* st);
 	~Controller();
 
-	inline void invalidate() { valid = 0; Storage::get().shader.update(*view); Storage::get().volumetricShader.update(*view);
-	}
+	inline void invalidate() { valid = 0; Storage::get().shader.update(*view); Storage::get().volumetricShader.update(*view);}
 	inline void validate() { valid = 1; }
 	int onLButtonDown(const core::eventInfo& e) override;
 	int onLButtonUp(const core::eventInfo& e) override;

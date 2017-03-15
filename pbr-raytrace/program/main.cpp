@@ -1,6 +1,10 @@
 #include <main>
 
+#ifdef __WIN
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR message, int nCmdShow) {
-//int main(void){
+#else
+int main(void){
+#endif
+	core::Debug::enable();
 	return core::FormInit()(new CoreTest);
 }

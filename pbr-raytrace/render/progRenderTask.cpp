@@ -28,7 +28,7 @@ namespace core {
 		matrixs sinv = inv;
 
 		const int square = 8;
-		vec4s lightPos = inv*vec4(0.0f, 0.0f, -5.0f, 1.0f);
+		vec4s lightPos = vec4s(inv*vec4(0.0f, 0.0f, -5.0f, 1.0f));
 
 		Ray ray;
 		PBVH::Ray oray;
@@ -62,23 +62,15 @@ namespace core {
 						ray.sr1 /= _mm_sqrt_ps(_mm_dp_ps(ray.sr1, ray.sr1, 0x7F));
 						ray.sinvr1 = _mm_rcp_ps(ray.sr1);
 
-						oray.r0.x = _mm256_broadcast_ss(&ray.sr0.m.m128_f32[0]);
-						oray.r0.y = _mm256_broadcast_ss(&ray.sr0.m.m128_f32[1]);
-						oray.r0.z = _mm256_broadcast_ss(&ray.sr0.m.m128_f32[2]);
-
-						oray.r1.x = _mm256_broadcast_ss(&ray.sr1.m.m128_f32[0]);
-						oray.r1.y = _mm256_broadcast_ss(&ray.sr1.m.m128_f32[1]);
-						oray.r1.z = _mm256_broadcast_ss(&ray.sr1.m.m128_f32[2]);
-
-						oray.inv.x = _mm256_broadcast_ss(&ray.sinvr1.m.m128_f32[0]);
-						oray.inv.y = _mm256_broadcast_ss(&ray.sinvr1.m.m128_f32[1]);
-						oray.inv.z = _mm256_broadcast_ss(&ray.sinvr1.m.m128_f32[2]);
+						oray = ray;
 						oray.d = 100.0f;
+
 
 						if (bvh.findFirst(oray, stack, priority, true) > 0.0f)
 							data.simdFrame.at(j, i) += vec4s(shader.getColor(ray, oray.d, oray.plane, oray.color, bvh, stack, priority)).w1();
 						else
 							data.simdFrame.at(j, i) += (envMap(data.volumetricShader.hdri, ray.sr1)*envScale).min(1.0f);
+							
 
 						__m128i xmm0 = _mm_cvtsi32_si128(*(mp + j + i*w));
 						xmm0 = _mm_unpacklo_epi8(xmm0, _mm_setzero_si128());

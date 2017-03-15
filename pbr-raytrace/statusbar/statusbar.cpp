@@ -1,41 +1,45 @@
 #include <main>
 
+#ifndef __WIN
+template<>
+#endif
 Statusbar* core::Getter<Statusbar>::getter = NULL;
 
 void Statusbar::onOpening() {
-	Form::onOpening();
-	setSize(256, 256);
-	setStyle(WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
+	Surface::onOpening();
 	setBackColor(core::Theme::controlBackColor);
 	memset(text, 0, 256);
 }
 
 void Statusbar::onOpened() {
-	Form::onOpened();
+	Surface::onOpened();
 	setBackColor(Color(64, 64, 68, 255));
-	push(progBar.make(vec4i(0, 0, 200, 20), *this));
+	const int sidebar = 256;
+	Rect r = Rect(surfaceWidth() - sidebar + 3, 2, surfaceWidth() - 3, surfaceHeight() - 2);
+	push(progBar.make(r, *this));
 	progBar.set(0.5f);
 	setControlColors();
 }
 
 void Statusbar::onStartPaint(const core::eventInfo& e) {
 	__invalidate();
-	Form::onStartPaint(e);
+	Surface::onStartPaint(e);
 	core::Font& f = core::Font::get();
 	vec4b c = f.getColor();
-	f.setColor(vec4b(200, 200, 200, 255));
+	Color clr = vec4b(200, 200, 200, 255);
+	f.setColor(clr);
 	f.print(text, *this, 4, 4);
 	f.setColor(c);
 }
 
 void Statusbar::onEndPaint(const core::eventInfo& e) {
-	Form::onEndPaint(e);
+	Surface::onEndPaint(e);
 }
 
-int Statusbar::onResize(const core::eventInfo& e) {
-	Form::onResize(e);
+int Statusbar::onReshape() {
 	const int sidebar = 256;
-	progBar.move(Rect(width - sidebar + 3, 2, width - 3, height - 2));
+	Rect r = getSurfaceDim();
+	progBar.move(Rect(r.z - sidebar + 3, 2, r.z - 3, r.w - 2));
 	return 0;
 }
 
@@ -58,7 +62,7 @@ void Statusbar::log(const char* s) {
 
 void Statusbar::info(const char* s) {
 	std::lock_guard<std::mutex> lock(iomutex);
-	fprintf(output, s);
+	printf("%s\n", s);
 }
 
 void Statusbar::error(const char* s) {
@@ -70,4 +74,5 @@ void Statusbar::prog(const float& amount) {
 	static std::mutex mutex;
 	std::lock_guard<std::mutex> lock(mutex);
 	get().progBar.set(amount);
+	get().invalidate();
 }

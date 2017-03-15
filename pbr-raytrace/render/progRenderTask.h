@@ -1,6 +1,6 @@
 #pragma once
 namespace core {
-	struct progRenderTask : public Renderer::Worker::Task {
+	struct progRenderTask : public Renderer::Worker::Task, public core::SIMD {
 		PBVH* pbvh;
 		simdView* pview;
 		static std::atomic_int tc;

@@ -1,8 +1,10 @@
 #include <main>
 namespace core {
-
+#ifndef __WIN
+template<>
+#endif
 	renderShowTask* Getter<renderShowTask>::getter = NULL;
-	
+
 	renderShowTask::renderShowTask(simdView* view, int nthreads) {
 		std::lock_guard<std::mutex> lk(mutex);
 		set(*this);

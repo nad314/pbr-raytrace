@@ -1,4 +1,7 @@
 #include <main>
+#ifndef __WIN
+template<>
+#endif
 Storage* core::Getter<Storage>::getter = NULL;
 
 void Storage::dispose() {
@@ -11,6 +14,9 @@ int Storage::load(const char* path) {
 	float rad = -1.0f;
 	dispose();
 	std::string ext = core::Path::getExt(path);
+	core::Path::goHome();
+	core::Timer<float> timer;
+	timer.start();
 	for (auto& i : ext)
 		i = toupper(i);
 	if (ext == "CLOUD") {
@@ -47,9 +53,9 @@ int Storage::load(const char* path) {
 	MainWindow::get().setFormTitle(title);
 
 	Controller& controller = Controller::get();
-	//controller.view->home();
-	//controller.view->updateMatrix();
 	controller.home();
 	controller.invalidate();
+
+	core::Debug::info("Load complete in %.2fms\n", timer.stop().ms());
 	return 0;
 }

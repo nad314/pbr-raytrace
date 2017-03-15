@@ -1,15 +1,16 @@
 #include <main>
 
+#ifndef __WIN
+template<>
+#endif
 Sidebar* core::Getter<Sidebar>::getter = NULL;
 
 void Sidebar::onOpening() {
-	Frame::onOpening();
-	setSize(256, 256);
-	setStyle(WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
+	Surface::onOpening();
 }
 
 void Sidebar::onOpened() {
-	Frame::onOpened();
+	Surface::onOpened();
 	setBackColor(Color(64, 64, 68, 255));
 	char t[256];
 	vec4b hc = vec4b(200, 200, 200, 255);
@@ -17,7 +18,7 @@ void Sidebar::onOpened() {
 
 	push(header[0].make(nextVertical() + vec4i(8, 20, 240, 32), "- Settings -", *this).setColor(hc).setAlign(1));
 	push(label[0].make(nextVertical() + vec4i(8, 8, 240, 20), "Samples: 128", *this).setColor(tc));
-	push(slider[0].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Form& f)->void {
+	push(slider[0].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
 		int samples = (int)(1024.0f * pos);
 		if (samples < Storage::get().renderedSamples) {
 			Controller::get().clearSIMDImage();
@@ -35,8 +36,10 @@ void Sidebar::onOpened() {
 
 	sprintf(t, "Threads: %d", std::thread::hardware_concurrency());
 	push(label[1].make(nextVertical() + vec4i(8, 4, 200, 16), t, *this).setColor(tc));
-	push(slider[1].make(nextVertical() + vec4i(8, 2, 240, 22), std::thread::hardware_concurrency() - 1, *this, [](float pos, core::Control& c, core::Form& f)->void {
+	push(slider[1].make(nextVertical() + vec4i(8, 2, 240, 22), std::thread::hardware_concurrency(), *this, [](float pos, core::Control& c, core::Surface& f)->void {
 		int threads = (int)((float)(std::thread::hardware_concurrency()-1) * pos) + 1;
+		if (threads == Controller::get().wg->workerCount())
+			return;
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
 		char t[256];
 		sprintf(t, "Threads: %d", threads);
@@ -48,7 +51,7 @@ void Sidebar::onOpened() {
 
 	sprintf(t, "Light Bounces: %d", std::thread::hardware_concurrency());
 	push(label[8].make(nextVertical() + vec4i(8, 4, 200, 16), t, *this).setColor(tc));
-	push(slider[8].make(nextVertical() + vec4i(8, 2, 240, 22), 7, *this, [](float pos, core::Control& c, core::Form& f)->void {
+	push(slider[8].make(nextVertical() + vec4i(8, 2, 240, 22), 7, *this, [](float pos, core::Control& c, core::Surface& f)->void {
 		int bounces = (int)(7.0f * pos) + 1;
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
 		char t[256];
@@ -63,7 +66,7 @@ void Sidebar::onOpened() {
 
 	push(header[1].make(nextVertical() + vec4i(8, 28, 240, 40), "- Material -", *this).setColor(hc).setAlign(1));
 	push(label[2].make(nextVertical() + vec4i(8, 8, 240, 20), "Roughness", *this).setColor(tc));
-	push(slider[2].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Form& f)->void {
+	push(slider[2].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
 		char t[256];
 		sprintf(t, "Roughness: %.4f", pos);
@@ -75,7 +78,7 @@ void Sidebar::onOpened() {
 	}));
 
 	push(label[3].make(nextVertical() + vec4i(8, 4, 240, 16), "Metallic", *this).setColor(tc));
-	push(slider[3].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Form& f)->void {
+	push(slider[3].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
 		char t[256];
 		sprintf(t, "Metallic: %.4f", pos);
@@ -88,7 +91,7 @@ void Sidebar::onOpened() {
 
 	push(header[2].make(nextVertical() + vec4i(8, 28, 240, 40), "- Color -", *this).setColor(hc).setAlign(1));
 	push(label[4].make(nextVertical() + vec4i(8, 8, 240, 20), "Red:", *this).setColor(tc));
-	push(slider[4].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Form& f)->void {
+	push(slider[4].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
 		Storage& data = Storage::get();
 		char t[256];
@@ -104,7 +107,7 @@ void Sidebar::onOpened() {
 	}));
 
 	push(label[5].make(nextVertical() + vec4i(8, 4, 240, 16), "Green:", *this).setColor(tc));
-	push(slider[5].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Form& f)->void {
+	push(slider[5].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
 		Storage& data = Storage::get();
 		char t[256];
@@ -120,7 +123,7 @@ void Sidebar::onOpened() {
 	}));
 
 	push(label[6].make(nextVertical() + vec4i(8, 4, 240, 16), "Blue:", *this).setColor(tc));
-	push(slider[6].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Form& f)->void {
+	push(slider[6].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
 		Storage& data = Storage::get();
 		char t[256];
@@ -137,7 +140,7 @@ void Sidebar::onOpened() {
 
 	push(header[3].make(nextVertical() + vec4i(8, 28, 240, 40), "- Environment -", *this).setColor(hc).setAlign(1));
 	push(label[7].make(nextVertical() + vec4i(8, 8, 240, 20), "Strength:", *this).setColor(tc));
-	push(slider[7].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Form& f)->void {
+	push(slider[7].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
 		Storage& data = Storage::get();
 		float intensity = pos * Settings::maxEnvironmentStrenght;
@@ -153,27 +156,23 @@ void Sidebar::onOpened() {
 	setControlColors();
 }
 
-void Sidebar::onClosing() {
-	Frame::onClosing();
-}
-
 int Sidebar::onLButtonDown(const core::eventInfo& e) {
 	/*
 	if (Controller::get().busy)
 		return e;*/
-	return Frame::onLButtonDown(e);
+	return Surface::onLButtonDown(e);
 }
 
 int Sidebar::onLButtonUp(const core::eventInfo& e) {
 	/*
 	if (Controller::get().busy)
 		return e;*/
-	return Frame::onLButtonUp(e);
+	return Surface::onLButtonUp(e);
 }
 
 int Sidebar::onResize(const core::eventInfo& e) {
-	Frame::onResize(e);
-	Rect fullRect = getClientRect() + Rect(0, 24, 0, 0);
+	Surface::onResize(e);
+	Rect fullRect = getSurfaceDim() + Rect(0, 24, 0, 0);
 	return 0;
 }
 

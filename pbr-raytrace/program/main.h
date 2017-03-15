@@ -16,6 +16,7 @@ using namespace coreTypes;
 using namespace core::opengl;
 
 //core component
+#include <randuin/randuin.h>
 #include <simdImage/simdImage.h>
 #include <render/brdf.h>
 #include <render/shader.h>

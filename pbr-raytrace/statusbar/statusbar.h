@@ -1,13 +1,13 @@
 #pragma once
 
-class Statusbar final : public core::Form, public core::Debugger, public core::Getter<Statusbar> {
+class Statusbar final : public core::Surface, public core::Debugger, public core::Getter<Statusbar> {
 protected:
 	FILE* output;
 	char text[256];
 	std::mutex iomutex;
 public:
 	core::ProgBar progBar;
-	Statusbar() :Form(), Debugger() {
+	Statusbar() :Surface(), Debugger() {
 		set(*this);
 		core::Debug::attach(this);
 		core::Debug::enable();
@@ -23,7 +23,7 @@ public:
 
 	void onStartPaint(const core::eventInfo& e) override;
 	void onEndPaint(const core::eventInfo& e) override;
-	int onResize(const core::eventInfo& e) override;
+	int onReshape() override;
 	void print(const char* s) override;
 	void log(const char* s) override;
 	void info(const char* s) override;

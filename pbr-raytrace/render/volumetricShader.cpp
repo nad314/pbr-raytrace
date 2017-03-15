@@ -17,12 +17,12 @@ namespace core {
 		Path::goHome();
 		try {
 			if (!hdri.loadHDR("data/hdri/wobbly_bridge_4k.hdr"))
-				throw std::exception("Can't load HDR\n");
+				throw core::exception("Can't load HDR\n");
 			hdri.tonemap();
 			//hdri.gammaCompress(0.66f);
 		}
 		catch (std::exception e) {
-			MessageBox(NULL, e.what(), "Error", MB_OK);
+			core::Debug::log("%s\n", e.what());
 		}
 		Path::popDir();
 	}
