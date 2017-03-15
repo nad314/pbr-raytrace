@@ -8,6 +8,14 @@ int CoreTest::loadData() {
 }
 
 int CoreTest::onLoad() {
+	std::string inst = core::CPUID::vectorInstructions();
+	core::Debug::info("CPU: (%dx) %s", std::thread::hardware_concurrency(), core::CPUID::brandName().c_str());
+	core::Debug::info("Instructions: %s", inst.c_str());
+	if (inst.find("avx") == std::string::npos) {
+		core::Debug::error("AVX not supported. Quitting.");
+		return 1;
+	}
+
 	core::Path::goHome();
 	core::RanduinWrynn::construct(1024);
 	//core::Debug::enable();
@@ -35,7 +43,6 @@ int CoreTest::onStop() {
 }
 
 int CoreTest::main() {
-	printf("CoreTest::main()\n");
 	char text[256];
 	bool done = 0;
 	globalTimer.start();
@@ -115,8 +122,8 @@ int CoreTest::main() {
 		const float rt = controller->renderTime/1000.0f;	
 		if (1 || storage->renderedSamples == Settings::maxSamples) {
 			if (storage->pbvh.pointCount > 0)
-				core::Debug::print("Points: %d - Atom: %.3fmm - Avg: %.2fms - Cur: %.2fms - Samples: %d - Time: %02d:%02d:%02d.%03d", 
-					storage->cloud.points.count(), sqrt(storage->pbvh.radiusSquared)*1000.0f, renderTime / nframes, timer.ms(), storage->renderedSamples, (int)(rt/3600.0f), (int)(rt/60.0f)%60, (int)(rt)%60, (int)(rt*1000)%1000);
+				core::Debug::print("Points: %d - Atom: %.3fmm - Avg: %.2fms - Cur: %.2fms - Samples: %d - Time: %02d:%02d:%02d", 
+					storage->cloud.points.count(), sqrt(storage->pbvh.radiusSquared)*1000.0f, renderTime / nframes, timer.ms(), storage->renderedSamples, (int)(rt/3600.0f), (int)(rt/60.0f)%60, (int)(rt)%60);
 			Statusbar::get().prog(Settings::maxSamples == 0 ? 0.0f : (float)storage->renderedSamples/ Settings::maxSamples);
 			rw.invalidate();
 		}

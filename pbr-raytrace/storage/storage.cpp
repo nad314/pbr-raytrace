@@ -11,6 +11,7 @@ void Storage::dispose() {
 }
 
 int Storage::load(const char* path) {
+	core::Debug::info("Loading '%s'", path);
 	float rad = -1.0f;
 	dispose();
 	std::string ext = core::Path::getExt(path);
@@ -56,6 +57,6 @@ int Storage::load(const char* path) {
 	controller.home();
 	controller.invalidate();
 
-	core::Debug::info("Load complete in %.2fms\n", timer.stop().ms());
+	core::Debug::info("Load complete in %.2fms", timer.stop().ms());
 	return 0;
 }
