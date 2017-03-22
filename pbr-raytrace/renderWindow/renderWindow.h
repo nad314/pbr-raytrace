@@ -4,11 +4,12 @@ private:
 public:
 	core::simdView view;
 	bool alive = 0;
+	core::Image* imgptr = NULL;
 
 	inline operator core::simdView&() { return view; }
 	
-	inline virtual core::Image& image() { return view.img; }
-	inline operator core::Image&() { return view.img; }
+	inline virtual core::Image& image() { return imgptr?*imgptr:view.img; }
+	inline operator core::Image&() { return imgptr?*imgptr:view.img; }
 
 	void onOpening() override;
 	void onOpened() override;

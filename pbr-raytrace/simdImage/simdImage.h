@@ -15,6 +15,15 @@ namespace core {
 		inline vec4s& at(const size_t& x, const size_t& y) { return data[y*width + x]; }
 		inline vec4s at_c(const size_t& x, const size_t& y) const { return data[y*width + x]; }
 
+		simdImage& operator = (const simdImage& a) {
+			dispose();
+			width = a.width;
+			height = a.height;
+			data = new vec4s[width*height];
+			memcpy(data, a.data, width*height*sizeof(vec4s));
+			return *this;
+		}
+
 		void clear(const vec4s& color);
 		bool loadHDR(const char* path);
 		bool loadPNG(const char* path);

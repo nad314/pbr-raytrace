@@ -37,8 +37,9 @@ namespace core {
 		memset(priority, 0, bvh.inner.size() * sizeof(int));
 
 		Storage& data = Storage::get();
-		core::VolumetricShader& shader = data.volumetricShader;
+		//core::VolumetricShader& shader = data.volumetricShader;
 		//core::RenderShader& shader = data.shader;
+		core::Renderer::PixelShader& shader = Controller::get().getShader();
 
 		vec2 offset = vec2(rand() % 128, rand() % 128) / 128;
 

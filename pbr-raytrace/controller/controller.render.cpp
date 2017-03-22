@@ -88,3 +88,42 @@ void Controller::clearSIMDImage() {
 	data.simdFrame.clear(vec4s(0.0f));
 	renderTime = 0.0f;
 }
+
+void Controller::fullRender() {
+	core::Form* wnd = dynamic_cast<core::Form*>(parent->getRoot());
+	if (!wnd)
+		return;
+	veryBusy = 1;
+	RenderWindow& rwnd = dynamic_cast<RenderWindow&>(*parent);
+	bool done = false;
+	view->clear();
+	storage->renderedSamples = Settings::maxSamples;
+	//core::renderShowTask task(view, 32);
+	//rwnd.imgptr = &task.img;
+	core::RenderShader shader(*view);
+	wg->clearTasks().pushTask<core::imageRenderTask>(&storage->pbvh, view, 4, &getShader());
+	core::Timer<float> t;
+	t.start();
+/*
+	std::thread t0 = std::thread(&core::Renderer::WorkerGroup::executeAsync, wg, &done);
+	t0.detach();
+	bool windowDone = 0;
+	while (true) {
+		if (done == true)
+			break;
+		std::unique_lock<std::mutex> lk(task.mutex);
+		task.cv.wait(lk);
+		if (wnd->peekMessageAsync(windowDone)) {
+			//std::this_thread::sleep_for(std::chrono::milliseconds(5));
+			continue;
+		}
+		//std::this_thread::sleep_for(std::chrono::milliseconds(250));
+		//parent->invalidate();
+	}
+	if (t0.joinable())
+		t0.join();*/
+	wg->executeLocal();
+	veryBusy = 0;
+	//rwnd.imgptr = NULL;
+	core::Debug::info("Frame %d: %.2fms\n", frameCounter, t.stop().ms());
+}

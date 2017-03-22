@@ -48,6 +48,8 @@ void RenderWindow::move(int xw, int yw) {
 
 	//RenderSurface::resizeSurface(r);
 	//invalidate();
+	if (alive)
+		Controller::get().frameCounter = 0;
 	RenderSurface::moveSurface(r);
 }
 

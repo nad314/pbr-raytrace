@@ -14,6 +14,11 @@ public:
 	float renderTime = 0.0f;
 	core::Timer<float> timer;
 	bool benchMode = false;
+	int mode = 0;
+	int shaderID = 0;
+	core::Timer<float> benchTimer;
+	int frameCounter = 0;
+	bool veryBusy = 0;
 	
 	Controller(core::RenderSurface* p, Storage* st);
 	~Controller();
@@ -28,6 +33,7 @@ public:
 	int onKeyDown(const core::eventInfo& e) override;
 	int onMousewheel(const core::eventInfo& e) override;
 	void render();
+	void fullRender();
 	void getPoint(const float x, const float y);
 	core::Ray getRay(const float x, const float y) const;
 	void home();
@@ -35,4 +41,10 @@ public:
 	void renderPBRImage();
 	void clearSIMDImage();
 	void makeSIMDImage();
+
+	inline int getMode() const {return mode;}
+	void setMode(const int& m);
+	inline int getShaderID() const {return shaderID;}
+	inline void setShader(const int& n){shaderID = n;}
+	inline core::Renderer::PixelShader& getShader(){if (shaderID == 0)return Storage::get().shader; else return Storage::get().volumetricShader;}
 };

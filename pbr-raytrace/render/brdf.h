@@ -64,7 +64,7 @@ namespace core {
 		return img.at_c(X, Y);
 	}
 
-	inline vec4s imageLinear(const Image& img, const float& x, const float& y) {
+	inline const vec4s imageLinear(const Image& img, const float& x, const float& y) {
 		const float u = x - 0.5f;
 		const float v = y - 0.5f;
 		const int ix = (int)u%(img.width);
@@ -78,7 +78,7 @@ namespace core {
 			(imageNearest(img, ix, iiy)*(1.0f - ru) + imageNearest(img, iix, iiy)*ru)*rv;
 	}
 
-	inline vec4s imageLinear(const simdImage& img, const float& x, const float& y) {
+	inline const vec4s imageLinear(const simdImage& img, const float& x, const float& y) {
 		const float u = x - 0.5f;
 		const float v = y - 0.5f;
 		const int ix = (int)u % (img.width);
@@ -99,19 +99,19 @@ namespace core {
 		return imageLinear(img, x, y);
 	}
 
-	inline vec4s envMap(const simdImage& img, const vec4s& r) {
+	inline const vec4s envMap(const simdImage& img, const vec4s& r) {
 		const m128 m(r);
 		const float y = (m[1] / (2.0f) + 0.5f)*(img.height - 1);
 		const float x = (atan2(m[0], m[2]) / (M_PI*2.0f) + 0.5f)*(img.width - 1);
 		return imageLinear(img, x, y);
 	}
 
-	inline vec4s mcrotate(const vec4s& v, const vec4s& roughness) {
+	inline const vec4s mcrotate(const vec4s& v, const vec4s& roughness) {
 		const vec4s rv = core::RanduinWrynn::topdeck() * roughness;
 		return (v + rv).normalized3d();
 	}
 
-	inline vec4s mcrotate(const vec4s& v) {
+	inline const vec4s mcrotate(const vec4s& v) {
 		const vec4s rv = core::RanduinWrynn::topdeck();
 		return (v + rv).normalized3d();
 	}

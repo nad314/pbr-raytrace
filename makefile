@@ -45,4 +45,9 @@ run:
 	./$(BUILD)/pbr-raytrace
 
 fix: 
+	$(CC) -c pbr-raytrace/program/coreTest.cpp -o $(BIN)/coreTest.o $(FLAGS)
+	$(CC) -c pbr-raytrace/sidebar/sidebar.cpp -o $(BIN)/sidebar.o $(FLAGS)
+	$(CC) -c pbr-raytrace/controller/controller.cpp -o $(BIN)/controller.o $(FLAGS)
+	$(CC) -c pbr-raytrace/controller/controller.render.cpp -o $(BIN)/controller.render.o $(FLAGS)
+	$(CC) -c pbr-raytrace/render/imageRenderTask.cpp -o $(BIN)/imageRenderTask.o $(FLAGS)
 	$(CC) $(OBJ) -o build/pbr-raytrace $(LIBS)

@@ -17,6 +17,8 @@ int CoreTest::onLoad() {
 	}
 
 	core::Path::goHome();
+	core::Path::mkdir("../capture");
+	core::Path::mkdir("../turntable");
 	core::RanduinWrynn::construct(1024);
 	//core::Debug::enable();
 	return 0;
@@ -99,12 +101,38 @@ int CoreTest::main() {
 			controller->render();
 		timer.stop();
 
-		if (controller->benchMode) {
+		if (controller->getMode() == 1) {
 			controller->view->rotation.init();
-			controller->view->rotation.rotate(core::elapsedTime()*50.0f, 0.0f, 1.0f, 0.0f);
+			controller->view->rotation.rotate(10.0f, 1.0f, 0.0f, 0.0f);
+			controller->view->rotation.rotate(controller->benchTimer.stop().s()*30.0f, 0.0f, 1.0f, 0.0f);
 			controller->view->updateMatrix();
-			controller->wg->pushTask<core::RenderTask>(&storage->pbvh, controller->view);
+			controller->wg->pushTask<core::progRenderTask>(&storage->pbvh, controller->view);
 			controller->invalidate();
+			controller->clearSIMDImage();
+		} else if (controller->getMode() == 2) {
+			controller->view->rotation.init();
+			controller->view->rotation.rotate(10.0f, 1.0f, 0.0f, 0.0f);
+			controller->view->rotation.rotate(1.0f * controller->frameCounter, 0.0f, 1.0f, 0.0f); //1.0 == 30fps
+			controller->view->updateMatrix();
+			controller->wg->pushTask<core::progRenderTask>(&storage->pbvh, controller->view);
+			controller->invalidate();
+			if (storage->renderedSamples >= Settings::maxSamples) {
+				//save image
+				core::Path::goHome();
+				core::Image img = rw.image();
+				img.flipV();
+				char path[256];
+				sprintf(path, "../turntable/img-%04d.png", controller->frameCounter);
+				img.savePng(path);
+				//go on with our lyfe
+				controller->clearSIMDImage();
+				++controller->frameCounter;	
+				if (controller->frameCounter == 360) {
+					controller->setMode(0);
+					Settings::maxSamples = 0; // remove this line after tests
+					Sidebar::get().updateUI();
+				}
+			}
 		}
 		else if ((storage->renderedSamples < Settings::maxSamples || Settings::maxSamples == 0) && controller->timer.stop().ms()>500.0f) {
 			controller->wg->pushTask<core::progRenderTask>(&storage->pbvh, controller->view);
@@ -122,8 +150,8 @@ int CoreTest::main() {
 		const float rt = controller->renderTime/1000.0f;	
 		if (1 || storage->renderedSamples == Settings::maxSamples) {
 			if (storage->pbvh.pointCount > 0)
-				core::Debug::print("Points: %d - Atom: %.3fmm - Avg: %.2fms - Cur: %.2fms - Samples: %d - Time: %02d:%02d:%02d", 
-					storage->cloud.points.count(), sqrt(storage->pbvh.radiusSquared)*1000.0f, renderTime / nframes, timer.ms(), storage->renderedSamples, (int)(rt/3600.0f), (int)(rt/60.0f)%60, (int)(rt)%60);
+				core::Debug::print("Points: %d - Atom: %.3fmm - Avg: %.2fms - Cur: %.2fms - Samples: %d: %d - Time: %02d:%02d:%02d", 
+					storage->cloud.points.count(), sqrt(storage->pbvh.radiusSquared)*1000.0f, renderTime / nframes, timer.ms(), controller->frameCounter, storage->renderedSamples, (int)(rt/3600.0f), (int)(rt/60.0f)%60, (int)(rt)%60);
 			Statusbar::get().prog(Settings::maxSamples == 0 ? 0.0f : (float)storage->renderedSamples/ Settings::maxSamples);
 			rw.invalidate();
 		}

@@ -17,11 +17,60 @@ void Sidebar::onOpened() {
 	vec4b tc = vec4b(200, 200, 200, 255);
 
 	push(header[0].make(nextVertical() + vec4i(8, 20, 240, 32), "- Settings -", *this).setColor(hc).setAlign(1));
+	push(label[9].make(nextVertical() + vec4i(8, 8, 240, 20), "Shader", *this).setColor(tc));
+	push(slider[9].make(nextVertical() + vec4i(8, 2, 240, 22), 3, *this, [](float pos, core::Control& c, core::Surface& f)->void {	
+		int p = (int)(pos*2.0f);
+		Controller& ct = Controller::get();
+		if (ct.veryBusy)
+			return;
+		Sidebar& sb = dynamic_cast<Sidebar&>(f);
+		if (ct.getShaderID() != p) {
+			switch(p) {
+				case 0: sb.label[9].setText("Shader: BRDF"); break;
+				case 1: sb.label[9].setText("Shader: Env BRDF"); break;
+				case 2: sb.label[9].setText("Shader: PBR"); break;
+				default: break;
+			}
+			sb.label[9].invalidate();
+			ct.setShader(p);
+			ct.clearSIMDImage();
+			ct.invalidate();
+			ct.frameCounter = 0;
+			ct.wg->clearTasks();
+		}
+	}).setPos((float)0.0f));
+	push(label[10].make(nextVertical() + vec4i(8, 8, 240, 20), "Mode", *this).setColor(tc));
+	push(slider[10].make(nextVertical() + vec4i(8, 2, 240, 22), 3, *this, [](float pos, core::Control& c, core::Surface& f)->void {	
+		int p = (int)(pos*2.0f);
+		Controller& ct = Controller::get();
+		Sidebar& sb = dynamic_cast<Sidebar&>(f);
+		if (ct.getMode() != p) {
+			switch(p) {
+				case 0: sb.label[10].setText("Mode: Free"); break;
+				case 1: sb.label[10].setText("Mode: Benchmark"); break;
+				case 2: sb.label[10].setText("Mode: Turntable"); break;
+				default: break;
+			}
+			sb.label[10].invalidate();
+			ct.setMode(p);
+			if (!ct.veryBusy) {
+				ct.clearSIMDImage();
+				ct.invalidate();
+				ct.wg->clearTasks();
+			}
+			ct.frameCounter = 0;
+		}
+	}).setPos((float)0.0f));
+
+
 	push(label[0].make(nextVertical() + vec4i(8, 8, 240, 20), "Samples: 128", *this).setColor(tc));
 	push(slider[0].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
+		if (Controller::get().veryBusy)
+			return;
 		int samples = (int)(1024.0f * pos);
 		if (samples < Storage::get().renderedSamples) {
 			Controller::get().clearSIMDImage();
+			Controller::get().frameCounter = 0;
 		}
 		Settings::maxSamples = samples;
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
@@ -37,6 +86,8 @@ void Sidebar::onOpened() {
 	sprintf(t, "Threads: %d", std::thread::hardware_concurrency());
 	push(label[1].make(nextVertical() + vec4i(8, 4, 200, 16), t, *this).setColor(tc));
 	push(slider[1].make(nextVertical() + vec4i(8, 2, 240, 22), std::thread::hardware_concurrency(), *this, [](float pos, core::Control& c, core::Surface& f)->void {
+		if (Controller::get().veryBusy)
+			return;
 		int threads = (int)((float)(std::thread::hardware_concurrency()-1) * pos) + 1;
 		if (threads == Controller::get().wg->workerCount())
 			return;
@@ -52,6 +103,8 @@ void Sidebar::onOpened() {
 	sprintf(t, "Light Bounces: %d", std::thread::hardware_concurrency());
 	push(label[8].make(nextVertical() + vec4i(8, 4, 200, 16), t, *this).setColor(tc));
 	push(slider[8].make(nextVertical() + vec4i(8, 2, 240, 22), 7, *this, [](float pos, core::Control& c, core::Surface& f)->void {
+		if (Controller::get().veryBusy)
+			return;
 		int bounces = (int)(7.0f * pos) + 1;
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
 		char t[256];
@@ -61,12 +114,15 @@ void Sidebar::onOpened() {
 		Settings::maxBounces = bounces;
 		Controller::get().clearSIMDImage();
 		Controller::get().invalidate();
+		Controller::get().frameCounter = 0;
 	}).setPos(1.0f));
 
 
 	push(header[1].make(nextVertical() + vec4i(8, 28, 240, 40), "- Material -", *this).setColor(hc).setAlign(1));
 	push(label[2].make(nextVertical() + vec4i(8, 8, 240, 20), "Roughness", *this).setColor(tc));
 	push(slider[2].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
+		if (Controller::get().veryBusy)
+			return;
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
 		char t[256];
 		sprintf(t, "Roughness: %.4f", pos);
@@ -75,10 +131,13 @@ void Sidebar::onOpened() {
 		Storage::get().material.roughness = pos;
 		Controller::get().clearSIMDImage();
 		Controller::get().invalidate();
+		Controller::get().frameCounter = 0;
 	}));
 
 	push(label[3].make(nextVertical() + vec4i(8, 4, 240, 16), "Metallic", *this).setColor(tc));
 	push(slider[3].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
+		if (Controller::get().veryBusy)
+			return;
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
 		char t[256];
 		sprintf(t, "Metallic: %.4f", pos);
@@ -87,11 +146,14 @@ void Sidebar::onOpened() {
 		Storage::get().material.metallic = pos;
 		Controller::get().clearSIMDImage();
 		Controller::get().invalidate();
+		Controller::get().frameCounter = 0;
 	}));
 
 	push(header[2].make(nextVertical() + vec4i(8, 28, 240, 40), "- Color -", *this).setColor(hc).setAlign(1));
 	push(label[4].make(nextVertical() + vec4i(8, 8, 240, 20), "Red:", *this).setColor(tc));
 	push(slider[4].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
+		if (Controller::get().veryBusy)
+			return;
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
 		Storage& data = Storage::get();
 		char t[256];
@@ -104,10 +166,13 @@ void Sidebar::onOpened() {
 		data.material.base = color;
 		Controller::get().clearSIMDImage();
 		Controller::get().invalidate();
+		Controller::get().frameCounter = 0;
 	}));
 
 	push(label[5].make(nextVertical() + vec4i(8, 4, 240, 16), "Green:", *this).setColor(tc));
 	push(slider[5].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
+		if (Controller::get().veryBusy)
+			return;
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
 		Storage& data = Storage::get();
 		char t[256];
@@ -120,10 +185,13 @@ void Sidebar::onOpened() {
 		data.material.base = color;
 		Controller::get().clearSIMDImage();
 		Controller::get().invalidate();
+		Controller::get().frameCounter = 0;
 	}));
 
 	push(label[6].make(nextVertical() + vec4i(8, 4, 240, 16), "Blue:", *this).setColor(tc));
 	push(slider[6].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
+		if (Controller::get().veryBusy)
+			return;
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
 		Storage& data = Storage::get();
 		char t[256];
@@ -136,11 +204,14 @@ void Sidebar::onOpened() {
 		data.material.base = color;
 		Controller::get().clearSIMDImage();
 		Controller::get().invalidate();
+		Controller::get().frameCounter = 0;
 	}));
 
 	push(header[3].make(nextVertical() + vec4i(8, 28, 240, 40), "- Environment -", *this).setColor(hc).setAlign(1));
 	push(label[7].make(nextVertical() + vec4i(8, 8, 240, 20), "Strength:", *this).setColor(tc));
 	push(slider[7].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
+		if (Controller::get().veryBusy)
+			return;
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
 		Storage& data = Storage::get();
 		float intensity = pos * Settings::maxEnvironmentStrenght;
@@ -151,6 +222,7 @@ void Sidebar::onOpened() {
 		sb.__invalidate();
 		Controller::get().clearSIMDImage();
 		Controller::get().invalidate();
+		Controller::get().frameCounter = 0;
 	}));
 
 	setControlColors();
@@ -218,7 +290,23 @@ void Sidebar::updateUI() {
 	label[8].setText(t);
 	slider[8].setPos((float)(Settings::maxBounces - 1)/7.0f);
 
-	for (int i=0;i<9;++i)
+	switch(Controller::get().getShaderID()) {
+		case 0: label[9].setText("Shader: BRDF"); break;
+		case 1: label[9].setText("Shader: Env BRDF"); break;
+		case 2: label[9].setText("Shader: PBR"); break;
+		default: break;
+	}
+	slider[9].setPos((float)Controller::get().getShaderID()/2.0f);
+
+	switch(Controller::get().getMode()) {
+		case 0: label[10].setText("Mode: Free"); break;
+		case 1: label[10].setText("Mode: Benchmark"); break;
+		case 2: label[10].setText("Mode: Turntable"); break;
+		default: break;
+	}
+	slider[10].setPos((float)Controller::get().getMode()/2.0f);
+
+	for (int i=0;i<11;++i)
 		label[i].invalidate();
 	__invalidate();
 }

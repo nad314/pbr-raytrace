@@ -238,3 +238,19 @@ void Controller::makeSIMDImage() {
 	clearSIMDImage();
 }
 
+void Controller::setMode(const int& m){
+	frameCounter = 0;
+	if (!veryBusy) {
+		clearSIMDImage();
+		wg->clearTasks();
+	}
+	if (m < 0 || m > 2)
+		return;
+	mode = m;
+	switch (mode) {
+		case 0: benchMode = 0; break;
+		case 1: benchMode = 1; benchTimer.start(); break;
+		case 2: benchMode = 1; benchTimer.start(); frameCounter = 0; break;
+		default: benchMode = 0; break;
+	}
+}

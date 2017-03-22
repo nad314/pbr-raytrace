@@ -71,6 +71,11 @@ void MenuBar::onOpened() {
 			return;
 		core::Image& img = Controller::get().view->img;
 		std::string path = form->getFileDialog("PNG\0*.png\0\0", 1);
+		#ifndef __WIN
+		core::Path::goHome();
+		time_t t = std::time(nullptr);
+		path = "../capture/capture.png"+ std::to_string(t);
+		#endif
 		if (path != "") {
 			path = core::Path::pushExt("png", path);
 			core::Image simg = img;

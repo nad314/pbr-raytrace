@@ -30,8 +30,9 @@ namespace core {
 
 		vec4s envScale = Settings::environmentStrength;
 		Storage& data = Storage::get();
-		core::VolumetricShader& shader = Storage::get().volumetricShader;
+		//core::VolumetricShader& shader = Storage::get().volumetricShader;
 		//core::RenderShader& shader = Storage::get().shader;
+		core::Renderer::PixelShader& shader = Controller::get().getShader();
 
 		//__m128 svmin;
 		for (int gy = 0; gy < img.height; gy += square) {
