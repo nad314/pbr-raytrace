@@ -97,7 +97,7 @@ int CoreTest::main() {
 		//Render Multithreaded
 		core::Renderer::invalidate();
 		core::RanduinWrynn::mulligan();
-		if (storage->pbvh.pointCount > 0)
+		if (storage->pbvh.pointCount > 0 && controller->getMode()!=2)
 			controller->render();
 		timer.stop();
 
@@ -114,9 +114,10 @@ int CoreTest::main() {
 			controller->view->rotation.rotate(10.0f, 1.0f, 0.0f, 0.0f);
 			controller->view->rotation.rotate(1.0f * controller->frameCounter, 0.0f, 1.0f, 0.0f); //1.0 == 30fps
 			controller->view->updateMatrix();
-			controller->wg->pushTask<core::progRenderTask>(&storage->pbvh, controller->view);
+			//controller->wg->pushTask<core::imageRenderTask>(&storage->pbvh, controller->view);
 			controller->invalidate();
-			if (storage->renderedSamples >= Settings::maxSamples) {
+			controller->fullRender();
+			if (1 || storage->renderedSamples >= Settings::maxSamples) {
 				//save image
 				core::Path::goHome();
 				core::Image img = rw.image();

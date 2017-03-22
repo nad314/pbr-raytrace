@@ -98,32 +98,17 @@ void Controller::fullRender() {
 	bool done = false;
 	view->clear();
 	storage->renderedSamples = Settings::maxSamples;
-	//core::renderShowTask task(view, 32);
+	core::renderShowTask task(view, 32);
 	//rwnd.imgptr = &task.img;
 	core::RenderShader shader(*view);
-	wg->clearTasks().pushTask<core::imageRenderTask>(&storage->pbvh, view, 4, &getShader());
+	wg->clearTasks().pushTask<core::imageRenderTask>(&storage->pbvh, view);
 	core::Timer<float> t;
+
 	t.start();
-/*
-	std::thread t0 = std::thread(&core::Renderer::WorkerGroup::executeAsync, wg, &done);
-	t0.detach();
-	bool windowDone = 0;
-	while (true) {
-		if (done == true)
-			break;
-		std::unique_lock<std::mutex> lk(task.mutex);
-		task.cv.wait(lk);
-		if (wnd->peekMessageAsync(windowDone)) {
-			//std::this_thread::sleep_for(std::chrono::milliseconds(5));
-			continue;
-		}
-		//std::this_thread::sleep_for(std::chrono::milliseconds(250));
-		//parent->invalidate();
-	}
-	if (t0.joinable())
-		t0.join();*/
 	wg->executeLocal();
+	t.stop();
+
 	veryBusy = 0;
 	//rwnd.imgptr = NULL;
-	core::Debug::info("Frame %d: %.2fms\n", frameCounter, t.stop().ms());
+	core::Debug::info("Frame %d: %.2fms", frameCounter, t.ms());
 }

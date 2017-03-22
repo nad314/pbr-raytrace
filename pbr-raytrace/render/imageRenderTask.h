@@ -12,12 +12,17 @@ namespace core {
 	};
 
 	struct imageRenderTask : public Renderer::Worker::Task {
+		static int squareSize;
+		static vec2i squares;
+		static vec2i current;
 		PBVH* pbvh;
 		simdView* pview;
-		Renderer::PixelShader* shader;
-		int samples;
 		~imageRenderTask() {}
-		imageRenderTask(PBVH* pB, simdView* pW, const int samp, Renderer::PixelShader* sh) : pbvh(pB), pview(pW), samples(samp) { shader = sh; }
+		imageRenderTask(PBVH* pB, simdView* pW) : pbvh(pB), pview(pW) {
+			current = vec2i(0, 0);
+			squares = vec2i(std::ceil((float)pW->img.width/squareSize), std::ceil((float)pW->img.height/squareSize));
+		}
 		virtual void execute(Renderer::Worker* pWorker) override;
+		bool getNextRect(vec4i& rect);
 	};
 }
