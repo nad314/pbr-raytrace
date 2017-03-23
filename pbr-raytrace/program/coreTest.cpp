@@ -2,7 +2,7 @@
 
 int CoreTest::loadData() {
 	if (1||controller->benchMode)
-		return storage->load("data/model/pantherUniform.cloud");
+		return storage->load("../data/model/pantherUniform.cloud");
 	else
 		return 0;
 }

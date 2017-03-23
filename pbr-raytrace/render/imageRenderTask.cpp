@@ -51,13 +51,13 @@ template<>
 		
 	}
 
-	int imageRenderTask::squareSize = 16;
+	int imageRenderTask::squareSize = 12;
 	vec2i imageRenderTask::squares;
 	vec2i imageRenderTask::current;
 
 	bool imageRenderTask::getNextRect(vec4i& rect) {
 		static std::mutex mutex;
-		std::lock_guard<std::mutex> lk(mutex);
+		std::unique_lock<std::mutex> lk(mutex);
 		const vec2i c = current;
 		++current.x;
 		if (current.x > squares.x) {
@@ -66,6 +66,7 @@ template<>
 		}
 		if (current.y > squares.y)
 			return 0;
+		lk.unlock();
 
 		rect.x = std::min(c.x * squareSize, (int)pview->img.width);
 		rect.y = std::min(c.y * squareSize, (int)pview->img.height);
@@ -157,7 +158,7 @@ template<>
 						else
 							simdFrag += (envMap(env, ray.sr1)*envScale).min(1.0f);
 						
-						if (sample < ms - 1 && sample%128!=0)
+						if (sample < ms - 1 /*&& (sample%256)!=0*/)
 							continue;
 							
 								/*
@@ -165,21 +166,25 @@ template<>
 						xmm0 = _mm_unpacklo_epi8(xmm0, _mm_setzero_si128());
 						xmm0 = _mm_unpacklo_epi16(xmm0, _mm_setzero_si128());
 						vec4s xmm1 = _mm_cvtepi32_ps(xmm0);*/
-						const vec4s frag = simdFrag * vec4s(255.0f) / vec4s(1.0f + sample).w1();
+						const vec4s frag = simdFrag * vec4s(255.0f) / vec4s(ms);
 						//frag = frag*vec4s(255.0f)*_mm_permute_ps(frag, 0b11111111) + xmm1*(vec4s(1.0f) - _mm_permute_ps(frag, 0b11111111));
 						__m128i fv = _mm_cvtps_epi32(frag);
 						fv = _mm_packus_epi16(fv, fv);
 						fv = _mm_packus_epi16(fv, fv);
 						const int fragOut = _mm_cvtsi128_si32(fv);
-						//_mm_stream_si32(mp + j + i*w, fragOut);
-						memcpy(mp + j + i*w, &fragOut, sizeof(int));
+						_mm_stream_si32(mp + j + i*w, fragOut);
+						//memcpy(mp + j + i*w, &fragOut, sizeof(int));
 					}
-				}
-				if (sample%128 == 0)
+				}/*
+				if (sample%256 == 0)
 					task.onEndNode(pview, vec2i((int)rect.x / square, (int)rect.y / square), vec2i((int)std::ceil((float)(img.width) / square), (int)std::ceil((float)(img.height) / square)), square);
+					*/
 			}
 			//repaint
-			task.onEndNode(pview, vec2i((int)rect.x / square, (int)rect.y / square), vec2i((int)std::ceil((float)(img.width) / square), (int)std::ceil((float)(img.height) / square)), square);
+			/*
+			if (worker.threadNumber == 0)
+				task.onEndNode(pview, vec2i((int)rect.x / square, (int)rect.y / square), vec2i((int)std::ceil((float)(img.width) / square), (int)std::ceil((float)(img.height) / square)), square);
+			*/
 		}
 		delete[] priority;
 		//task.onEndNode(pview, vec2i(0, 0), vec2i(0, 0), square);

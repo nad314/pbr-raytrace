@@ -99,7 +99,6 @@ void Controller::fullRender() {
 	view->clear();
 	storage->renderedSamples = Settings::maxSamples;
 	core::renderShowTask task(view, 32);
-	//rwnd.imgptr = &task.img;
 	core::RenderShader shader(*view);
 	wg->clearTasks().pushTask<core::imageRenderTask>(&storage->pbvh, view);
 	core::Timer<float> t;
@@ -109,6 +108,5 @@ void Controller::fullRender() {
 	t.stop();
 
 	veryBusy = 0;
-	//rwnd.imgptr = NULL;
 	core::Debug::info("Frame %d: %.2fms", frameCounter, t.ms());
 }

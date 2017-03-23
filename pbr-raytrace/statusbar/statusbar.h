@@ -13,8 +13,7 @@ public:
 		core::Debug::enable();
 		core::Path::pushDir();
 		core::Path::goHome();
-		core::Path::cd("../data/");
-		output = fopen((core::Path::getDir() + "\\log.txt").c_str(), "w");
+		output = fopen("log.txt", "w");
 		core::Path::popDir();
 	}
 	~Statusbar() { fclose(output); }

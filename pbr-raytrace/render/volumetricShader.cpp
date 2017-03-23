@@ -16,7 +16,7 @@ namespace core {
 		Path::pushDir();
 		Path::goHome();
 		try {
-			if (!hdri.loadHDR("data/hdri/wobbly_bridge_4k.hdr"))
+			if (!hdri.loadHDR("../data/hdri/wobbly_bridge_4k.hdr"))
 				throw core::exception("Can't load HDR\n");
 			hdri.tonemap();
 			//hdri.gammaCompress(0.66f);
