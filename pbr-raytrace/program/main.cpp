@@ -1,6 +1,6 @@
 #include <main>
 
-#ifdef __WIN
+#ifdef ___WIN
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR message, int nCmdShow) {
 #else
 int main(void){

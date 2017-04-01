@@ -19,7 +19,7 @@ void MenuBar::onOpened() {
 	img.linearDownscale(30, 30);
 	img.flipV();
 	push(button[0].make(nextHorizontal() + vec4i(0, 0, 30, 30), &img, *this, [](core::Control& c, core::Surface& f)->void {
-		core::Form* form = f.getRoot();
+		core::Form* form = dynamic_cast<core::Form*>(f.getRoot());
 		if (!form)
 			return;
 		std::string path = form->getFileDialog("Cloud\0*.cloud\0OBJ\0*.obj\0\0", 0);
@@ -32,7 +32,7 @@ void MenuBar::onOpened() {
 	img.linearDownscale(30, 30);
 	img.flipV();
 	push(button[1].make(nextHorizontal() + vec4i(2, 0, 32, 30), &img, *this, [](core::Control& c, core::Surface& f)->void {
-		core::Form* form = f.getRoot();
+		core::Form* form = dynamic_cast<core::Form*>(f.getRoot());
 		if (!form)
 			return;
 		std::string path = form->getFileDialog("HDR\0*.hdr\0PNG\0*.png\0\0", 0);
@@ -66,7 +66,7 @@ void MenuBar::onOpened() {
 	img.linearDownscale(30, 30);
 	img.flipV();
 	push(button[3].make(nextHorizontal() + vec4i(2, 0, 32, 30), &img, *this, [](core::Control& c, core::Surface& f)->void {
-		core::Form* form = f.getRoot();
+		core::Form* form = dynamic_cast<core::Form*>(f.getRoot());
 		if (!form)
 			return;
 		core::Image& img = Controller::get().view->img;

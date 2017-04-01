@@ -31,7 +31,7 @@ int CoreTest::onDispose() {
 
 int CoreTest::onStart() {
 	wnd.open();
-	GL::setVsync(0);/*
+	/*GL::setVsync(0);/*
 	core::eventInfo e(wnd, WM_PAINT, wnd.width, wnd.height);
 	wnd.onPaint(e);*/
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -79,7 +79,7 @@ int CoreTest::main() {
 	controller->timer.start();
 	
 	GL::makeCurrent(wnd);
-	GL::setVsync(0);
+	//GL::setVsync(0);
 	Statusbar::get().prog(0.0f);
 
 	rw.alive = 1;

@@ -30,7 +30,7 @@ namespace core {
 		const vec4s H = (lightDir + V).normalized3d();
 		vec4s N = (nmat*normal).normalized3d();
 		const vec4s cond = _mm_cmpge_ps(N.dot3(lightDir), _mm_setzero_ps());
-		N = _mm_and_ps(N, cond) + _mm_andnot_ps(cond, N*(-1.0f));
+		N = vec4s(_mm_and_ps(N, cond)) + _mm_andnot_ps(cond, N*(-1.0f));
 
 		const vec4s ndl = vec4s(0.0f).max(N.dot3(lightDir));
 		const vec4s ndv = vec4s(0.0f).max(N.dot3(V));

@@ -18,13 +18,14 @@ template<>
 		{
 			std::lock_guard<std::mutex> lk(mutex);
 			//Renderer::drawRect(vec4i(cStep.x*square, cStep.y*square, std::min((cStep.x + 1)*square, (int)img.width), std::min((cStep.y + 1)*square, (int)img.height)).shrink(1), vec4b(255, 255, 120, 255), Controller::get().view->img);
+			/*
 			SDL_Event e;
 			e.type = SDL_WINDOWEVENT;
 			e.window.windowID = 0;
 			e.window.event = SDL_WINDOWEVENT_EXPOSED;
 			Controller::get().parent->surfaceInvalidate();
 			MainWindow::get().__invalidate();
-			MainWindow::get().onPaint(e);
+			MainWindow::get().onPaint(e);*/
 			//cv.notify_all();
 		}
 	}
@@ -39,13 +40,14 @@ template<>
 			cv.notify_all();
 			*/
 			//printf("end block %d %d\n", cStep.x, cStep.y);
+			/*
 			SDL_Event e;
 			e.type = SDL_WINDOWEVENT;
 			e.window.windowID = 0;
 			e.window.event = SDL_WINDOWEVENT_EXPOSED;
 			Controller::get().parent->surfaceInvalidate();
 			MainWindow::get().__invalidate();
-			MainWindow::get().onPaint(e);
+			MainWindow::get().onPaint(e);*/
 
 		}
 		
