@@ -72,7 +72,6 @@ int Controller::onRButtonUp(const core::eventInfo& e) {
 }
 
 int Controller::onMousewheel(const core::eventInfo& e) {
-	printf("onMousewheel\n");
 	if (storage->pbvh.pointCount < 1 || benchMode)
 		return e;
 	if (e.delta() < 0) {
