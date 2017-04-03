@@ -5,7 +5,7 @@ BIN = bin
 BUILD = build
 DEFINE =
 INCLUDE = -I"../core/core" -I"../core-tracing/core-tracing" -I"../core-forms/core-forms" -I"/usr/include" -I"./pbr-raytrace"
-FLAGS = -O3 -g $(INCLUDE) $(WARN) $(DEFINE)
+FLAGS = -O3 $(INCLUDE) $(WARN) $(DEFINE)
 LIBS = -L"lib" -lpthread -lfreetype -lSDL2 -lGL -lGLU -lcore -lcore-tracing -lcore-forms 
 
 OBJ = \
@@ -32,11 +32,14 @@ OBJ = \
 	storage/storage.o
 	
 
-all: $(OBJ)
+all: reset $(OBJ)
 	$(CC) $(BIN)/* -o build/pbr-raytrace $(LIBS)
 
 $(OBJ): %.o: pbr-raytrace/%.cpp
 	$(CC) -c $< -o $(BIN)/$(notdir $@) $(FLAGS)
+
+reset:
+	rm $(BUILD)/pbr-raytrace
 
 clean:
 	rm -rf $(BUILD)

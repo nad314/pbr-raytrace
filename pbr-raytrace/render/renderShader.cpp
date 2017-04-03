@@ -39,19 +39,19 @@ namespace core {
 		
 		//light attenuation
 		const vec4s lmp = lp - vp;
-		float A = 1000.0f / m128(lmp.dot3(lmp))[0];
+		float A = 3000.0f / m128(lmp.dot3(lmp))[0];
 
-		const vec4s specular = mix(vec4s(0.04f), material.base, material.metallic);
+		const vec4s specular = mix(vec4s(0.04f), color, material.metallic);
 		const vec4s specfresnel = fresnelFactor(specular, m128(ndv.m)[0]);
-		const vec4s specref = GGX_BRDF_Fast(ndl, ndv, ndh, specfresnel, material.roughness) + ndl;
+		const vec4s specref = GGX_BRDF_Fast(ndl, ndv, ndh, specfresnel, material.roughness) * ndl;
 
 
 		const vec4s diffref = (vec4s(1.0f) - specfresnel) * ndl * (1.0f / M_PI);
 
-		vec4s reflected_light = vec4s(specref)*A;
-		vec4s diffuse_light = vec4s(diffref)*A;
+		vec4s reflected_light = vec4s(specref)*A*color;
+		vec4s diffuse_light = vec4s(diffref)*A*color;
 		
-		return (diffuse_light*mix(material.base, vec4s(0.0f, 0.0f, 0.0f, 1.0f), material.metallic) + 
+		return (diffuse_light*mix(color, vec4s(0.0f, 0.0f, 0.0f, 1.0f), material.metallic) + 
 			reflected_light).min(vec4s(1.0f));
 	}
 }
