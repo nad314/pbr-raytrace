@@ -1,5 +1,5 @@
 PROJ = pbr-raytrace
-EXE = pbr-raytrace
+OUT = pbr-raytrace
 BIN = bin
 BUILD = build
 CC = g++ -std=gnu++11 -msse -msse2 -msse3 -msse4 -mavx -mstackrealign -pthread -Wl,--no-as-needed
@@ -35,13 +35,13 @@ OBJ = \
 	
 
 all: $(OBJ)
-	$(CC) $(BIN)/* -o build/$(EXE) $(LIBS)
+	$(CC) $(BIN)/* -o build/$(OUT) $(LIBS)
 
 $(OBJ): %.o: $(PROJ)/%.cpp
 	$(CC) -c $< -o $(BIN)/$(notdir $@) $(FLAGS)
 
 reset:
-	rm $(BUILD)/$(EXE)
+	rm $(BUILD)/$(OUT)
 
 clean:
 	rm -rf $(BUILD)
