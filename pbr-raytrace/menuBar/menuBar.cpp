@@ -70,8 +70,10 @@ void MenuBar::onOpened() {
 		if (!form)
 			return;
 		core::Image& img = Controller::get().view->img;
-		std::string path = form->getFileDialog("PNG\0*.png\0\0", 1);
-		#ifndef __WIN
+		std::string path = "";
+		#ifdef __WIN
+		path = form->getFileDialog("PNG\0*.png\0\0", 1);
+		#else
 		core::Path::goHome();
 		time_t t = std::time(nullptr);
 		path = "../capture/capture.png"+ std::to_string(t);
