@@ -1,10 +1,10 @@
 #include <main> 
 
 namespace core {
-	void subRenderTask::execute(Renderer::Worker* pWorker) {
+	void subRenderTask::execute(Worker* pWorker) {
 		if (pWorker == NULL)
 			return;
-		Renderer::Worker& worker = *pWorker;
+		Worker& worker = *pWorker;
 		PBVH& bvh = *pbvh;
 		simdView &view = *pview;
 		Image &img = view.img;

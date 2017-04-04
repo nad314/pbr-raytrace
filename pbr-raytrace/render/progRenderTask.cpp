@@ -2,10 +2,10 @@
 
 namespace core {
 	std::atomic_int progRenderTask::tc;
-	void progRenderTask::execute(Renderer::Worker* pWorker) {
+	void progRenderTask::execute(Worker* pWorker) {
 		if (pWorker == NULL)
 			return;
-		Renderer::Worker& worker = *pWorker;
+		Worker& worker = *pWorker;
 		PBVH& bvh = *pbvh;
 		simdView &view = *pview;
 		Image &img = view.img;

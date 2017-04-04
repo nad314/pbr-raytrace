@@ -21,6 +21,8 @@
 bld/
 [Bb]in/
 [Oo]bj/
+[Cc]apture/
+[Tt]urntable/
 
 # Visual Studio 2015 cache/options directory
 .vs/

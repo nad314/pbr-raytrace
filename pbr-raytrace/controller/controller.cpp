@@ -12,7 +12,7 @@ Controller::Controller(core::RenderSurface* p, Storage* st) {
 	p->attach(this);
 	view = &(static_cast<RenderWindow*>(parent))->view;
 	samples = 2;
-	wg = new core::Renderer::WorkerGroup();
+	wg = new core::WorkerGroup();
 	makeSIMDImage();
 	timer.start();
 }
@@ -104,6 +104,7 @@ int Controller::onMouseMove(const core::eventInfo& e) {
 		view->rotation = view->rotation*mat;
 		view->updateMatrix();
 		invalidate();
+		wg->clearTasks();
 		wg->pushTask<core::subRenderTask>(&storage->pbvh, view);
 		clearSIMDImage();
 		timer.start();
@@ -131,6 +132,7 @@ int Controller::onMouseMove(const core::eventInfo& e) {
 		mat.translate(d.x, d.y, d.z);
 		view->rotation = mat*view->rotation;
 		view->updateMatrix();
+		wg->clearTasks();
 		wg->pushTask<core::subRenderTask>(&storage->pbvh, view);
 		invalidate();
 		clearSIMDImage();

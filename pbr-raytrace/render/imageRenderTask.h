@@ -1,6 +1,6 @@
 #pragma once
 namespace core {
-	struct renderShowTask final: public Renderer::imageShowTask, public Getter<renderShowTask> {
+	struct renderShowTask final: public LocalTask, public Getter<renderShowTask> {
 		Image img;
 		Image simg;
 		vec2i *threadSquare;
@@ -11,7 +11,7 @@ namespace core {
 		void onEndNode(simdView* view, vec2i cStep, vec2i nStep, int square) override;
 	};
 
-	struct imageRenderTask : public Renderer::Worker::Task {
+	struct imageRenderTask : public Worker::Task {
 		static int squareSize;
 		static vec2i squares;
 		static vec2i current;
@@ -22,7 +22,7 @@ namespace core {
 			current = vec2i(0, 0);
 			squares = vec2i(std::ceil((float)pW->img.width/squareSize), std::ceil((float)pW->img.height/squareSize));
 		}
-		virtual void execute(Renderer::Worker* pWorker) override;
+		virtual void execute(Worker* pWorker) override;
 		bool getNextRect(vec4i& rect);
 	};
 }

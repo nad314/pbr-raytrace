@@ -97,7 +97,7 @@ void Sidebar::onOpened() {
 		sb.label[1].setText(t).invalidate();
 		sb.__invalidate();
 		delete Controller::get().wg;
-		Controller::get().wg = new core::Renderer::WorkerGroup(threads);
+		Controller::get().wg = new core::WorkerGroup(threads);
 	}).setPos(1.0f));
 
 	sprintf(t, "Light Bounces: %d", std::thread::hardware_concurrency());

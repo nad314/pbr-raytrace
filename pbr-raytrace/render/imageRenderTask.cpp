@@ -77,15 +77,15 @@ template<>
 		return 1;
 	}
 
-	void imageRenderTask::execute(Renderer::Worker* pWorker) {
+	void imageRenderTask::execute(Worker* pWorker) {
 		if (pWorker == NULL)
 			return;
-		core::Renderer::imageShowTask& task = renderShowTask::get();
+		core::LocalTask& task = renderShowTask::get();
 /*
 		core::Renderer::quickTrace(*pbvh, pview, pWorker->threadNumber, pWorker->threadCount, samples, 32, &renderShowTask::get(), *shader);
 		return;
 */
-		Renderer::Worker& worker = *pWorker;
+		Worker& worker = *pWorker;
 		PBVH& bvh = *pbvh;
 		simdView &view = *pview;
 		Image &img = view.img;

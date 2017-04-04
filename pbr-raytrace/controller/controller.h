@@ -8,7 +8,7 @@ public:
 	core::vec2i mouse;
 	bool rotating = 0;
 	bool dragging = 0;
-	core::Renderer::WorkerGroup* wg;
+	core::WorkerGroup* wg;
 	int samples = 2;
 	vec4 clickPoint;
 	float renderTime = 0.0f;
