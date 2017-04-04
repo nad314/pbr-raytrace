@@ -21,7 +21,6 @@ using namespace core::opengl;
 #include <render/brdf.h>
 #include <render/shader.h>
 #include <render/renderTask.h>
-#include <render/msRenderTask.h>
 #include <render/subRenderTask.h>
 #include <render/progRenderTask.h>
 #include <render/imageRenderTask.h>

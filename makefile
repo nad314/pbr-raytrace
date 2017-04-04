@@ -20,7 +20,6 @@ OBJ = \
 	program/coreTest.o \
 	randuin/randuin.o \
 	render/imageRenderTask.o \
-	render/msRenderTask.o \
 	render/progRenderTask.o \
 	render/renderShader.o \
 	render/renderTask.o \
