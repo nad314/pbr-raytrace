@@ -6,7 +6,7 @@ namespace core {
 		float roughness;
 		vec4s base;
 
-		Material() : metallic(0.0f), roughness(0.75f), base(0.95f, 0.95f, 0.95f, 1.0f) {}
+		Material() : metallic(0.0f), roughness(0.9f), base(0.95f, 0.95f, 0.95f, 1.0f) {}
 	};
 
 	struct RenderShader final : public Renderer::PixelShader, public SIMD {

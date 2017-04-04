@@ -39,7 +39,7 @@ namespace core {
 		
 		//light attenuation
 		const vec4s lmp = lp - vp;
-		float A = 3000.0f / m128(lmp.dot3(lmp))[0];
+		float A = 4000.0f / m128(lmp.dot3(lmp))[0];
 
 		const vec4s specular = mix(vec4s(0.04f), color, material.metallic);
 		const vec4s specfresnel = fresnelFactor(specular, m128(ndv.m)[0]);

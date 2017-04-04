@@ -1,11 +1,13 @@
+PROJ = pbr-raytrace
+EXE = pbr-raytrace
+BIN = bin
+BUILD = build
 CC = g++ -std=gnu++11 -msse -msse2 -msse3 -msse4 -mavx -mstackrealign -pthread -Wl,--no-as-needed
 #WARN = -Wall -fpermissive -Wno-write-strings -Wno-unused-result -Wno-unknown-pragmas -Wno-format-security -Wno-parentheses
 WARN = -w -fpermissive
-BIN = bin
-BUILD = build
 DEFINE =
 INCLUDE = -I"../core/core" -I"../core-tracing/core-tracing" -I"../core-forms/core-forms" -I"/usr/include" -I"./pbr-raytrace"
-FLAGS = -O3 $(INCLUDE) $(WARN) $(DEFINE)
+FLAGS = -O2 $(INCLUDE) $(WARN) $(DEFINE)
 LIBS = -L"lib" -lpthread -lfreetype -lSDL2 -lGL -lGLU -lcore -lcore-tracing -lcore-forms 
 
 OBJ = \
@@ -32,14 +34,14 @@ OBJ = \
 	storage/storage.o
 	
 
-all: reset $(OBJ)
-	$(CC) $(BIN)/* -o build/pbr-raytrace $(LIBS)
+all: $(OBJ)
+	$(CC) $(BIN)/* -o build/$(EXE) $(LIBS)
 
-$(OBJ): %.o: pbr-raytrace/%.cpp
+$(OBJ): %.o: $(PROJ)/%.cpp
 	$(CC) -c $< -o $(BIN)/$(notdir $@) $(FLAGS)
 
 reset:
-	rm $(BUILD)/pbr-raytrace
+	rm $(BUILD)/$(EXE)
 
 clean:
 	rm -rf $(BUILD)
@@ -49,5 +51,5 @@ init:
 	mkdir $(BUILD)
 	mkdir $(BIN)
 
-run: all
+run:
 	./$(BUILD)/pbr-raytrace
