@@ -23,7 +23,6 @@ namespace core {
 		vec4s lightPos = vec4s(inv*vec4(0.0f, 0.0f, -5.0f, 1.0f));
 
 		Ray ray;
-		PBVH::Ray oray;
 		std::pair<int, float> stack[256];
 		int* priority = new int[bvh.inner.size()];
 		memset(priority, 0, bvh.inner.size() * sizeof(int));
@@ -47,21 +46,13 @@ namespace core {
 				const int my = std::min(gy + square, h);
 				for (int i = gy; i < my-my%2; i+=2) {
 					for (int j = gx; j < mx-mx%2; j+=2) {
-						ray.sr0 = sinv*view.unproject(vec4s(vec4((float)j, (float)h - i, 0.0f, 1.0f)));
-						ray.sr0 /= _mm_permute_ps(ray.sr0, 0b11111111);
-						ray.sr1 = sinv*view.unproject(vec4s(vec4((float)j, (float)h - i, 1.0f, 1.0f)));
-						ray.sr1 /= _mm_permute_ps(ray.sr1, 0b11111111);
-						ray.sr1 = (ray.sr1 - ray.sr0);
-						ray.sr1 /= _mm_sqrt_ps(_mm_dp_ps(ray.sr1, ray.sr1, 0x7F));
-						ray.sinvr1 = _mm_rcp_ps(ray.sr1);
+						core::Renderer::unproject(ray, view, sinv, (float)j, (float)h - i);
+						const float d = bvh.findFirst(ray, stack, priority, true);
 
-						oray = ray;
-						oray.d = 100.0f;
-
-						if (bvh.findFirst(oray, stack, priority, true) > 0.0f) {
+						if (d > 0.0f) {
 							//const vec4s pminusl = (lightPos - (ray.sr0 + ray.sr1*vec4s(oray.d)));
 							//const vec4s ndotl = oray.plane.dot3(pminusl / _mm_sqrt_ps(pminusl.dot3(pminusl)));
-							const vec4s frag = _mm_mul_ps(shader.getColor(ray, oray.d, oray.plane, oray.color, bvh, stack, priority), _mm_set1_ps(255.0f));
+							const vec4s frag = _mm_mul_ps(shader.getColor(ray, d, ray.normal, ray.color, bvh, stack, priority), _mm_set1_ps(255.0f));
 							__m128i fv = _mm_cvtps_epi32(frag);
 							fv = _mm_packus_epi16(fv, fv);
 							fv = _mm_packus_epi16(fv, fv);

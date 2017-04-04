@@ -155,7 +155,7 @@ template<>
 						oray.d = 100.0f;
 
 
-						if (bvh.findFirst(oray, stack, priority, true) > 0.0f)
+						if (bvh.findFirst(ray, stack, priority, true) > 0.0f)
 							simdFrag += vec4s(shader.getColor(ray, oray.d, oray.plane, oray.color, bvh, stack, priority)).w1();
 						else
 							simdFrag += (envMap(env, ray.sr1)*envScale).min(1.0f);

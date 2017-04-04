@@ -12,7 +12,6 @@ void Controller::getPoint(const float x, const float y) {
 	matrixs sinv = inv;
 
 	core::Ray ray;
-	core::PBVH::Ray oray;
 	const float h = (float)view.img.height;
 
 	ray.sr0 = sinv*view.unproject(vec4s(vec4(x, (float)h - y, 0.0f, 1.0f)));
@@ -23,15 +22,13 @@ void Controller::getPoint(const float x, const float y) {
 	ray.sr1 /= _mm_sqrt_ps(_mm_dp_ps(ray.sr1, ray.sr1, 0x7F));
 	ray.sinvr1 = _mm_rcp_ps(ray.sr1);
 
-	oray = ray;
-	oray.d = 100.0f;
-
 	static std::pair<int, float> stack[256];
 	int* priority = new int[bvh.inner.size()];
 	memset(priority, 0, bvh.inner.size() * sizeof(int));
 
-	if (bvh.findFirst(oray, stack, priority, false) > 0.0f) {
-		const vec4s point = ray.sr0 + ray.sr1*vec4s(oray.d);
+	const float d = bvh.findFirst(ray, stack, priority, false);
+	if (d > 0.0f) {
+		const vec4s point = ray.sr0 + ray.sr1*vec4s(d);
 		point.store(clickPoint);
 	}
 	else clickPoint = vec4(0.0f);

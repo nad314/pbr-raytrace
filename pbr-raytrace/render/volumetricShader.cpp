@@ -36,7 +36,7 @@ namespace core {
 
 		Ray lightRay = ray;
 		Ray reflectRay = ray;
-		PBVH::Ray lray;
+		
 		vec4s nn;
 
 		const vec4s roughness = material.roughness;
@@ -62,13 +62,12 @@ namespace core {
 		reflectRay.sr0 = point + rdir*vec4s(0.0001f);
 		reflectRay.sr1 = rdir;
 		reflectRay.sinvr1 = _mm_rcp_ps(lightRay.sr1);
-		lray = reflectRay;
-		lray.d = -100.0f;
-
-		if (bvh.findFirst(lray, stack, priority, false) < 0.0f)
+		
+		float d2 = bvh.findFirst(reflectRay, stack, priority, false);
+		if (d2 < 0.0f)
 			envspec = envMap(hdri, rdir) * envStrength;
 		else
-			envspec = getColor(reflectRay, lray.d, lray.plane, lray.color, bvh, stack, priority, rek - 1);
+			envspec = getColor(reflectRay, d2, reflectRay.normal, reflectRay.color, bvh, stack, priority, rek - 1);
 
 		//maybe multiply cooktorrance with H.dot3(L)?
 		const vec4s iblspec = (GGX_BRDF_Fast(ndl, ndv, ndh, fresnel, roughness) + fresnel).min(1.0f);
@@ -76,12 +75,12 @@ namespace core {
 		lightRay.sr0 = point + newDir*vec4s(0.0001f);
 		lightRay.sr1 = newDir;
 		lightRay.sinvr1 = _mm_rcp_ps(lightRay.sr1);
-		lray = lightRay;
-		lray.d = -100.0f;
-		if (bvh.findFirst(lray, stack, priority, false) < 0.0f)
+
+		d2 = bvh.findFirst(lightRay, stack, priority, false);
+		if (d2 < 0.0f)
 			envdiff = envMap(hdri, newDir) * envStrength;
-		else 
-			envdiff = getColor(lightRay, lray.d, lray.plane, lray.color, bvh, stack, priority, rek - 1);
+		else
+			envdiff = getColor(lightRay, d2, lightRay.normal, lightRay.color, bvh, stack, priority, rek - 1);
 
 		const vec4s nndl = N.dot3(newDir);
 		const vec4s reflected_light = envspec * iblspec;
