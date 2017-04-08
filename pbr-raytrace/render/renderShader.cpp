@@ -48,8 +48,8 @@ namespace core {
 
 		const vec4s diffref = (vec4s(1.0f) - specfresnel) * ndl * (1.0f / M_PI);
 
-		vec4s reflected_light = vec4s(specref)*A*color;
-		vec4s diffuse_light = vec4s(diffref)*A*color;
+		vec4s reflected_light = vec4s(specref)*A;
+		vec4s diffuse_light = vec4s(diffref)*A;
 		
 		return (diffuse_light*mix(color, vec4s(0.0f, 0.0f, 0.0f, 1.0f), material.metallic) + 
 			reflected_light).min(vec4s(1.0f));
