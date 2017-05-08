@@ -33,9 +33,6 @@
     <ClCompile Include="render\imageRenderTask.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="render\msRenderTask.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="render\renderTask.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

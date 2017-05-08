@@ -71,8 +71,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\</OutDir>
     <IntDir>$(SolutionDir)bin\</IntDir>
-    <IncludePath>D:\code\core\core;D:\code\core-tracing\core-tracing;D:\code\core-forms\core-forms;D:\code\pbr-raytrace\pbr-raytrace;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\code\clib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\core\core;$(SolutionDir)..\core-tracing\core-tracing;$(SolutionDir)..\core-forms\core-forms;$(SolutionDir)pbr-raytrace;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\clib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -131,7 +131,6 @@
     <ClCompile Include="randuin\randuin.cpp" />
     <ClCompile Include="renderWindow\renderWindow.cpp" />
     <ClCompile Include="render\imageRenderTask.cpp" />
-    <ClCompile Include="render\msRenderTask.cpp" />
     <ClCompile Include="render\progRenderTask.cpp" />
     <ClCompile Include="render\renderShader.cpp" />
     <ClCompile Include="render\renderTask.cpp" />
