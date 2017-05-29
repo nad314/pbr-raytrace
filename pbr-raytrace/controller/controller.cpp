@@ -97,10 +97,10 @@ int Controller::onMouseMove(const core::eventInfo& e) {
 		matrixf mat;
 		clickPoint.w = 1.0f;
 		vec4 point = view->rotation*clickPoint;
-		mat.translate(point.x, point.y, point.z);
-		mat.rotate(0.2f*(e.y() - mouse.y), 1.0f, 0.0f, 0.0f);
-		mat.rotate(0.2f*(e.x() - mouse.x), 0.0f, 1.0f, 0.0f);
 		mat.translate(-point.x, -point.y, -point.z);
+		mat.rotate(0.2f*(e.x() - mouse.x), 0.0f, 1.0f, 0.0f);
+		mat.rotate(0.2f*(e.y() - mouse.y), 1.0f, 0.0f, 0.0f);
+		mat.translate(point.x, point.y, point.z);
 		view->rotation = view->rotation*mat;
 		view->updateMatrix();
 		invalidate();
