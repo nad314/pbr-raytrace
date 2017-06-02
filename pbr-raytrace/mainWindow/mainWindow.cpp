@@ -8,8 +8,8 @@ MainWindow* core::Getter<MainWindow>::getter = NULL;
 void MainWindow::onOpening() {
 	Form::onOpening();
 	setTitle("Core Renderer");
-	setSize(900, 616);
-	setMinSize(900, 616);
+	setSize(1024, 720);
+	setMinSize(1024, 720);
 	addExStyle(WS_EX_ACCEPTFILES);
 	set(*this);
 }

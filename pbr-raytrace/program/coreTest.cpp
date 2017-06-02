@@ -154,7 +154,9 @@ int CoreTest::main() {
 				core::Debug::print("Points: %d - Atom: %.3fmm - Avg: %.2fms - Cur: %.2fms - Samples: %d: %d - Time: %02d:%02d:%02d", 
 					storage->cloud.points.count(), sqrt(storage->pbvh.radiusSquared)*1000.0f, renderTime / nframes, timer.ms(), controller->frameCounter, storage->renderedSamples, (int)(rt/3600.0f), (int)(rt/60.0f)%60, (int)(rt)%60);
 			Statusbar::get().prog(Settings::maxSamples == 0 ? 0.0f : (float)storage->renderedSamples/ Settings::maxSamples);
+			//printf("%.2f\n", timer.ms());
 			rw.invalidate();
+			//controller->validate();
 		}
 		
 	}

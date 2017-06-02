@@ -43,6 +43,7 @@ int Controller::onLButtonUp(const core::eventInfo& e) {
 	++Storage::get().renderedSamples;
 	invalidate();*/
 	parent->releaseCapture();
+	clearSIMDImage();
 	return e;
 }
 
@@ -68,6 +69,7 @@ int Controller::onRButtonUp(const core::eventInfo& e) {
 	++Storage::get().renderedSamples;
 	invalidate();*/
 	parent->releaseCapture();
+	clearSIMDImage();
 	return e;
 }
 
@@ -106,7 +108,7 @@ int Controller::onMouseMove(const core::eventInfo& e) {
 		invalidate();
 		wg->clearTasks();
 		wg->pushTask<core::subRenderTask>(&storage->pbvh, view);
-		clearSIMDImage();
+		//clearSIMDImage();
 		timer.start();
 	}
 	else if (dragging) {
@@ -135,7 +137,7 @@ int Controller::onMouseMove(const core::eventInfo& e) {
 		wg->clearTasks();
 		wg->pushTask<core::subRenderTask>(&storage->pbvh, view);
 		invalidate();
-		clearSIMDImage();
+		//clearSIMDImage();
 		timer.start();
 	}
 	mouse = core::vec2i(e.x(), e.y());
