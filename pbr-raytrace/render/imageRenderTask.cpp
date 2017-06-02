@@ -112,7 +112,6 @@ template<>
 		vec4s lightPos = vec4s(inv*vec4(0.0f, 0.0f, -5.0f, 1.0f));
 
 		Ray ray;
-		PBVH::Ray oray;
 		std::pair<int, float> stack[256];
 		int* priority = new int[bvh.inner.size()];
 		memset(priority, 0, bvh.inner.size() * sizeof(int));
@@ -142,7 +141,8 @@ template<>
 				for (int i = rect.y; i < rect.w; ++i) {
 					for (int j = rect.x; j < rect.z; ++j) {
 						vec4s& simdFrag = frame.at(j, i);
-							
+						core::Renderer::unproject(ray, view, sinv, (float)j + offset.x, (float)h - i + offset.y);
+						/*	
 						ray.sr0 = sinv*view.unproject(vec4s(vec4((float)j + offset.x, (float)h - i + offset.y, 0.0f, 1.0f)));
 						ray.sr0 /= _mm_permute_ps(ray.sr0, 0b11111111);
 						ray.sr1 = sinv*view.unproject(vec4s(vec4((float)j + offset.x, (float)h - i + offset.y, 1.0f, 1.0f)));
@@ -150,13 +150,11 @@ template<>
 						ray.sr1 = (ray.sr1 - ray.sr0);
 						ray.sr1 /= _mm_sqrt_ps(_mm_dp_ps(ray.sr1, ray.sr1, 0x7F));
 						ray.sinvr1 = _mm_rcp_ps(ray.sr1);
+*/
+						const float d = bvh.findFirst(ray, stack, priority, true);
 
-						oray = ray;
-						oray.d = 100.0f;
-
-
-						if (bvh.findFirst(ray, stack, priority, true) > 0.0f)
-							simdFrag += vec4s(shader.getColor(ray, oray.d, oray.plane, oray.color, bvh, stack, priority)).w1();
+						if (d > 0.0f)
+							simdFrag += vec4s(shader.getColor(ray, d, ray.normal, ray.color, bvh, stack, priority)).w1();
 						else
 							simdFrag += (envMap(env, ray.sr1)*envScale).min(1.0f);
 						
@@ -174,8 +172,8 @@ template<>
 						fv = _mm_packus_epi16(fv, fv);
 						fv = _mm_packus_epi16(fv, fv);
 						const int fragOut = _mm_cvtsi128_si32(fv);
-						_mm_stream_si32(mp + j + i*w, fragOut);
-						//memcpy(mp + j + i*w, &fragOut, sizeof(int));
+						//_mm_stream_si32(mp + j + i*w, fragOut);
+						memcpy(mp + j + i*w, &fragOut, sizeof(int));
 					}
 				}/*
 				if (sample%256 == 0)
