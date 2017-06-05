@@ -10,6 +10,7 @@ struct Storage: public core::SIMD, public core::Getter<Storage> {
 	core::simdImage simdFrame;
 	core::simdImage hdri;
 	int renderedSamples;
+	core::Image renderImage;
 
 	core::Material material;
 

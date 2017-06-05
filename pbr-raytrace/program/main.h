@@ -8,6 +8,7 @@
 #include <thread>
 #include <mutex>
 #include <atomic>
+#include <sstream>
 
 #include <core>
 #include <core-forms>

@@ -88,7 +88,7 @@ template<>
 		Worker& worker = *pWorker;
 		PBVH& bvh = *pbvh;
 		simdView &view = *pview;
-		Image &img = view.img;
+		Image &img = Storage::get().renderImage;
 		int* mp = reinterpret_cast<int*>(img.data);
 		vec4 bp, bq; // bounding box projected coordinates
 		Renderer::projectedBox(bvh, pview, bp, bq);
@@ -134,6 +134,7 @@ template<>
 		core::simdImage& frame = data.simdFrame;
 		vec4i rect;
 		while (getNextRect(rect)) {
+			const vec2i c = current;
 			//repaint
 			//task.onStartNode(pview, vec2i((int)rect.x / square, (int)rect.y / square), vec2i((int)std::ceil((float)(img.width) / square), (int)std::ceil((float)(img.height) / square)), square);
 			for(int sample = 0; sample < ms; ++sample) {
@@ -172,11 +173,15 @@ template<>
 					*/
 			}
 			//repaint
-			/*
-			core::Surface& rw = MainWindow::get().getRenderWindow();
-			rw.onPaint(core::eventInfo(SDL_Event()));
+			
+			//printf("%.2f\n", (float)(c.x + c.y*squares.x)/(squares.x*squares.y));
+			const float p = std::min(1.0f, (float)(c.x + c.y*squares.x)/(squares.x*squares.y));
+			Statusbar::prog(p);
+			
+			//core::Surface& rw = MainWindow::get().getRenderWindow();
+			//rw.onPaint(core::eventInfo(SDL_Event()));
 			MainWindow::get().onPaint(core::eventInfo(SDL_Event()));
-			*/
+			
 			/*
 			if (worker.threadNumber == 0)
 				task.onEndNode(pview, vec2i((int)rect.x / square, (int)rect.y / square), vec2i((int)std::ceil((float)(img.width) / square), (int)std::ceil((float)(img.height) / square)), square);

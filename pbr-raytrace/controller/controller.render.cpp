@@ -86,14 +86,26 @@ void Controller::clearSIMDImage() {
 	renderTime = 0.0f;
 }
 
+inline std::string formatTime(const int& ms) {
+	const int s = ms / 1000;
+	const int m = s / 60;
+
+	char ss[256];
+	memset(ss, 0, sizeof(ss));
+	sprintf(ss, "%02d:%02d:%03dms", m, s%60, ms%1000);
+
+	return std::string(ss);
+}
+
 void Controller::fullRender() {
 	core::Form* wnd = dynamic_cast<core::Form*>(parent->getRoot());
 	if (!wnd)
 		return;
 	veryBusy = 1;
 	RenderWindow& rwnd = dynamic_cast<RenderWindow&>(*parent);
+	Storage::get().renderImage = view->img;
 	bool done = false;
-	view->clear();
+	//view->clear();
 	storage->renderedSamples = Settings::maxSamples;
 	core::renderShowTask task(view, 32);
 	core::RenderShader shader(*view);
@@ -104,6 +116,8 @@ void Controller::fullRender() {
 	wg->executeLocal();
 	t.stop();
 
+	view->img = Storage::get().renderImage;
+
 	veryBusy = 0;
-	core::Debug::info("Frame %d: %.2fms", frameCounter, t.ms());
+	core::Debug::info("Frame %d: %s", frameCounter, formatTime((int)t.ms()).c_str());
 }
