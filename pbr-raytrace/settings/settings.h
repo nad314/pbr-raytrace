@@ -5,4 +5,6 @@ struct Settings {
 	static float environmentStrength; 
 	const static float maxEnvironmentStrenght;
 	static int maxBounces;
+
+	static const int maxSampleCap;
 };

@@ -53,7 +53,7 @@ template<>
 		
 	}
 
-	int imageRenderTask::squareSize = 12;
+	int imageRenderTask::squareSize = 16;
 	vec2i imageRenderTask::squares;
 	vec2i imageRenderTask::current;
 
@@ -142,15 +142,6 @@ template<>
 					for (int j = rect.x; j < rect.z; ++j) {
 						vec4s& simdFrag = frame.at(j, i);
 						core::Renderer::unproject(ray, view, sinv, (float)j + offset.x, (float)h - i + offset.y);
-						/*	
-						ray.sr0 = sinv*view.unproject(vec4s(vec4((float)j + offset.x, (float)h - i + offset.y, 0.0f, 1.0f)));
-						ray.sr0 /= _mm_permute_ps(ray.sr0, 0b11111111);
-						ray.sr1 = sinv*view.unproject(vec4s(vec4((float)j + offset.x, (float)h - i + offset.y, 1.0f, 1.0f)));
-						ray.sr1 /= _mm_permute_ps(ray.sr1, 0b11111111);
-						ray.sr1 = (ray.sr1 - ray.sr0);
-						ray.sr1 /= _mm_sqrt_ps(_mm_dp_ps(ray.sr1, ray.sr1, 0x7F));
-						ray.sinvr1 = _mm_rcp_ps(ray.sr1);
-*/
 						const float d = bvh.findFirst(ray, stack, priority, true);
 
 						if (d > 0.0f)
@@ -172,8 +163,8 @@ template<>
 						fv = _mm_packus_epi16(fv, fv);
 						fv = _mm_packus_epi16(fv, fv);
 						const int fragOut = _mm_cvtsi128_si32(fv);
-						//_mm_stream_si32(mp + j + i*w, fragOut);
-						memcpy(mp + j + i*w, &fragOut, sizeof(int));
+						_mm_stream_si32(mp + j + i*w, fragOut);
+						//memcpy(mp + j + i*w, &fragOut, sizeof(int));
 					}
 				}/*
 				if (sample%256 == 0)
@@ -181,6 +172,11 @@ template<>
 					*/
 			}
 			//repaint
+			/*
+			core::Surface& rw = MainWindow::get().getRenderWindow();
+			rw.onPaint(core::eventInfo(SDL_Event()));
+			MainWindow::get().onPaint(core::eventInfo(SDL_Event()));
+			*/
 			/*
 			if (worker.threadNumber == 0)
 				task.onEndNode(pview, vec2i((int)rect.x / square, (int)rect.y / square), vec2i((int)std::ceil((float)(img.width) / square), (int)std::ceil((float)(img.height) / square)), square);

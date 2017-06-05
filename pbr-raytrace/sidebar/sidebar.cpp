@@ -67,7 +67,7 @@ void Sidebar::onOpened() {
 	push(slider[0].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
 		if (Controller::get().veryBusy)
 			return;
-		int samples = (int)(1024.0f * pos);
+		int samples = (int)(Settings::maxSampleCap * pos);
 		if (samples < Storage::get().renderedSamples) {
 			Controller::get().clearSIMDImage();
 			Controller::get().frameCounter = 0;
@@ -81,7 +81,7 @@ void Sidebar::onOpened() {
 		sb.label[0].setText(t).invalidate();
 		sb.__invalidate();
 		Controller::get().invalidate();		
-	}).setPos((float)128.0f/1024.0f));
+	}).setPos((float)128.0f/Settings::maxSampleCap));
 
 	sprintf(t, "Threads: %d", std::thread::hardware_concurrency());
 	push(label[1].make(nextVertical() + vec4i(8, 4, 200, 16), t, *this).setColor(tc));
@@ -257,7 +257,7 @@ void Sidebar::updateUI() {
 
 	sprintf(t, "Samples: %d", Settings::maxSamples);
 	label[0].setText(t);
-	slider[0].setPos((float)Settings::maxSamples/1024.0f);
+	slider[0].setPos((float)Settings::maxSamples/Settings::maxSampleCap);
 
 	sprintf(t, "Threads: %d", c.wg->workerCount());
 	label[1].setText(t);
