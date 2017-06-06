@@ -68,7 +68,7 @@ template<>
 		}
 		if (current.y > squares.y)
 			return 0;
-		lk.unlock();
+		//lk.unlock();
 
 		rect.x = std::min(c.x * squareSize, (int)pview->img.width);
 		rect.y = std::min(c.y * squareSize, (int)pview->img.height);

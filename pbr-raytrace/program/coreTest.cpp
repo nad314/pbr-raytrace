@@ -85,7 +85,7 @@ int CoreTest::main() {
 	rw.alive = 1;
 	rw.drawable = 1;
 	while (!done) {
-		if (wnd.peekMessageAsync(done))
+		while (wnd.peekMessageAsync(done))
 			continue;
 
 		if (controller->valid) {
