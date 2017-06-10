@@ -15,7 +15,7 @@ public:
 	core::Timer<float> timer;
 	bool benchMode = false;
 	int mode = 0;
-	int shaderID = 0;
+	int shaderID = 1;
 	core::Timer<float> benchTimer;
 	int frameCounter = 0;
 	bool veryBusy = 0;
@@ -23,7 +23,7 @@ public:
 	Controller(core::RenderSurface* p, Storage* st);
 	~Controller();
 
-	inline void invalidate() { valid = 0; Storage::get().shader.update(*view); Storage::get().volumetricShader.update(*view);}
+	inline void invalidate() { valid = 0; Storage::get().shader.update(*view); Storage::get().volumetricShader.update(*view); Storage::get().pbsShader.update(*view); }
 	inline void validate() { valid = 1; }
 	int onLButtonDown(const core::eventInfo& e) override;
 	int onLButtonUp(const core::eventInfo& e) override;
@@ -46,5 +46,7 @@ public:
 	void setMode(const int& m);
 	inline int getShaderID() const {return shaderID;}
 	inline void setShader(const int& n){shaderID = n;}
-	inline core::Renderer::PixelShader& getShader(){if (shaderID == 0)return Storage::get().shader; else return Storage::get().volumetricShader;}
+	inline core::Renderer::PixelShader& getShader(){if (shaderID == 0)return Storage::get().shader; else if (shaderID==1) return Storage::get().pbsShader; else return Storage::get().volumetricShader;}
+
+	bool loadHDRI(const std::string& path) const;
 };

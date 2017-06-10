@@ -38,17 +38,7 @@ void MenuBar::onOpened() {
 		std::string path = form->getFileDialog("HDR\0*.hdr\0PNG\0*.png\0\0", 0);
 		if (path != "") {
 			std::string ext = core::Path::getExt(path);
-			if (ext == "hdr") {
-				if (Storage::get().volumetricShader.hdri.loadHDR(path.c_str()))
-					Storage::get().volumetricShader.hdri.tonemap();
-				Controller::get().clearSIMDImage();
-				Controller::get().invalidate();
-			}
-			else {
-				Storage::get().volumetricShader.hdri.loadPNG(path.c_str());
-				Controller::get().clearSIMDImage();
-				Controller::get().invalidate();
-			}
+			Controller::get().loadHDRI(path);
 		}
 	}));
 	button[1].prerender();

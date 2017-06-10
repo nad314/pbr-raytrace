@@ -1,8 +1,8 @@
 #include <main>
-const float Settings::maxEnvironmentStrenght = 8.0f;
+const float Settings::maxEnvironmentStrenght = 6.0f;
 
 int Settings::maxSamples = 256;
 float Settings::environmentStrength = 2.0f;
-int Settings::maxBounces = 4;
+int Settings::maxBounces = 3;
 
 const int Settings::maxSampleCap = 4096;

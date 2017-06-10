@@ -113,7 +113,7 @@ namespace core {
 
 	inline const vec4s mcrotate(const vec4s& v) {
 		const vec4s rv = core::RanduinWrynn::topdeck();
-		return (v + rv).normalized3d();
+		return (v + rv*0.9f).normalized3d(); //we do just a tiny bit of importance sampling to avoid impossible colisions
 	}
 
 }

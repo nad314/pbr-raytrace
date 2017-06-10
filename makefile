@@ -22,6 +22,7 @@ OBJ = \
 	render/imageRenderTask.o \
 	render/progRenderTask.o \
 	render/renderShader.o \
+	render/pbsShader.o \
 	render/renderTask.o \
 	render/subRenderTask.o \
 	render/volumetricShader.o \

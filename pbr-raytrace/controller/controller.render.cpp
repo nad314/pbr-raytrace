@@ -62,7 +62,7 @@ void Controller::renderPBRImage() {
 	matrixf inv = view.mat;
 	inv.invert();
 	matrixs sinv = inv;
-	core::simdImage& img = Storage::get().volumetricShader.hdri;
+	core::simdImage& img = Storage::get().hdri;
 	vec4 p;
 	for (int i=0;i<view.img.width;++i)
 		for (int j = 0; j < view.img.height; ++j) {
@@ -119,5 +119,10 @@ void Controller::fullRender() {
 	view->img = Storage::get().renderImage;
 
 	veryBusy = 0;
-	core::Debug::info("Frame %d: %s", frameCounter, formatTime((int)t.ms()).c_str());
+	
+	//print message
+	char msg[256];
+	sprintf(msg, "Frame %d: %s", frameCounter, formatTime((int)t.ms()).c_str());
+	core::Debug::info(msg);
+	core::Debug::print(msg);
 }

@@ -6,7 +6,7 @@ namespace core {
 		float roughness;
 		vec4s base;
 
-		Material() : metallic(0.0f), roughness(0.9f), base(0.8f, 0.8f, 0.8f, 1.0f) {}
+		Material() : metallic(0.75f), roughness(0.35f), base(0.8f, 0.61f, 0.37f, 1.0f) {}
 	};
 
 	struct RenderShader final : public Renderer::PixelShader, public SIMD {
@@ -31,17 +31,21 @@ namespace core {
 
 	struct VolumetricShader final : public Renderer::PixelShader, public SIMD {
 		Material material;
-		int samples;
-		matrixs smat;
-		matrixs sinv;
 		matrixs nmat;
-		matrixs sninv;
-		simdImage hdri;
 		float envStrength;
 		int bounces;
-		VolumetricShader();
+		VolumetricShader(){}
 		void update(const simdView& view);
 		const vec4s getColor(const Ray& ray, const float& d, const vec4s& normal, const vec4s& color, const PBVH& bvh, std::pair<int, float>* stack, int* priority, int rek) const;
+		const vec4s getColor(const Ray& ray, const float& d, const vec4s& normal, const vec4s& color, const PBVH& bvh, std::pair<int, float>* stack, int* priority) const;
+	};
+
+	struct PBSShader final : public Renderer::PixelShader, public SIMD {
+		Material material;
+		matrixs nmat;
+		float envStrength;
+		PBSShader(){}
+		void update(const simdView& view);
 		const vec4s getColor(const Ray& ray, const float& d, const vec4s& normal, const vec4s& color, const PBVH& bvh, std::pair<int, float>* stack, int* priority) const;
 	};
 

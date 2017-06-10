@@ -130,9 +130,10 @@ template<>
 		env = data.volumetricShader.hdri;
 		core::simdImage frame;
 		frame = data.simdFrame;*/
-		core::simdImage& env = data.volumetricShader.hdri;
+		core::simdImage& env = data.hdri;
 		core::simdImage& frame = data.simdFrame;
 		vec4i rect;
+		const vec4s clearColor = vec4s(0.2f).w1();
 		while (getNextRect(rect)) {
 			const vec2i c = current;
 			//repaint
@@ -148,7 +149,8 @@ template<>
 						if (d > 0.0f)
 							simdFrag += vec4s(shader.getColor(ray, d, ray.normal, ray.color, bvh, stack, priority)).w1();
 						else
-							simdFrag += (envMap(env, ray.sr1)*envScale).min(1.0f);
+							//simdFrag += (envMap(env, ray.sr1)*envScale).min(1.0f);
+							simdFrag += clearColor;
 						
 						if (sample < ms - 1 /*&& (sample%256)!=0*/)
 							continue;

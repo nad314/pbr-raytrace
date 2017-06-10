@@ -27,7 +27,7 @@ void Sidebar::onOpened() {
 		if (ct.getShaderID() != p) {
 			switch(p) {
 				case 0: sb.label[9].setText("Shader: BRDF"); break;
-				case 1: sb.label[9].setText("Shader: Env BRDF"); break;
+				case 1: sb.label[9].setText("Shader: PBS"); break;
 				case 2: sb.label[9].setText("Shader: PBR"); break;
 				default: break;
 			}
@@ -58,7 +58,7 @@ void Sidebar::onOpened() {
 				ct.invalidate();
 				ct.wg->clearTasks();
 			}
-			ct.frameCounter = 0;
+			//ct.frameCounter = 0;
 		}
 	}).setPos((float)0.0f));
 
@@ -292,7 +292,7 @@ void Sidebar::updateUI() {
 
 	switch(Controller::get().getShaderID()) {
 		case 0: label[9].setText("Shader: BRDF"); break;
-		case 1: label[9].setText("Shader: Env BRDF"); break;
+		case 1: label[9].setText("Shader: PBS"); break;
 		case 2: label[9].setText("Shader: PBR"); break;
 		default: break;
 	}

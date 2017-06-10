@@ -8,8 +8,8 @@ MainWindow* core::Getter<MainWindow>::getter = NULL;
 void MainWindow::onOpening() {
 	Form::onOpening();
 	setTitle("Core Renderer");
-	setSize(1024, 720);
-	setMinSize(1024, 720);
+	setSize(1280, 720);
+	setMinSize(640, 360);
 	addExStyle(WS_EX_ACCEPTFILES);
 	set(*this);
 }
@@ -49,23 +49,13 @@ void MainWindow::onEndPaint(const core::eventInfo& e) {
 }
 
 int MainWindow::onDropFiles(const core::eventInfo& e) {
-	std::string path = e.droppedFile();
-	std::string ext = core::Path::getExt(path);
-
-	if (ext == "hdr") {
-		if (Storage::get().volumetricShader.hdri.loadHDR(path.c_str()))
-			Storage::get().volumetricShader.hdri.tonemap();
-		Controller::get().clearSIMDImage();
-		Controller::get().invalidate();
-	}
-	else if (ext == "png"){
-		Storage::get().volumetricShader.hdri.loadPNG(path.c_str());
-		Controller::get().clearSIMDImage();
-		Controller::get().invalidate();
-	} else Storage::get().load(path.c_str());
-
-	rwnd.view.home();
 	Controller& c = Controller::get();
+	std::string path = e.droppedFile();
+
+	if (!c.loadHDRI(path)) {
+		Storage::get().load(path.c_str());
+		rwnd.view.home();
+	}
 	c.invalidate();
 	return e;
 }

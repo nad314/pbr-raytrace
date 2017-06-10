@@ -6,6 +6,7 @@ struct Storage: public core::SIMD, public core::Getter<Storage> {
 
 	core::RenderShader shader;
 	core::VolumetricShader volumetricShader;
+	core::PBSShader pbsShader;
 
 	core::simdImage simdFrame;
 	core::simdImage hdri;

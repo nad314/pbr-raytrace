@@ -38,12 +38,13 @@ int Controller::onLButtonDown(const core::eventInfo& e) {
 int Controller::onLButtonUp(const core::eventInfo& e) {
 	if (storage->pbvh.pointCount < 1 || benchMode)
 		return e;
+	if (rotating || dragging)
+		clearSIMDImage();
 	rotating = 0; /*
 	wg->pushTask<core::progRenderTask>(&storage->pbvh, view);
 	++Storage::get().renderedSamples;
 	invalidate();*/
 	parent->releaseCapture();
-	clearSIMDImage();
 	return e;
 }
 
@@ -64,12 +65,13 @@ int Controller::onRButtonDown(const core::eventInfo& e) {
 int Controller::onRButtonUp(const core::eventInfo& e) {
 	if (storage->pbvh.pointCount < 1 || benchMode)
 		return e;
+	if (rotating || dragging)
+		clearSIMDImage();
 	dragging = 0;/*
 	wg->pushTask<core::progRenderTask>(&storage->pbvh, view);
 	++Storage::get().renderedSamples;
 	invalidate();*/
 	parent->releaseCapture();
-	clearSIMDImage();
 	return e;
 }
 
@@ -255,7 +257,28 @@ void Controller::setMode(const int& m){
 	switch (mode) {
 		case 0: benchMode = 0; break;
 		case 1: benchMode = 1; benchTimer.start(); break;
-		case 2: benchMode = 1; benchTimer.start(); frameCounter = 0; break;
+		case 2: benchMode = 1; benchTimer.start(); /*frameCounter = 0;*/ break;
 		default: benchMode = 0; break;
 	}
+}
+
+
+bool Controller::loadHDRI(const std::string& path) const {
+	std::string ext = core::Path::getExt(path);
+	Storage& data = Storage::get();
+
+	if (ext == "hdr") {
+		if (data.hdri.loadHDR(path.c_str()))
+			data.hdri.tonemap();
+		clearSIMDImage();
+		invalidate();
+		return 1;
+	}
+	else if (ext == "png"){
+		data.hdri.loadPNG(path.c_str());
+		clearSIMDImage();
+		invalidate();
+		return 1;
+	} else return 0;
+
 }

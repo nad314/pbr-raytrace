@@ -2,46 +2,27 @@
 
 namespace core {
 	void VolumetricShader::update(const simdView& view) {
-		matrixf inv = view.rotation*view.translation;
-		inv.invert();
-		matrixs sinv = inv;
-		srand(rand());
+		//matrixf inv = view.rotation*view.translation;
+		//inv.invert();
+		nmat = view.rotation.normalMatrix();
 		material = Storage::get().material;
 		envStrength = Settings::environmentStrength;
 		bounces = Settings::maxBounces;
 	}
 
-	VolumetricShader::VolumetricShader() {
-		samples = 1;
-		Path::pushDir();
-		Path::goHome();
-		try {
-			if (!hdri.loadHDR("../data/hdri/wobbly_bridge_4k.hdr"))
-				throw core::exception("Can't load HDR\n");
-			hdri.tonemap();
-			//hdri.gammaCompress(0.66f);
-		}
-		catch (std::exception e) {
-			core::Debug::log("%s\n", e.what());
-		}
-		Path::popDir();
-	}
-
 	const vec4s VolumetricShader::getColor(const Ray& ray, const float& d, const vec4s& normal, const vec4s& color, const PBVH& bvh, std::pair<int, float>* stack, int* priority, int rek) const {
 		if (rek == 0)
 			return _mm_setzero_ps();
+		const simdImage& hdri = Storage::get().hdri;
 
 		const vec4s point = (ray.sr0 + ray.sr1*vec4s(d));
-		const vec4s vp = smat*point;
 
 		Ray lightRay = ray;
 		Ray reflectRay = ray;
-		
-		vec4s nn;
 
 		const vec4s roughness = material.roughness;
 
-		const vec4s L = mcrotate(normal, roughness).normalized3d();
+		const vec4s L = mcrotate(normal, roughness); //the function normalizes
 		const vec4s V = (lightRay.sr1*vec4s(-1.0f)).normalized3d();
 		const vec4s H = (L + V).normalized3d();
 		const vec4s N = normal.normalized3d();
@@ -65,7 +46,7 @@ namespace core {
 		
 		float d2 = bvh.findFirst(reflectRay, stack, priority, false);
 		if (d2 < 0.0f)
-			envspec = envMap(hdri, rdir) * envStrength;
+			envspec = envMap(hdri, (nmat*rdir).normalized3d()) * envStrength;
 		else
 			envspec = getColor(reflectRay, d2, reflectRay.normal, reflectRay.color, bvh, stack, priority, rek - 1);
 
@@ -78,11 +59,11 @@ namespace core {
 
 		d2 = bvh.findFirst(lightRay, stack, priority, false);
 		if (d2 < 0.0f)
-			envdiff = envMap(hdri, newDir) * envStrength;
+			envdiff = envMap(hdri, (nmat*newDir).normalized3d()) * envStrength;
 		else
 			envdiff = getColor(lightRay, d2, lightRay.normal, lightRay.color, bvh, stack, priority, rek - 1);
 
-		const vec4s nndl = N.dot3(newDir);
+		const vec4s nndl = 1.0f;//N.dot3(newDir);
 		const vec4s reflected_light = envspec * iblspec;
 		const vec4s diffuse_light = envdiff * nndl * (vec4s(1.0f) - iblspec);
 
