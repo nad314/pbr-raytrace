@@ -49,4 +49,6 @@ public:
 	inline core::Renderer::PixelShader& getShader(){if (shaderID == 0)return Storage::get().shader; else if (shaderID==1) return Storage::get().pbsShader; else return Storage::get().volumetricShader;}
 
 	bool loadHDRI(const std::string& path) const;
+	void makeMipmaps();
+	void makePreconvolvedImage();
 };

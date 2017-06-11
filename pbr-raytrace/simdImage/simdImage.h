@@ -39,6 +39,7 @@ namespace core {
 		void gammaCompress(const float& gamma);
 		void preconvolveByAngle(const float& angle);
 		void gauss3();
+		simdImage& makeMipmap(const simdImage& img);
 	};
 }
 

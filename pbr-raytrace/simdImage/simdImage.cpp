@@ -69,7 +69,7 @@ namespace core {
 		const int xr = width/4;
 		const int yr = height/2;
 
-		const int step = width/64;
+		const int step = 1;
 
 		const float ca = cos(angle);
 		int cc = std::thread::hardware_concurrency();
@@ -141,5 +141,19 @@ namespace core {
 
 		core::Debug::info("finished in %dms", (int)timer.stop().ms());
 		delete[] t;		
+	}
+
+
+	simdImage& simdImage::makeMipmap(const simdImage& img) {
+		if (img.width < 4 || img.height < 4)
+			return *this;
+		simdImage gauss = img;
+		gauss.gauss3();
+
+		make(gauss.width/2, gauss.height/2);
+		for (int i = 0; i < gauss.width; i += 2)
+			for(int j = 0; j < gauss.height; j += 2)
+				at(i/2, j/2) = gauss.at_c(i, j);
+		return *this;
 	}
 }

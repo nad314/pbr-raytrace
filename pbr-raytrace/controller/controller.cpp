@@ -270,11 +270,9 @@ bool Controller::loadHDRI(const std::string& path) const {
 	if (ext == "hdr") {
 		if (data.hdri.loadHDR(path.c_str())) {
 			data.hdri.tonemap();
-			data.hdri.gauss3();
-			data.hdriDiff = data.hdri;
-			data.hdriDiff.preconvolveByAngle(90.0f);
-			//data.hdriRef = data.hdri;
-			//data.hdriRef.preconvolveByAngle(10.0f);
+			makeMipmaps();
+			makePreconvolvedImage();
+
 		}
 		clearSIMDImage();
 		invalidate();
@@ -282,13 +280,28 @@ bool Controller::loadHDRI(const std::string& path) const {
 	}
 	else if (ext == "png"){
 		data.hdri.loadPNG(path.c_str());
-		data.hdriDiff = data.hdri;
-		data.hdriDiff.preconvolveByAngle(90.0f);
-		//data.hdriRef = data.hdri;
-		//data.hdriRef.preconvolveByAngle(10.0f);
+		makeMipmaps();
+		makePreconvolvedImage();
+
 		clearSIMDImage();
 		invalidate();
 		return 1;
 	} else return 0;
 
+}
+
+void Controller::makeMipmaps() {
+	Storage& data = Storage::get();
+	data.hdriMipmap[0].makeMipmap(data.hdri);
+	for (int i = 1; i < 8; ++i)
+		data.hdriMipmap[i].makeMipmap(data.hdriMipmap[i-1]);
+}
+
+void Controller::makePreconvolvedImage() {
+	Storage& data = Storage::get();
+	int i = 0;
+	while (i<7 && data.hdriMipmap[i].width > 64)
+		++i;
+	data.hdriDiff = data.hdriMipmap[i];
+	data.hdriDiff.preconvolveByAngle(90.0f);	
 }
