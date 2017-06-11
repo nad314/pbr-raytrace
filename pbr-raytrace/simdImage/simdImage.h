@@ -15,6 +15,13 @@ namespace core {
 		inline vec4s& at(const size_t& x, const size_t& y) { return data[y*width + x]; }
 		inline vec4s at_c(const size_t& x, const size_t& y) const { return data[y*width + x]; }
 
+		simdImage(const simdImage& a) {
+			width = a.width;
+			height = a.height;
+			data = new vec4s[width*height];
+			memcpy(data, a.data, width*height*sizeof(vec4s));
+		}
+
 		simdImage& operator = (const simdImage& a) {
 			dispose();
 			width = a.width;
@@ -30,7 +37,8 @@ namespace core {
 		void flipV();
 		void tonemap();
 		void gammaCompress(const float& gamma);
-		void preconvolveDiffuse();
+		void preconvolveByAngle(const float& angle);
+		void gauss3();
 	};
 }
 

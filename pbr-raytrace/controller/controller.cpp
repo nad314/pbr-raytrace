@@ -268,10 +268,14 @@ bool Controller::loadHDRI(const std::string& path) const {
 	Storage& data = Storage::get();
 
 	if (ext == "hdr") {
-		if (data.hdri.loadHDR(path.c_str()))
+		if (data.hdri.loadHDR(path.c_str())) {
 			data.hdri.tonemap();
-		data.hdriDiff = data.hdri;
-		data.hdriDiff.preconvolveDiffuse();
+			data.hdri.gauss3();
+			data.hdriDiff = data.hdri;
+			data.hdriDiff.preconvolveByAngle(90.0f);
+			//data.hdriRef = data.hdri;
+			//data.hdriRef.preconvolveByAngle(10.0f);
+		}
 		clearSIMDImage();
 		invalidate();
 		return 1;
@@ -279,7 +283,9 @@ bool Controller::loadHDRI(const std::string& path) const {
 	else if (ext == "png"){
 		data.hdri.loadPNG(path.c_str());
 		data.hdriDiff = data.hdri;
-		data.hdriDiff.preconvolveDiffuse();
+		data.hdriDiff.preconvolveByAngle(90.0f);
+		//data.hdriRef = data.hdri;
+		//data.hdriRef.preconvolveByAngle(10.0f);
 		clearSIMDImage();
 		invalidate();
 		return 1;

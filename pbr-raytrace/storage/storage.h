@@ -12,6 +12,7 @@ struct Storage: public core::SIMD, public core::Getter<Storage> {
 
 	core::simdImage hdri;
 	core::simdImage hdriDiff; //preconvolved
+	core::simdImage hdriRef; //preconvolved reflection
 
 	int renderedSamples;
 	core::Image renderImage;

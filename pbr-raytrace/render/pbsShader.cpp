@@ -27,7 +27,7 @@ namespace core {
 		const vec4s specFactor = mix(vec4s(0.04f), material.base, material.metallic);
 		const vec4s fresnel = fresnelFactor(specFactor, ndv).w1();
         //maybe multiply cooktorrance with H.dot3(L)?
-		const vec4s specular = (GGX_BRDF_Fast(ndl, ndv, ndh, fresnel, roughness) + fresnel).min(1.0f);
+		const vec4s specular = (GGX_BRDF_Fast(ndl, ndv, ndh, fresnel, roughness) + fresnel).min(1.0f); 
 
         //reflection values
 		const vec4s rdir = reflect(V, L);

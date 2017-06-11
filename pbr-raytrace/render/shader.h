@@ -17,6 +17,7 @@ namespace core {
 		matrixs nmat;
 		matrixs sninv;
 		Material material;
+		float envStrength;
 
 		RenderShader() {
 			lightPos = __lightPos;

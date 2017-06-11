@@ -26,7 +26,7 @@ void Sidebar::onOpened() {
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
 		if (ct.getShaderID() != p) {
 			switch(p) {
-				case 0: sb.label[9].setText("Shader: BRDF"); break;
+				case 0: sb.label[9].setText("Shader: Realtime"); break;
 				case 1: sb.label[9].setText("Shader: PBS"); break;
 				case 2: sb.label[9].setText("Shader: PBR"); break;
 				default: break;
@@ -291,7 +291,7 @@ void Sidebar::updateUI() {
 	slider[8].setPos((float)(Settings::maxBounces - 1)/7.0f);
 
 	switch(Controller::get().getShaderID()) {
-		case 0: label[9].setText("Shader: BRDF"); break;
+		case 0: label[9].setText("Shader: Realtime"); break;
 		case 1: label[9].setText("Shader: PBS"); break;
 		case 2: label[9].setText("Shader: PBR"); break;
 		default: break;

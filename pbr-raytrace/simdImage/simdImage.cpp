@@ -64,7 +64,82 @@ namespace core {
 		}
 	}
 
-	void simdImage::preconvolveDiffuse() {
+	void simdImage::preconvolveByAngle(const float& angle) {
+		simdImage img = *this;
+		const int xr = width/4;
+		const int yr = height/2;
+
+		const int step = width/64;
+
+		const float ca = cos(angle);
+		int cc = std::thread::hardware_concurrency();
+		core::Debug::info("Convolving %dx%d image using %d threads...", width, height, cc);
+		core::Timer<float> timer;
+		timer.start();
+		std::thread *t = new std::thread[cc];
+		for (int i = 0;i<cc;++i)
+			t[i] = std::thread([&](int ct){
+				for (int i=ct;i<width;i+=cc)
+					for(int j=0;j<height;++j) {
+						vec4s v = vec4s(0.0f);
+						const float ip = ((float)i/width)*2.0f*M_PI;
+						const float jp = ((float)j/height - 0.5f)*M_PI;
+						const vec4s dir = vec4s(cos(ip), sin(ip), sin(jp), 1.0f).normalized3d();
+						int a = 0;
+						for (int x = 0; x<width; x+=step)
+							for(int y = 0; y<height; y+=step) {
+								const float ip = ((float)x/width)*2.0f*M_PI;
+								const float jp = ((float)y/height - 0.5f)*M_PI;
+								const vec4s dir2 = vec4s(cos(ip), sin(ip), sin(jp), 1.0f).normalized3d();
+								
+								//printf("%f\n", dir.dot3(dir2)[0]);
+
+								const float dot = dir.dot3(dir2)[0];
+								if (dot <= ca)
+									continue;
+								v += img.at_c((x+width)%width, (y+height)%height) * dot; 
+								++a;
+							}
+						at(i, j) = (v*M_PI/a).w1();
+					}
+			}, i);
 		
+		for (int i = 0;i<cc;++i)
+			t[i].join();
+
+		core::Debug::info("finished in %dms", (int)timer.stop().ms());
+		delete[] t;
+	}
+
+	void simdImage::gauss3() {
+		simdImage img = *this;
+		int cc = std::thread::hardware_concurrency();
+		core::Debug::info("Gauss3 %dx%d image using %d threads...", width, height, cc);
+		core::Timer<float> timer;
+		timer.start();
+		std::thread *t = new std::thread[cc];
+		for (int i = 0;i<cc;++i)
+			t[i] = std::thread([&](int ct){
+				float kernel[3][3] = {{16.0f, 8.0f, 16.0f}, {8.0f, 4.0f, 8.0f}, {16.0f, 8.0f, 16.0f}};
+				for (int x = 0; x<3; ++x)
+					for(int y = 0; y<3; ++y)
+						kernel[x][y] = 1.0f/kernel[x][y];
+
+				for (int i=ct;i<width;i+=cc)
+					for(int j=0;j<height;++j) {
+						vec4s v(0.0f);
+						for (int x = 0; x<3; ++x)
+							for(int y = 0; y<3; ++y) {
+								v += img.at_c((i + x - 1 + width)%width, (j + y - 1 + height)%height)*kernel[x][y];
+							}
+						at(i, j) = v.w1();
+					}
+			}, i);
+		
+		for (int i = 0;i<cc;++i)
+			t[i].join();
+
+		core::Debug::info("finished in %dms", (int)timer.stop().ms());
+		delete[] t;		
 	}
 }

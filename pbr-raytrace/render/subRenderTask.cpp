@@ -64,8 +64,8 @@ namespace core {
 							_mm_stream_si32(mp + j + (i + 1)*w, fragOut);
 						}
 						else {
-							//const vec4s frag = vec4s(0.2f).w1()*vec4s(255.0f); // constant color
-							const vec4s frag = _mm_mul_ps((envMap(data.hdriDiff, (sNormalMatrix*ray.sr1).normalized3d())*envScale).min(1.0f), _mm_set1_ps(255.0f));
+							const vec4s frag = vec4s(0.2f).w1()*vec4s(255.0f); // constant color
+							//const vec4s frag = _mm_mul_ps((envMap(data.hdri, (sNormalMatrix*ray.sr1).normalized3d())*envScale).min(1.0f), _mm_set1_ps(255.0f));
 							__m128i fv = _mm_cvtps_epi32(frag);
 							fv = _mm_packus_epi16(fv, fv);
 							fv = _mm_packus_epi16(fv, fv);

@@ -36,7 +36,7 @@ namespace core {
 	inline vec4s GGX_BRDF_Fast(const vec4s& NdL, const vec4s& NdV, const vec4s& NdH, const vec4s& fresnel, const vec4s& roughness) {
 		const vec4s D = dGGX(roughness, NdH);
 		const vec4s G = gSchlickPart(roughness, NdV, NdL);
-		return fresnel * G * D;
+		return fresnel * D / G;
 	}
 
 	inline vec4s fresnelFactor(const vec4s& f0, const vec4s& product) {
@@ -95,16 +95,16 @@ namespace core {
 	inline vec4s envMap(const Image& img, const vec4s& r) {
 		const m128 m(r);
 		const float my = asin(m[1])/(M_PI/2.0f); //mapped y
-		const float y = (my / (2.0f) + 0.5f)*(img.height - 1);
-		const float x = (atan2(m[0], m[2]) / (M_PI*2.0f) + 0.5f)*(img.width - 1);
+		const float y = (my / (2.0f) + 0.5f)*(img.height);
+		const float x = (atan2(m[0], m[2]) / (M_PI*2.0f) + 0.5f)*(img.width);
 		return imageLinear(img, x, y);
 	}
 
 	inline const vec4s envMap(const simdImage& img, const vec4s& r) {
 		const m128 m(r);
 		const float my = asin(m[1])/(M_PI/2.0f); //mapped y
-		const float y = (my / (2.0f) + 0.5f)*(img.height - 1);
-		const float x = (atan2(m[0], m[2]) / (M_PI*2.0f) + 0.5f)*(img.width - 1);
+		const float y = (my / (2.0f) + 0.5f)*(img.height);
+		const float x = (atan2(m[0], m[2]) / (M_PI*2.0f) + 0.5f)*(img.width );
 		return imageLinear(img, x, y);
 	}
 
