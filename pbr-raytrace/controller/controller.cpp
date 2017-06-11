@@ -270,12 +270,16 @@ bool Controller::loadHDRI(const std::string& path) const {
 	if (ext == "hdr") {
 		if (data.hdri.loadHDR(path.c_str()))
 			data.hdri.tonemap();
+		data.hdriDiff = data.hdri;
+		data.hdriDiff.preconvolveDiffuse();
 		clearSIMDImage();
 		invalidate();
 		return 1;
 	}
 	else if (ext == "png"){
 		data.hdri.loadPNG(path.c_str());
+		data.hdriDiff = data.hdri;
+		data.hdriDiff.preconvolveDiffuse();
 		clearSIMDImage();
 		invalidate();
 		return 1;

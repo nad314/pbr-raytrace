@@ -30,6 +30,7 @@ namespace core {
 		void flipV();
 		void tonemap();
 		void gammaCompress(const float& gamma);
+		void preconvolveDiffuse();
 	};
 }
 

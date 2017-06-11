@@ -34,7 +34,6 @@ namespace core {
 		matrixs nmat;
 		float envStrength;
 		int bounces;
-		VolumetricShader(){}
 		void update(const simdView& view);
 		const vec4s getColor(const Ray& ray, const float& d, const vec4s& normal, const vec4s& color, const PBVH& bvh, std::pair<int, float>* stack, int* priority, int rek) const;
 		const vec4s getColor(const Ray& ray, const float& d, const vec4s& normal, const vec4s& color, const PBVH& bvh, std::pair<int, float>* stack, int* priority) const;
@@ -44,7 +43,6 @@ namespace core {
 		Material material;
 		matrixs nmat;
 		float envStrength;
-		PBSShader(){}
 		void update(const simdView& view);
 		const vec4s getColor(const Ray& ray, const float& d, const vec4s& normal, const vec4s& color, const PBVH& bvh, std::pair<int, float>* stack, int* priority) const;
 	};

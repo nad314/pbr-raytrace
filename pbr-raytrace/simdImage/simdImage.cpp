@@ -63,4 +63,8 @@ namespace core {
 			data[i] = v;
 		}
 	}
+
+	void simdImage::preconvolveDiffuse() {
+		
+	}
 }

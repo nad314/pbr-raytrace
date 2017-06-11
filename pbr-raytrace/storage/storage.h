@@ -9,7 +9,10 @@ struct Storage: public core::SIMD, public core::Getter<Storage> {
 	core::PBSShader pbsShader;
 
 	core::simdImage simdFrame;
+
 	core::simdImage hdri;
+	core::simdImage hdriDiff; //preconvolved
+
 	int renderedSamples;
 	core::Image renderImage;
 

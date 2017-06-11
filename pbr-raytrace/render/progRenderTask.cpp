@@ -44,6 +44,7 @@ namespace core {
 
 		vec4s envScale = Settings::environmentStrength;
 
+		const matrixs sNormalMatrix;// = view.rotation.normalMatrix();
 		for (int gy = 0; gy < img.height; gy += square) {
 			/*if (gy > bq.y || (gy + square) < bp.y)
 				continue;*/
@@ -60,7 +61,8 @@ namespace core {
 						if (d > 0.0f)
 							data.simdFrame.at(j, i) += vec4s(shader.getColor(ray, d, ray.normal, ray.color, bvh, stack, priority)).w1();
 						else
-							data.simdFrame.at(j, i) += /*(envMap(data.volumetricShader.hdri, ray.sr1)*envScale).min(1.0f)*/vec4s(0.2f).w1();
+							data.simdFrame.at(j, i) += (envMap(data.hdriDiff, sNormalMatrix*ray.sr1)*envScale).min(1.0f);
+							//data.simdFrame.at(j, i) += vec4s(0.2f).w1();
 							
 
 						__m128i xmm0 = _mm_cvtsi32_si128(*(mp + j + i*w));
