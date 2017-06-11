@@ -138,14 +138,14 @@ int CoreTest::main() {
 				}
 			}
 		}
-		else if ((storage->renderedSamples < Settings::maxSamples || Settings::maxSamples == 0) && controller->timer.stop().ms()>500.0f) {
+		else if ((storage->renderedSamples < Settings::maxSamples || Settings::maxSamples == 0) && controller->timer.stop().ms()>100.0f) {
 			controller->wg->pushTask<core::progRenderTask>(&storage->pbvh, controller->view);
 			controller->invalidate();
 			if (dirty)
 				controller->clearSIMDImage();
 			dirty = 0;
 		}
-		else if (controller->timer.stop().ms()>500.0f) {
+		else if (controller->timer.stop().ms()>100.0f) {
 			controller->validate();
 			std::this_thread::sleep_for(std::chrono::microseconds(2000));
 		} else dirty = 1;
