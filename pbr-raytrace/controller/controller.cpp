@@ -300,7 +300,7 @@ void Controller::makeMipmaps() {
 void Controller::makePreconvolvedImage() {
 	Storage& data = Storage::get();
 	int i = 0;
-	while (i<7 && data.hdriMipmap[i].width > 64)
+	while (i<7 && data.hdriMipmap[i].width > 128)
 		++i;
 	data.hdriDiff = data.hdriMipmap[i];
 	data.hdriDiff.preconvolveByAngle(90.0f);	
