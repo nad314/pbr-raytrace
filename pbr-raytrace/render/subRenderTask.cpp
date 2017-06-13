@@ -34,7 +34,8 @@ namespace core {
 		core::Renderer::PixelShader& shader = Controller::get().getShader();
 
 		//__m128 svmin;
-		const matrixs sNormalMatrix;// = view.rotation.normalMatrix();
+		const matrixs sNormalMatrix = view.rotation.normalMatrix();
+		//const matrixs sNormalMatrix;
 		for (int gy = 0; gy < img.height; gy += square) {
 			/*
 			if (gy > bq.y || (gy + square) < bp.y)

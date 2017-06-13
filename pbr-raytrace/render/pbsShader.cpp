@@ -3,7 +3,6 @@
 namespace core {
 	void PBSShader::update(const simdView& view) {
 		nmat = view.rotation.normalMatrix();
-		srand(rand());
 		material = Storage::get().material;
 		envStrength = Settings::environmentStrength;
 	}
@@ -34,11 +33,11 @@ namespace core {
 		const vec4s envspec = envMap(hdri, (nmat*rdir).normalized3d()) * envStrength;
 
         //diffuse environment
-		const vec4s envdiff = envMap(hdri, (nmat*newDir).normalized3d()) * envStrength;
+		const vec4s envdiff = envMap(Storage::get().hdri, (nmat*newDir).normalized3d()) * envStrength;
 
 
 		const vec4s reflected_light = envspec * specular;
-		const vec4s diffuse_light = envdiff * mix(material.base, vec4s(0.0f).w1(), material.metallic) * (vec4s(1.0f) - specular);
+		const vec4s diffuse_light = envdiff * mix(material.base, vec4s(0.0f).w1(), material.metallic) * (vec4s(1.0f) - specular) * newDir.dot3(N);
 
 		return (diffuse_light + reflected_light);
 	}

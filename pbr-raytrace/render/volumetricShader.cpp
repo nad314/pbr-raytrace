@@ -63,7 +63,7 @@ namespace core {
 		else
 			envdiff = getColor(lightRay, d2, lightRay.normal, lightRay.color, bvh, stack, priority, rek - 1);
 
-		const vec4s nndl = 1.0f;//N.dot3(newDir);
+		const vec4s nndl = N.dot3(newDir);
 		const vec4s reflected_light = envspec * iblspec;
 		const vec4s diffuse_light = envdiff * nndl * (vec4s(1.0f) - iblspec);
 

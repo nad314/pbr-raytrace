@@ -95,7 +95,7 @@ namespace core {
 								//printf("%f\n", dir.dot3(dir2)[0]);
 
 								const float dot = dir.dot3(dir2)[0];
-								if (dot <= ca)
+								if (dot < ca)
 									continue;
 								v += img.at_c((x+width)%width, (y+height)%height) * dot; 
 								++a;

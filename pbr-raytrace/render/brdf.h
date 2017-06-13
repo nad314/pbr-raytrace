@@ -24,7 +24,7 @@ namespace core {
 		const vec4s V_PI = _mm_set1_ps(M_PI);
 		const vec4s k = roughness * roughness / V_PI;
 		const vec4s vk = vec4s(1.0f) - k;
-		return (NdV * vk + k) * (NdL * vk + k) * V_PI;
+		return _mm_rcp_ps((NdV * vk + k) * (NdL * vk + k) * V_PI);
 	}
 
 	inline vec4s GGX_BRDF(const vec4s& NdL, const vec4s& NdV, const vec4s& NdH, const vec4s& fresnel, const vec4s& roughness) {
@@ -36,7 +36,7 @@ namespace core {
 	inline vec4s GGX_BRDF_Fast(const vec4s& NdL, const vec4s& NdV, const vec4s& NdH, const vec4s& fresnel, const vec4s& roughness) {
 		const vec4s D = dGGX(roughness, NdH);
 		const vec4s G = gSchlickPart(roughness, NdV, NdL);
-		return fresnel * D / G;
+		return fresnel * D * G;
 	}
 
 	inline vec4s fresnelFactor(const vec4s& f0, const vec4s& product) {
