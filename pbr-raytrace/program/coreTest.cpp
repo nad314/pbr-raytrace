@@ -21,7 +21,7 @@ int CoreTest::onLoad() {
 	core::Path::goHome();
 	core::Path::mkdir("../capture");
 	core::Path::mkdir("../turntable");
-	core::RanduinWrynn::construct(4096);
+	core::RanduinWrynn::construct(40960);
 	//core::Debug::enable();
 	return 0;
 }
