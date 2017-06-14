@@ -24,6 +24,7 @@ bld/
 [Cc]apture/
 [Tt]urntable/
 .d/
+.bin/
 
 # Visual Studio 2015 cache/options directory
 .vs/
