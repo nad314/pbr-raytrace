@@ -25,19 +25,17 @@ namespace core {
 
 		const vec4s roughness = material.roughness;
 
-		const vec4s L = normal; //function normalizes it
+		const vec4s N = normal.normalized3d();
+		const vec4s L = N; //in this case L = N
 		const vec4s V = (ray.sr1*vec4s(-1.0f)).normalized3d();
 		const vec4s H = (L + V).normalized3d();
-		const vec4s N = normal.normalized3d();
 
 		const vec4s ndl = vec4s(0.0f).max(N.dot3(L));
 		const vec4s ndv = vec4s(0.0f).max(N.dot3(V));
 		const vec4s ndh = vec4s(0.0f).max(N.dot3(H));
-		//const vec4s hdv = vec4s(0.001f).max(H.dot3(V));
 
 		const vec4s specFactor = mix(vec4s(0.04f), material.base, material.metallic);
 		const vec4s fresnel = fresnelFactor(specFactor, ndv).w1();
-        //maybe multiply cooktorrance with H.dot3(L)?
 		const vec4s specular = (GGX_BRDF_Fast(ndl, ndv, ndh, fresnel, roughness) + fresnel).min(1.0f);
 
         //reflection values
