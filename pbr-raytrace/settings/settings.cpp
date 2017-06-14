@@ -5,4 +5,4 @@ int Settings::maxSamples = 256;
 float Settings::environmentStrength = 2.0f;
 int Settings::maxBounces = 3;
 
-const int Settings::maxSampleCap = 4096;
+const int Settings::maxSampleCap = 8192;
