@@ -1,6 +1,6 @@
 PROJ = pbr-raytrace
 OUT = pbr-raytrace
-BIN = bin
+BIN = .bin
 BUILD = build
 CC = g++ -std=gnu++11 -msse -msse2 -msse3 -msse4 -mavx -mstackrealign -pthread -Wl,--no-as-needed
 #WARN = -Wall -fpermissive -Wno-write-strings -Wno-unused-result -Wno-unknown-pragmas -Wno-format-security -Wno-parentheses
