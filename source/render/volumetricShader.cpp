@@ -13,6 +13,7 @@ namespace core {
 	const vec4s VolumetricShader::getColor(const Ray& ray, const float& d, const vec4s& normal, const vec4s& color, const PBVH& bvh, std::pair<int, float>* stack, int* priority, int rek) const {
 		if (rek == 0)
 			return _mm_setzero_ps();
+			
 		const simdImage& hdri = Storage::get().hdri;
 
 		const vec4s point = (ray.sr0 + ray.sr1*vec4s(d));

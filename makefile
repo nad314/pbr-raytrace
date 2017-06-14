@@ -10,46 +10,67 @@ INCLUDE = -I"../core/core" -I"../core-tracing/core-tracing" -I"../core-forms/cor
 FLAGS = -O2 $(INCLUDE) $(WARN) $(DEFINE)
 LIBS = -L"lib" -lpthread -lfreetype -lSDL2 -lGL -lGLU -lcore -lcore-tracing -lcore-forms 
 
-OBJ = \
-	controller/controller.o \
-	controller/controller.render.o \
-	hdrloader/hdrloader.o \
-	mainWindow/mainWindow.o \
-	menuBar/menuBar.o \
-	program/main.o \
-	program/coreTest.o \
-	randuin/randuin.o \
-	render/imageRenderTask.o \
-	render/progRenderTask.o \
-	render/renderShader.o \
-	render/pbsShader.o \
-	render/renderTask.o \
-	render/subRenderTask.o \
-	render/volumetricShader.o \
-	renderWindow/renderWindow.o \
-	settings/settings.o \
-	sidebar/sidebar.o \
-	simdImage/simdImage.o \
-	statusbar/statusbar.o \
-	storage/storage.o
-	
+DEPDIR = .d
+DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.Td
+POSTCOMPILE = @mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d && touch $@
 
-all: $(OBJ)
-	$(CC) $(BIN)/* -o build/$(OUT) $(LIBS)
+SRC = \
+	controller/controller.cpp \
+	controller/controller.render.cpp \
+	hdrloader/hdrloader.cpp \
+	mainWindow/mainWindow.cpp \
+	menuBar/menuBar.cpp \
+	program/main.cpp \
+	program/coreTest.cpp \
+	randuin/randuin.cpp \
+	render/imageRenderTask.cpp \
+	render/progRenderTask.cpp \
+	render/renderShader.cpp \
+	render/pbsShader.cpp \
+	render/renderTask.cpp \
+	render/subRenderTask.cpp \
+	render/volumetricShader.cpp \
+	renderWindow/renderWindow.cpp \
+	settings/settings.cpp \
+	sidebar/sidebar.cpp \
+	simdImage/simdImage.cpp \
+	statusbar/statusbar.cpp \
+	storage/storage.cpp
 
-$(OBJ): %.o: source/%.cpp
-	$(CC) -c $< -o $(BIN)/$(notdir $@) $(FLAGS)
+OBJ = $(addprefix $(BIN)/, $(SRC:.cpp=.o))
+DIRS = $(sort $(addprefix $(BIN)/, $(dir $(SRC))))	$(sort $(addprefix $(DEPDIR)/, $(dir $(SRC))))
 
-reset:
-	rm $(BUILD)/$(OUT)
+all: $(BUILD)/$(OUT)
+
+$(BUILD)/$(OUT): $(OBJ) | $(BUILD)
+	$(CC) $(OBJ) -o $(BUILD)/$(OUT) $(LIBS)
+
+$(BIN)/%.o: source/%.cpp $(DEPDIR)/%.d | $(DIRS)
+	$(CC) -c $< -o $@ $(FLAGS) $(DEPFLAGS)
+	$(POSTCOMPILE)
+
+$(DIRS): | $(BIN) $(DEPDIR)
+	mkdir $@
+
+$(BIN):
+	mkdir $(BIN)
+
+$(BUILD):
+	mkdir $(BUILD)
+
+$(DEPDIR):
+	mkdir $(DEPDIR)
 
 clean:
 	rm -rf $(BUILD)
 	rm -rf $(BIN)
-
-init:
-	mkdir $(BUILD)
-	mkdir $(BIN)
+	rm -rf $(DEPDIR)
 
 run:
 	./$(BUILD)/pbr-raytrace
+
+$(DEPDIR)/%.d: ;
+.PRECIOUS: $(DEPDIR)/%.d
+
+include $(wildcard $(patsubst %,$(DEPDIR)/%.d,$(basename $(SRC))))
+

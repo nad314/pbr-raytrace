@@ -15,7 +15,7 @@ public:
 	core::Timer<float> timer;
 	bool benchMode = false;
 	int mode = 0;
-	int shaderID = 1;
+	int shaderID = 0;
 	core::Timer<float> benchTimer;
 	int frameCounter = 0;
 	bool veryBusy = 0;
