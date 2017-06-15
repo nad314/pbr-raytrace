@@ -87,6 +87,7 @@ int CoreTest::main() {
 	rw.alive = 1;
 	rw.drawable = 1;
 	bool dirty = 0;
+	
 	while (!done) {
 		while (wnd.peekMessageAsync(done))
 			continue;

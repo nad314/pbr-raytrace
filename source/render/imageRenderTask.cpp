@@ -14,7 +14,7 @@ template<>
 	}
 
 
-	void renderShowTask::onStartNode(simdView* view, vec2i cStep, vec2i nStep, int square) {
+	void renderShowTask::onStartNode(simView* view, vec2i cStep, vec2i nStep, int square) {
 		{
 			std::lock_guard<std::mutex> lk(mutex);
 			//Renderer::drawRect(vec4i(cStep.x*square, cStep.y*square, std::min((cStep.x + 1)*square, (int)img.width), std::min((cStep.y + 1)*square, (int)img.height)).shrink(1), vec4b(255, 255, 120, 255), Controller::get().view->img);
