@@ -80,11 +80,7 @@ template<>
 	void imageRenderTask::execute(Worker* pWorker) {
 		if (pWorker == NULL)
 			return;
-		core::LocalTask& task = renderShowTask::get();
-/*
-		core::Renderer::quickTrace(*pbvh, pview, pWorker->threadNumber, pWorker->threadCount, samples, 32, &renderShowTask::get(), *shader);
-		return;
-*/
+
 		Worker& worker = *pWorker;
 		PBVH& bvh = *pbvh;
 		simdView &view = *pview;
@@ -93,13 +89,6 @@ template<>
 		vec4 bp, bq; // bounding box projected coordinates
 		Renderer::projectedBox(bvh, pview, bp, bq);
 
-		/*
-		if (worker.threadNumber == 0) {
-			++Storage::get().renderedSamples;
-			tc = 1;
-		}
-		else while (tc == 0)
-			std::this_thread::sleep_for(std::chrono::nanoseconds(1));*/
 
 		const int w = img.width;
 		const int h = img.height;
@@ -172,27 +161,20 @@ template<>
 						_mm_stream_si32(mp + j + i*w, fragOut);
 						//memcpy(mp + j + i*w, &fragOut, sizeof(int));
 					}
-				}/*
-				if (sample%256 == 0)
-					task.onEndNode(pview, vec2i((int)rect.x / square, (int)rect.y / square), vec2i((int)std::ceil((float)(img.width) / square), (int)std::ceil((float)(img.height) / square)), square);
-					*/
+				}
 			}
 			//repaint
+			if (worker.threadNumber == 0) {
+				//printf("%.2f\n", (float)(c.x + c.y*squares.x)/(squares.x*squares.y));
+				const float p = std::min(1.0f, (float)(c.x + c.y*squares.x)/(squares.x*squares.y));
+				Statusbar::prog(p);
+				
+				//core::Surface& rw = MainWindow::get().getRenderWindow();
+				//rw.onPaint(core::eventInfo(SDL_Event()));
+				MainWindow::get().onPaint(core::eventInfo(SDL_Event()));
+			}
 			
-			//printf("%.2f\n", (float)(c.x + c.y*squares.x)/(squares.x*squares.y));
-			const float p = std::min(1.0f, (float)(c.x + c.y*squares.x)/(squares.x*squares.y));
-			Statusbar::prog(p);
-			
-			//core::Surface& rw = MainWindow::get().getRenderWindow();
-			//rw.onPaint(core::eventInfo(SDL_Event()));
-			MainWindow::get().onPaint(core::eventInfo(SDL_Event()));
-			
-			/*
-			if (worker.threadNumber == 0)
-				task.onEndNode(pview, vec2i((int)rect.x / square, (int)rect.y / square), vec2i((int)std::ceil((float)(img.width) / square), (int)std::ceil((float)(img.height) / square)), square);
-			*/
 		}
 		delete[] priority;
-		//task.onEndNode(pview, vec2i(0, 0), vec2i(0, 0), square);
 	}
 }

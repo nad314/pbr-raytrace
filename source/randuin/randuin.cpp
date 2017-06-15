@@ -2,7 +2,7 @@
 
 namespace core {
     core::buffer<vec4s> RanduinWrynn::deck;
-    std::atomic_int RanduinWrynn::turn(0);
+    std::atomic<unsigned int> RanduinWrynn::turn(0);
 
     void RanduinWrynn::construct(const int& cards) {
         if (cards < 1)
@@ -25,9 +25,8 @@ namespace core {
     }
 
     const vec4s RanduinWrynn::topdeck() {
-        const int tmp = turn + 1;
-        turn = tmp % deck.size();
-        return deck[tmp];
+        ++turn;
+        return deck[turn%deck.size()];
     }
 
 }
