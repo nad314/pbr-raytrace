@@ -6,7 +6,7 @@ CC = g++ -std=gnu++11 -msse -msse2 -msse3 -msse4 -mavx -mstackrealign -pthread -
 #WARN = -Wall -fpermissive -Wno-write-strings -Wno-unused-result -Wno-unknown-pragmas -Wno-format-security -Wno-parentheses
 WARN = -w -fpermissive
 DEFINE =
-INCLUDE = -I"../core/core" -I"../core-tracing/core-tracing" -I"../core-forms/core-forms" -I"/usr/include" -I"./source"
+INCLUDE = -I"./source" -I"../core/source" -I"../core-tracing/source" -I"../core-forms/source" -I"/usr/include"
 FLAGS = -O2 $(INCLUDE) $(WARN) $(DEFINE)
 LIBS = -L"lib" -lpthread -lfreetype -lSDL2 -lGL -lGLU -lcore -lcore-tracing -lcore-forms 
 
