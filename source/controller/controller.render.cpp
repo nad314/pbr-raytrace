@@ -7,20 +7,9 @@ void Controller::render() {
 void Controller::getPoint(const float x, const float y) {
 	core::simdView& view = (static_cast<RenderWindow*>(parent))->view;
 	core::PBVH& bvh = storage->pbvh;
-	matrixf inv = view.mat;
-	inv.invert();
-	matrixs sinv = inv;
 
 	core::Ray ray;
-	const float h = (float)view.img.height;
-
-	ray.sr0 = sinv*view.unproject(vec4s(vec4(x, (float)h - y, 0.0f, 1.0f)));
-	ray.sr0 /= _mm_permute_ps(ray.sr0, 0b11111111);
-	ray.sr1 = sinv*view.unproject(vec4s(vec4(x, (float)h - y, 1.0f, 1.0f)));
-	ray.sr1 /= _mm_permute_ps(ray.sr1, 0b11111111);
-	ray.sr1 = (ray.sr1 - ray.sr0);
-	ray.sr1 /= _mm_sqrt_ps(_mm_dp_ps(ray.sr1, ray.sr1, 0x7F));
-	ray.sinvr1 = _mm_rcp_ps(ray.sr1);
+	core::Renderer::unproject(ray, view, matrixs(view.mat.inverted()), (float)x, (float)view.img.height - y);
 
 	static std::pair<int, float> stack[256];
 	int* priority = new int[bvh.inner.size()];
@@ -37,45 +26,22 @@ void Controller::getPoint(const float x, const float y) {
 
 core::Ray Controller::getRay(const float x, const float y) const {
 	core::simdView& view = *this->view;
-	matrixf inv = view.mat;
-	inv.invert();
-	matrixs sinv = inv;
-
 	core::Ray ray;
-	const float h = (float)view.img.height;
-
-	ray.sr0 = sinv*view.unproject(vec4s(vec4(x, (float)h - y, 0.0f, 1.0f)));
-	ray.sr0 /= _mm_permute_ps(ray.sr0, 0b11111111);
-	ray.sr1 = sinv*view.unproject(vec4s(vec4(x, (float)h - y, 1.0f, 1.0f)));
-	ray.sr1 /= _mm_permute_ps(ray.sr1, 0b11111111);
-	ray.sr1 = (ray.sr1 - ray.sr0);
-	ray.sr1 /= _mm_sqrt_ps(_mm_dp_ps(ray.sr1, ray.sr1, 0x7F));
-	ray.sinvr1 = _mm_rcp_ps(ray.sr1);
-
+	core::Renderer::unproject(ray, view, matrixs(view.mat.inverted()), (float)x, (float)view.img.height - y);
 	return ray;
 }
 
 void Controller::renderPBRImage() {
 	core::Ray ray;
 	core::simdView& view = *this->view;
-	const float h = (float)view.img.height;
-	matrixf inv = view.mat;
-	inv.invert();
-	matrixs sinv = inv;
 	core::simdImage& img = Storage::get().hdri;
+	const matrixs sinv = view.mat.inverted();
 	vec4 p;
 	for (int i=0;i<view.img.width;++i)
 		for (int j = 0; j < view.img.height; ++j) {
-			ray.sr0 = sinv*view.unproject(vec4s(vec4((float)i, (float)h - j, 0.0f, 1.0f)));
-			ray.sr0 /= _mm_permute_ps(ray.sr0, 0b11111111);
-			ray.sr1 = sinv*view.unproject(vec4s(vec4((float)i, (float)h - j, 1.0f, 1.0f)));
-			ray.sr1 /= _mm_permute_ps(ray.sr1, 0b11111111);
-			ray.sr1 = (ray.sr1 - ray.sr0);
-			ray.sr1 /= _mm_sqrt_ps(_mm_dp_ps(ray.sr1, ray.sr1, 0x7F));
-			ray.sinvr1 = _mm_rcp_ps(ray.sr1);
+			core::Renderer::unproject(ray, view, sinv, (float)i, (float)view.img.height - j);
 			(core::envMap(img, ray.sr1)*255.0f).store(p);
 			core::Core2D::putPixel(i, j, vec4b((byte)p.x, (byte)p.y, (byte)p.z, (byte)p.w), view.img);
-
 		}
 }
 
