@@ -112,7 +112,7 @@ namespace core {
 	}
 
 	void simdImage::gauss3() {
-		simdImage img = *this;
+		const simdImage img = *this;
 		int cc = std::thread::hardware_concurrency();
 		core::Debug::info("Gauss3 %dx%d image using %d threads...", width, height, cc);
 		core::Timer<float> timer;
@@ -129,9 +129,8 @@ namespace core {
 					for(int j=0;j<height;++j) {
 						vec4s v(0.0f);
 						for (int x = -1; x<2;++x)
-							for(int y = -1; y<2;) {
+							for(int y = -1; y<2;)
 								v += img.at_c((i + x + width)%width, (j + y + height)%height)*kernel[x+1][++y];
-							}
 						at(i, j) = v.w1();
 					}
 			}, i);
