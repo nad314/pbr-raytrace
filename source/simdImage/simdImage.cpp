@@ -124,13 +124,13 @@ namespace core {
 				for (int x = 0; x<3; ++x)
 					for(int y = 0; y<3; ++y)
 						kernel[x][y] = 1.0f/kernel[x][y];
-
+				
 				for (int i=ct;i<width;i+=cc)
 					for(int j=0;j<height;++j) {
 						vec4s v(0.0f);
-						for (int x = 0; x<3; ++x)
-							for(int y = 0; y<3; ++y) {
-								v += img.at_c((i + x - 1 + width)%width, (j + y - 1 + height)%height)*kernel[x][y];
+						for (int x = -1; x<2;++x)
+							for(int y = -1; y<2;) {
+								v += img.at_c((i + x + width)%width, (j + y + height)%height)*kernel[x+1][++y];
 							}
 						at(i, j) = v.w1();
 					}
