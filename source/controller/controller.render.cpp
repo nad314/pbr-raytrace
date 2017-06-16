@@ -8,8 +8,7 @@ void Controller::getPoint(const float x, const float y) {
 	core::simdView& view = (static_cast<RenderWindow*>(parent))->view;
 	core::PBVH& bvh = storage->pbvh;
 
-	core::Ray ray;
-	core::Renderer::unproject(ray, view, matrixs(view.mat.inverted()), (float)x, (float)view.img.height - y);
+	core::Ray ray = core::Renderer::unproject(view, matrixs(view.mat.inverted()), (float)x, (float)view.img.height - y);
 
 	static std::pair<int, float> stack[256];
 	int* priority = new int[bvh.inner.size()];
@@ -22,13 +21,6 @@ void Controller::getPoint(const float x, const float y) {
 	}
 	else clickPoint = vec4(0.0f);
 	delete[] priority;
-}
-
-core::Ray Controller::getRay(const float x, const float y) const {
-	core::simdView& view = *this->view;
-	core::Ray ray;
-	core::Renderer::unproject(ray, view, matrixs(view.mat.inverted()), (float)x, (float)view.img.height - y);
-	return ray;
 }
 
 void Controller::renderPBRImage() {

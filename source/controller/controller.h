@@ -35,7 +35,6 @@ public:
 	void render();
 	void fullRender();
 	void getPoint(const float x, const float y);
-	core::Ray getRay(const float x, const float y) const;
 	void home();
 
 	void renderPBRImage();
@@ -51,4 +50,14 @@ public:
 	bool loadHDRI(const std::string& path) const;
 	void makeMipmaps();
 	void makePreconvolvedImage();
+
+	//inlines
+	inline core::Ray getRay(const float x, const float y) const {
+		return core::Renderer::unproject(*view, 
+		matrixs(view->mat.inverted()), 
+		(float)x, 
+		(float)view->img.height - y);
+	}
+
+
 };
