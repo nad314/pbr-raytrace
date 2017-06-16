@@ -5,7 +5,6 @@ namespace core {
 		simdView* pview;
 		~RenderTask() {}
 		RenderTask(PBVH* pB, simdView* pW): pbvh(pB), pview(pW) {}
-		virtual void preprocess() override;
 		virtual void execute(Worker* pWorker) override;
 	};
 }

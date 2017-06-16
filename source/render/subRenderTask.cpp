@@ -36,13 +36,18 @@ namespace core {
 		//__m128 svmin;
 		const matrixs sNormalMatrix = view.rotation.normalMatrix();
 		//const matrixs sNormalMatrix;
+
+
+		__m128i dfv = _mm_cvtps_epi32(vec4s(0.2f).w1()*vec4s(255.0f));
+		dfv = _mm_packus_epi16(dfv, dfv);
+		dfv = _mm_packus_epi16(dfv, dfv);
+		const int defFragOut = _mm_cvtsi128_si32(dfv);
+
 		for (int gy = 0; gy < img.height; gy += square) {
-			/*
-			if (gy > bq.y || (gy + square) < bp.y)
+			/*if (gy > bq.y || (gy + square) < bp.y)
 				continue;*/
 			for (int gx = square*worker.threadNumber; gx < w; gx += square*worker.threadCount) {
-				/*
-				if (gx > bq.x || (gx + square) < bp.x)
+				/*if (gx > bq.x || (gx + square) < bp.x)
 					continue;*/
 				const int mx = std::min(gx + square, w);
 				const int my = std::min(gy + square, h);
@@ -65,16 +70,10 @@ namespace core {
 							_mm_stream_si32(mp + j + (i + 1)*w, fragOut);
 						}
 						else {
-							const vec4s frag = vec4s(0.2f).w1()*vec4s(255.0f); // constant color
-							//const vec4s frag = _mm_mul_ps((envMap(data.hdri, (sNormalMatrix*ray.sr1).normalized3d())*envScale).min(1.0f), _mm_set1_ps(255.0f));
-							__m128i fv = _mm_cvtps_epi32(frag);
-							fv = _mm_packus_epi16(fv, fv);
-							fv = _mm_packus_epi16(fv, fv);
-							int fragOut = _mm_cvtsi128_si32(fv);
-							_mm_stream_si32(mp + j + i*w, fragOut);
-							_mm_stream_si32(mp + j + 1 + i*w, fragOut);
-							_mm_stream_si32(mp + j + 1 + (i + 1)*w, fragOut);
-							_mm_stream_si32(mp + j + (i + 1)*w, fragOut);
+							_mm_stream_si32(mp + j + i*w, defFragOut);
+							_mm_stream_si32(mp + j + 1 + i*w, defFragOut);
+							_mm_stream_si32(mp + j + 1 + (i + 1)*w, defFragOut);
+							_mm_stream_si32(mp + j + (i + 1)*w, defFragOut);
 						}
 					}
 				}
