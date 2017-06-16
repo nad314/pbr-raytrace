@@ -33,7 +33,7 @@ void Sidebar::onOpened() {
 			}
 			sb.label[9].invalidate();
 			ct.setShader(p);
-			ct.clearSIMDImage();
+			ct.clearSIMDFrame();
 			ct.invalidate();
 			ct.frameCounter = 0;
 			ct.wg->clearTasks();
@@ -54,7 +54,7 @@ void Sidebar::onOpened() {
 			sb.label[10].invalidate();
 			ct.setMode(p);
 			if (!ct.veryBusy) {
-				ct.clearSIMDImage();
+				ct.clearSIMDFrame();
 				ct.invalidate();
 				ct.wg->clearTasks();
 			}
@@ -69,7 +69,7 @@ void Sidebar::onOpened() {
 			return;
 		int samples = (int)(Settings::maxSampleCap * pos);
 		if (samples < Storage::get().renderedSamples) {
-			Controller::get().clearSIMDImage();
+			Controller::get().clearSIMDFrame();
 			Controller::get().frameCounter = 0;
 		}
 		Settings::maxSamples = samples;
@@ -112,7 +112,7 @@ void Sidebar::onOpened() {
 		sb.label[8].setText(t).invalidate();
 		sb.__invalidate();
 		Settings::maxBounces = bounces;
-		Controller::get().clearSIMDImage();
+		Controller::get().clearSIMDFrame();
 		Controller::get().invalidate();
 		Controller::get().frameCounter = 0;
 	}).setPos(1.0f));
@@ -129,7 +129,7 @@ void Sidebar::onOpened() {
 		sb.label[2].setText(t).invalidate();
 		sb.__invalidate();
 		Storage::get().material.roughness = pos;
-		Controller::get().clearSIMDImage();
+		Controller::get().clearSIMDFrame();
 		Controller::get().invalidate();
 		Controller::get().frameCounter = 0;
 	}));
@@ -144,7 +144,7 @@ void Sidebar::onOpened() {
 		sb.label[3].setText(t).invalidate();
 		sb.__invalidate();
 		Storage::get().material.metallic = pos;
-		Controller::get().clearSIMDImage();
+		Controller::get().clearSIMDFrame();
 		Controller::get().invalidate();
 		Controller::get().frameCounter = 0;
 	}));
@@ -164,7 +164,7 @@ void Sidebar::onOpened() {
 		data.material.base.store(color);
 		color.x = pos;
 		data.material.base = color;
-		Controller::get().clearSIMDImage();
+		Controller::get().clearSIMDFrame();
 		Controller::get().invalidate();
 		Controller::get().frameCounter = 0;
 	}));
@@ -183,7 +183,7 @@ void Sidebar::onOpened() {
 		data.material.base.store(color);
 		color.y = pos;
 		data.material.base = color;
-		Controller::get().clearSIMDImage();
+		Controller::get().clearSIMDFrame();
 		Controller::get().invalidate();
 		Controller::get().frameCounter = 0;
 	}));
@@ -202,7 +202,7 @@ void Sidebar::onOpened() {
 		data.material.base.store(color);
 		color.z = pos;
 		data.material.base = color;
-		Controller::get().clearSIMDImage();
+		Controller::get().clearSIMDFrame();
 		Controller::get().invalidate();
 		Controller::get().frameCounter = 0;
 	}));
@@ -220,7 +220,7 @@ void Sidebar::onOpened() {
 		sprintf(t, "Strength: %.4f", intensity);
 		sb.label[7].setText(t).invalidate();
 		sb.__invalidate();
-		Controller::get().clearSIMDImage();
+		Controller::get().clearSIMDFrame();
 		Controller::get().invalidate();
 		Controller::get().frameCounter = 0;
 	}));

@@ -28,7 +28,7 @@ int RenderWindow::onReshape() {
 	if (!alive)
 		return 0;
 	Controller& c = Controller::get();
-	c.makeSIMDImage();
+	c.makeSIMDFrame();
 	c.invalidate();
 }
 

@@ -23,26 +23,6 @@ void Controller::getPoint(const float x, const float y) {
 	delete[] priority;
 }
 
-void Controller::renderPBRImage() {
-	core::Ray ray;
-	core::simdView& view = *this->view;
-	core::simdImage& img = Storage::get().hdri;
-	const matrixs sinv = view.mat.inverted();
-	vec4 p;
-	for (int i=0;i<view.img.width;++i)
-		for (int j = 0; j < view.img.height; ++j) {
-			core::Renderer::unproject(ray, view, sinv, (float)i, (float)view.img.height - j);
-			(core::envMap(img, ray.sr1)*255.0f).store(p);
-			core::Core2D::putPixel(i, j, vec4b((byte)p.x, (byte)p.y, (byte)p.z, (byte)p.w), view.img);
-		}
-}
-
-void Controller::clearSIMDImage() {
-	Storage& data = Storage::get();
-	data.renderedSamples = 0;
-	data.simdFrame.clear(vec4s(0.0f));
-	renderTime = 0.0f;
-}
 
 inline std::string formatTime(const int& ms) {
 	const int s = ms / 1000;

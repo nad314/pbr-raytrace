@@ -54,7 +54,7 @@ int MainWindow::onDropFiles(const core::eventInfo& e) {
 
 	if (!c.loadHDRI(path)) {
 		Storage::get().load(path.c_str());
-		rwnd.view.home();
+		Controller::get().home();
 	}
 	c.invalidate();
 	return e;

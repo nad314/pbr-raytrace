@@ -13,12 +13,8 @@ Controller::Controller(core::RenderSurface* p, Storage* st) {
 	view = &(static_cast<RenderWindow*>(parent))->view;
 	samples = 2;
 	wg = new core::WorkerGroup();
-	makeSIMDImage();
+	makeSIMDFrame();
 	timer.start();
-}
-
-Controller::~Controller() {
-	delete wg;
 }
 
 int Controller::onLButtonDown(const core::eventInfo& e) {
@@ -27,9 +23,7 @@ int Controller::onLButtonDown(const core::eventInfo& e) {
 	rotating = 1;
 	getPoint(e.x(), e.y());
 	mouse.x = e.x();
-	mouse.y = e.y();/*
-	wg->pushTask<core::progRenderTask>(&storage->pbvh, view);
-	++Storage::get().renderedSamples;*/
+	mouse.y = e.y();
 	invalidate();
 	parent->setCapture();
 	return e;
@@ -39,11 +33,8 @@ int Controller::onLButtonUp(const core::eventInfo& e) {
 	if (storage->pbvh.pointCount < 1 || benchMode)
 		return e;
 	if (rotating || dragging)
-		clearSIMDImage();
-	rotating = 0; /*
-	wg->pushTask<core::progRenderTask>(&storage->pbvh, view);
-	++Storage::get().renderedSamples;
-	invalidate();*/
+		clearSIMDFrame();
+	rotating = 0;
 	parent->releaseCapture();
 	return e;
 }
@@ -54,9 +45,7 @@ int Controller::onRButtonDown(const core::eventInfo& e) {
 	dragging = 1;
 	getPoint(e.x(), e.y());
 	mouse.x = e.x();
-	mouse.y = e.y();/*
-	wg->pushTask<core::progRenderTask>(&storage->pbvh, view);
-	++Storage::get().renderedSamples;*/
+	mouse.y = e.y();
 	invalidate();
 	parent->setCapture();
 	return e;
@@ -66,11 +55,8 @@ int Controller::onRButtonUp(const core::eventInfo& e) {
 	if (storage->pbvh.pointCount < 1 || benchMode)
 		return e;
 	if (rotating || dragging)
-		clearSIMDImage();
-	dragging = 0;/*
-	wg->pushTask<core::progRenderTask>(&storage->pbvh, view);
-	++Storage::get().renderedSamples;
-	invalidate();*/
+		clearSIMDFrame();
+	dragging = 0;
 	parent->releaseCapture();
 	return e;
 }
@@ -88,7 +74,7 @@ int Controller::onMousewheel(const core::eventInfo& e) {
 	else view->fov /= 1.2f;
 	view->updateMatrix();
 	wg->pushTask<core::subRenderTask>(&storage->pbvh, view);
-	clearSIMDImage();
+	clearSIMDFrame();
 	invalidate();
 	timer.start();
 	return e;
@@ -110,12 +96,11 @@ int Controller::onMouseMove(const core::eventInfo& e) {
 		invalidate();
 		wg->clearTasks();
 		wg->pushTask<core::subRenderTask>(&storage->pbvh, view);
-		//clearSIMDImage();
+		//clearSIMDFrame();
 		timer.start();
 	}
 	else if (dragging) {
 		vec4 d;
-		//clickPoint.w = 1.0f;
 		matrixf rot = view->rotation;
 		rot[12] = rot[13] = rot[14] = 0.0f;
 		rot.invert();
@@ -139,7 +124,7 @@ int Controller::onMouseMove(const core::eventInfo& e) {
 		wg->clearTasks();
 		wg->pushTask<core::subRenderTask>(&storage->pbvh, view);
 		invalidate();
-		//clearSIMDImage();
+		//clearSIMDFrame();
 		timer.start();
 	}
 	mouse = core::vec2i(e.x(), e.y());
@@ -194,7 +179,7 @@ int Controller::onKeyDown(const core::eventInfo& e) {
 	case VK_F8: {
 		view->mode = view->mode == 1 ? 0 : 1;
 		view->updateMatrix();
-		clearSIMDImage();
+		clearSIMDFrame();
 		invalidate();
 		break;
 	}
@@ -235,20 +220,27 @@ void Controller::home() {
 	view->home();
 	view->translation.translate(0.0f, -0.125f, 0.5f);
 	view->updateMatrix();
-	clearSIMDImage();
+	clearSIMDFrame();
 }
 
-void Controller::makeSIMDImage() {
+void Controller::makeSIMDFrame() {
 	Storage& data = Storage::get();
 	if (parent)
 		data.simdFrame.make(parent->surfaceWidth(), parent->surfaceHeight());
-	clearSIMDImage();
+	clearSIMDFrame();
+}
+
+void Controller::clearSIMDFrame() {
+	Storage& data = Storage::get();
+	data.renderedSamples = 0;
+	data.simdFrame.clear(vec4s(0.0f));
+	renderTime = 0.0f;
 }
 
 void Controller::setMode(const int& m){
 	frameCounter = 0;
 	if (!veryBusy) {
-		clearSIMDImage();
+		clearSIMDFrame();
 		wg->clearTasks();
 	}
 	if (m < 0 || m > 2)
@@ -257,7 +249,7 @@ void Controller::setMode(const int& m){
 	switch (mode) {
 		case 0: benchMode = 0; break;
 		case 1: benchMode = 1; benchTimer.start(); break;
-		case 2: benchMode = 1; benchTimer.start(); /*frameCounter = 0;*/ break;
+		case 2: benchMode = 1; benchTimer.start(); break;
 		default: benchMode = 0; break;
 	}
 }
@@ -274,7 +266,7 @@ bool Controller::loadHDRI(const std::string& path) const {
 			makePreconvolvedImage();
 
 		}
-		clearSIMDImage();
+		clearSIMDFrame();
 		invalidate();
 		return 1;
 	}
@@ -283,11 +275,10 @@ bool Controller::loadHDRI(const std::string& path) const {
 		makeMipmaps();
 		makePreconvolvedImage();
 
-		clearSIMDImage();
+		clearSIMDFrame();
 		invalidate();
 		return 1;
 	} else return 0;
-
 }
 
 void Controller::makeMipmaps() {

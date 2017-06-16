@@ -76,7 +76,7 @@ int CoreTest::main() {
 	//push initial render task
 	
 	//storage->simdFrame.make(rw.surfaceWidth(), rw.surfaceHeight());
-	controller->clearSIMDImage();
+	controller->clearSIMDFrame();
 	controller->wg->pushTask<core::progRenderTask>(&storage->pbvh, controller->view);
 	controller->timer.start();
 	
@@ -112,7 +112,7 @@ int CoreTest::main() {
 			controller->view->updateMatrix();
 			controller->wg->pushTask<core::progRenderTask>(&storage->pbvh, controller->view);
 			controller->invalidate();
-			controller->clearSIMDImage();
+			controller->clearSIMDFrame();
 		} else if (controller->getMode() == 2) {
 			controller->view->rotation.init();
 			//controller->view->rotation.rotate(10.0f, 1.0f, 0.0f, 0.0f);
@@ -130,7 +130,7 @@ int CoreTest::main() {
 				sprintf(path, "../turntable/img-%04d.png", controller->frameCounter);
 				img.savePng(path);
 				//go on with our lyfe
-				controller->clearSIMDImage();
+				controller->clearSIMDFrame();
 				++controller->frameCounter;	
 				if (controller->frameCounter == 360) {
 					controller->setMode(0);
@@ -143,7 +143,7 @@ int CoreTest::main() {
 			controller->wg->pushTask<core::progRenderTask>(&storage->pbvh, controller->view);
 			controller->invalidate();
 			if (dirty)
-				controller->clearSIMDImage();
+				controller->clearSIMDFrame();
 			dirty = 0;
 		}
 		else if (controller->timer.stop().ms()>100.0f) {

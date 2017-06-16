@@ -58,7 +58,7 @@ template<>
 		Storage& data = Storage::get();
 		//core::VolumetricShader& shader = data.volumetricShader;
 		//core::RenderShader& shader = data.shader;
-		core::Renderer::PixelShader& shader = Controller::get().getShader();
+		const core::Renderer::PixelShader& shader = Controller::get().getShader();
 
 		vec4s envScale = Settings::environmentStrength;
 		const int ms = Settings::maxSamples;

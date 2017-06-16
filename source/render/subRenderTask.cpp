@@ -31,7 +31,7 @@ namespace core {
 		Storage& data = Storage::get();
 		//core::VolumetricShader& shader = Storage::get().volumetricShader;
 		//core::RenderShader& shader = Storage::get().shader;
-		core::Renderer::PixelShader& shader = Controller::get().getShader();
+		const core::Renderer::PixelShader& shader = Controller::get().getShader();
 
 		//__m128 svmin;
 		const matrixs sNormalMatrix = view.rotation.normalMatrix();

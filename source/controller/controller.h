@@ -21,7 +21,7 @@ public:
 	bool veryBusy = 0;
 	
 	Controller(core::RenderSurface* p, Storage* st);
-	~Controller();
+	~Controller() {delete wg; wg = NULL;}
 
 	inline void invalidate() { valid = 0; Storage::get().shader.update(*view); Storage::get().volumetricShader.update(*view); Storage::get().pbsShader.update(*view); }
 	inline void validate() { valid = 1; }
@@ -32,20 +32,19 @@ public:
 	int onMouseMove(const core::eventInfo& e) override;
 	int onKeyDown(const core::eventInfo& e) override;
 	int onMousewheel(const core::eventInfo& e) override;
+	void getPoint(const float x, const float y);
 	void render();
 	void fullRender();
-	void getPoint(const float x, const float y);
 	void home();
 
-	void renderPBRImage();
-	void clearSIMDImage();
-	void makeSIMDImage();
+	void clearSIMDFrame();
+	void makeSIMDFrame();
 
 	inline int getMode() const {return mode;}
 	void setMode(const int& m);
 	inline int getShaderID() const {return shaderID;}
 	inline void setShader(const int& n){shaderID = n;}
-	inline core::Renderer::PixelShader& getShader(){if (shaderID == 0)return Storage::get().shader; else if (shaderID==1) return Storage::get().pbsShader; else return Storage::get().volumetricShader;}
+	inline const core::Renderer::PixelShader& getShader() const {if (shaderID == 0)return Storage::get().shader; else if (shaderID==1) return Storage::get().pbsShader; else return Storage::get().volumetricShader;}
 
 	bool loadHDRI(const std::string& path) const;
 	void makeMipmaps();

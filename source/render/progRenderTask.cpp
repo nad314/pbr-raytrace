@@ -38,7 +38,7 @@ namespace core {
 		Storage& data = Storage::get();
 		//core::VolumetricShader& shader = data.volumetricShader;
 		//core::RenderShader& shader = data.shader;
-		core::Renderer::PixelShader& shader = Controller::get().getShader();
+		const core::Renderer::PixelShader& shader = Controller::get().getShader();
 
 		vec2 offset = vec2(rand() % 128, rand() % 128) / 128;
 
