@@ -65,7 +65,6 @@ void Controller::fullRender() {
 	bool done = false;
 	//view->clear();
 	storage->renderedSamples = Settings::maxSamples;
-	core::renderShowTask task(view, 32);
 	core::RenderShader shader(*view);
 	wg->clearTasks().pushTask<core::imageRenderTask>(&storage->pbvh, view);
 	core::Timer<float> t;
