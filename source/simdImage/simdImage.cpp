@@ -65,6 +65,8 @@ namespace core {
 	}
 
 	void simdImage::preconvolveByAngle(const float& angle) {
+		_CORE_PROFILE
+
 		simdImage img = *this;
 		const int xr = width/4;
 		const int yr = height/2;
@@ -73,9 +75,6 @@ namespace core {
 
 		const float ca = cos(angle);
 		int cc = std::thread::hardware_concurrency();
-		core::Debug::info("Convolving %dx%d image using %d threads...", width, height, cc);
-		core::Timer<float> timer;
-		timer.start();
 		std::thread *t = new std::thread[cc];
 		for (int i = 0;i<cc;++i)
 			t[i] = std::thread([&](int ct){
@@ -107,16 +106,14 @@ namespace core {
 		for (int i = 0;i<cc;++i)
 			t[i].join();
 
-		core::Debug::info("finished in %dms", (int)timer.stop().ms());
 		delete[] t;
 	}
 
 	void simdImage::gauss3() {
+		_CORE_PROFILE
+
 		const simdImage img = *this;
 		int cc = std::thread::hardware_concurrency();
-		core::Debug::info("Gauss3 %dx%d image using %d threads...", width, height, cc);
-		core::Timer<float> timer;
-		timer.start();
 		std::thread *t = new std::thread[cc];
 		for (int i = 0;i<cc;++i)
 			t[i] = std::thread([&](int ct){
@@ -138,7 +135,6 @@ namespace core {
 		for (int i = 0;i<cc;++i)
 			t[i].join();
 
-		core::Debug::info("finished in %dms", (int)timer.stop().ms());
 		delete[] t;		
 	}
 

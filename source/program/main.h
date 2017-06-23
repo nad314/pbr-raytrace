@@ -4,6 +4,7 @@
 #define _UNICODE
 #define _CRT_SECURE_NO_WARNINGS
 #define _USE_MATH_DEFINES
+#define CORE_PROFILE
 
 #include <thread>
 #include <mutex>

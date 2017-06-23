@@ -218,7 +218,8 @@ int Controller::onKeyDown(const core::eventInfo& e) {
 
 void Controller::home() {
 	view->home();
-	view->translation.translate(0.0f, -0.125f, 0.5f);
+	//view->translation.translate(0.0f, -0.125f, 0.5f);
+	view->translation.translate(0.0f, 0.0f, 0.5f);
 	view->updateMatrix();
 	clearSIMDFrame();
 }
@@ -282,6 +283,7 @@ bool Controller::loadHDRI(const std::string& path) const {
 }
 
 void Controller::makeMipmaps() {
+	_CORE_PROFILE
 	Storage& data = Storage::get();
 	data.hdriMipmap[0].makeMipmap(data.hdri);
 	for (int i = 1; i < 8; ++i)
@@ -289,6 +291,7 @@ void Controller::makeMipmaps() {
 }
 
 void Controller::makePreconvolvedImage() {
+	_CORE_PROFILE
 	Storage& data = Storage::get();
 	int i = 0;
 	while (i<7 && data.hdriMipmap[i].width > 128)

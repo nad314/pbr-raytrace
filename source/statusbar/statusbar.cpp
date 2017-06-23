@@ -52,12 +52,12 @@ void Statusbar::print(const char* s) {
 		if (text[i] == '\n')
 			text[i] = ' ';
 	invalidate();
-	log(s);
 }
 
 void Statusbar::log(const char* s) {
 	std::lock_guard<std::mutex> lock(iomutex);
 	fprintf(output, s);
+	printf("%s\n", s);
 }
 
 void Statusbar::info(const char* s) {
