@@ -219,7 +219,7 @@ int Controller::onKeyDown(const core::eventInfo& e) {
 void Controller::home() {
 	view->home();
 	//view->translation.translate(0.0f, -0.125f, 0.5f);
-	view->translation.translate(0.0f, 0.0f, 0.5f);
+	//view->translation.translate(0.0f, 0.0f, 1.0f);
 	view->updateMatrix();
 	clearSIMDFrame();
 }

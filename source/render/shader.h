@@ -36,7 +36,7 @@ namespace core {
 		float envStrength;
 		int bounces;
 		void update(const simdView& view);
-		const vec4s getColor(const Ray& ray, const float& d, const vec4s& normal, const vec4s& color, const PBVH& bvh, std::pair<int, float>* stack, int* priority, int rek) const;
+		const vec4s getColor(const Ray& ray, const PBVH& bvh, std::pair<int, float>* stack, int rek) const;
 		const vec4s getColor(const Ray& ray, const float& d, const vec4s& normal, const vec4s& color, const PBVH& bvh, std::pair<int, float>* stack, int* priority) const;
 	};
 
