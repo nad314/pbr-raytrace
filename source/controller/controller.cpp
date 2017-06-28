@@ -72,6 +72,7 @@ int Controller::onMousewheel(const core::eventInfo& e) {
 	else if (view->fov > 41.5f)
 		view->fov -= 2.0f;
 	else view->fov /= 1.2f;
+	view->updateProjectionMatrix(*(Storage::get().realtimeImage));
 	view->updateMatrix();
 	wg->pushTask<core::subRenderTask>(&storage->pbvh, view);
 	clearSIMDFrame();
@@ -218,9 +219,9 @@ int Controller::onKeyDown(const core::eventInfo& e) {
 
 void Controller::home() {
 	view->home();
-	//view->translation.translate(0.0f, -0.125f, 0.5f);
-	//view->translation.translate(0.0f, 0.0f, 1.0f);
+	view->translation.translate(0.0f, 0.0f, -2.5f);
 	view->updateMatrix();
+	view->updateProjectionMatrix(*Storage::get().realtimeImage);
 	clearSIMDFrame();
 }
 

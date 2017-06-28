@@ -16,6 +16,7 @@ struct Storage: public core::SIMD, public core::Getter<Storage> {
 
 	int renderedSamples;
 	core::Image renderImage;
+	core::Image* realtimeImage;
 
 	core::Material material;
 

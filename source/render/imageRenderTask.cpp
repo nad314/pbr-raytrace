@@ -7,7 +7,17 @@ template<>
 	vec2i imageRenderTask::squares;
 	vec2i imageRenderTask::current;
 
+	imageRenderTask::imageRenderTask(PBVH* pB, simdView* pW) {
+		pbvh = pB;
+		pview = pW;
+		current = vec2i(0, 0);
+		core::Image& img = Storage::get().renderImage;
+		squares = vec2i(std::ceil((float)img.width/squareSize), std::ceil((float)img.height/squareSize));
+	}
+
+
 	bool imageRenderTask::getNextRect(vec4i& rect) {
+		core::Image& img = *Storage::get().realtimeImage;
 		static std::mutex mutex;
 		std::unique_lock<std::mutex> lk(mutex);
 		const vec2i c = current;
@@ -20,10 +30,10 @@ template<>
 			return 0;
 		//lk.unlock();
 
-		rect.x = std::min(c.x * squareSize, (int)pview->img.width);
-		rect.y = std::min(c.y * squareSize, (int)pview->img.height);
-		rect.z = std::min((c.x + 1) * squareSize, (int)pview->img.width);
-		rect.w = std::min((c.y + 1) * squareSize, (int)pview->img.height);
+		rect.x = std::min(c.x * squareSize, (int)img.width);
+		rect.y = std::min(c.y * squareSize, (int)img.height);
+		rect.z = std::min((c.x + 1) * squareSize, (int)img.width);
+		rect.w = std::min((c.y + 1) * squareSize, (int)img.height);
 		return 1;
 	}
 

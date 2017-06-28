@@ -20,9 +20,8 @@ int RenderWindow::onReshape() {
 	const int height = surfaceHeight();
 	if (width == 0 || height == 0)
 		return 0;
+	core::Renderer::clearImage(*this, core::vec4b(51, 51, 51, 255));
 	view.make(width, height);
-	view.clear();
-	//view.home();
 	view.updateMatrix();
 
 	if (!alive)

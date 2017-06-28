@@ -8,7 +8,7 @@ namespace core {
 		Worker& worker = *pWorker;
 		PBVH& bvh = *pbvh;
 		simdView &view = *pview;
-		Image &img = view.img;
+		Image &img = *Storage::get().realtimeImage;
 		int* mp = reinterpret_cast<int*>(img.data);
 		vec4 bp, bq; // bounding box projected coordinates
 		Renderer::projectedBox(bvh, pview, bp, bq);

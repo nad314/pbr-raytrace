@@ -8,7 +8,7 @@ void Controller::getPoint(const float x, const float y) {
 	core::simdView& view = (static_cast<RenderWindow*>(parent))->view;
 	core::PBVH& bvh = storage->pbvh;
 
-	core::Ray ray = core::Renderer::unproject(view, matrixs(view.mat.inverted()), (float)x, (float)view.img.height - y);
+	core::Ray ray = core::Renderer::unproject(view, matrixs(view.mat.inverted()), (float)x, (float)Storage::get().realtimeImage->height - y);
 
 	static std::pair<int, float> stack[256];
 	int* priority = new int[bvh.inner.size()];
@@ -41,7 +41,7 @@ void Controller::fullRender() {
 		return;
 	veryBusy = 1;
 	RenderWindow& rwnd = dynamic_cast<RenderWindow&>(*parent);
-	Storage::get().renderImage = view->img;
+	Storage::get().renderImage = *Storage::get().realtimeImage;
 	bool done = false;
 	//view->clear();
 	storage->renderedSamples = Settings::maxSamples;
@@ -53,7 +53,7 @@ void Controller::fullRender() {
 	wg->executeLocal();
 	t.stop();
 
-	view->img = Storage::get().renderImage;
+	*Storage::get().realtimeImage = Storage::get().renderImage;
 
 	veryBusy = 0;
 	

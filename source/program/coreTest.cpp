@@ -62,6 +62,7 @@ int CoreTest::main() {
 	controller = new Controller(&rw, storage);
 	//controller->benchMode = true;
 
+	storage->realtimeImage = &(static_cast<core::Image&>(rw));
 	rw.view.rotation.init();
 	rw.view.updateMatrix();
 
@@ -87,6 +88,8 @@ int CoreTest::main() {
 	rw.alive = 1;
 	rw.drawable = 1;
 	bool dirty = 0;
+
+	
 	
 	while (!done) {
 		while (wnd.peekMessageAsync(done))

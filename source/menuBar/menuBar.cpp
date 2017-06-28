@@ -59,7 +59,7 @@ void MenuBar::onOpened() {
 		core::Form* form = dynamic_cast<core::Form*>(f.getRoot());
 		if (!form)
 			return;
-		core::Image& img = Controller::get().view->img;
+		core::Image& img = *Storage::get().realtimeImage;
 		std::string path = "";
 		#ifdef __WIN
 		path = form->getFileDialog("PNG\0*.png\0\0", 1);

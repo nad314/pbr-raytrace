@@ -55,7 +55,7 @@ public:
 		return core::Renderer::unproject(*view, 
 		matrixs(view->mat.inverted()), 
 		(float)x, 
-		(float)view->img.height - y);
+		(float)storage->realtimeImage->height - y);
 	}
 
 

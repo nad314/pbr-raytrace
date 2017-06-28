@@ -7,10 +7,7 @@ namespace core {
 		PBVH* pbvh;
 		simdView* pview;
 		~imageRenderTask() {}
-		imageRenderTask(PBVH* pB, simdView* pW) : pbvh(pB), pview(pW) {
-			current = vec2i(0, 0);
-			squares = vec2i(std::ceil((float)pW->img.width/squareSize), std::ceil((float)pW->img.height/squareSize));
-		}
+		imageRenderTask(PBVH* pB, simdView* pW);
 		virtual void execute(Worker* pWorker) override;
 		bool getNextRect(vec4i& rect);
 	};
