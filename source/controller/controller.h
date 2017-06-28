@@ -53,7 +53,7 @@ public:
 	//inlines
 	inline core::Ray getRay(const float x, const float y) const {
 		return core::Renderer::unproject(*view, 
-		matrixs(view->mat.inverted()), 
+		view->_mm_imvp, 
 		(float)x, 
 		(float)storage->realtimeImage->height - y);
 	}

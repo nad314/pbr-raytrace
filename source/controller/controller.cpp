@@ -92,7 +92,7 @@ int Controller::onMouseMove(const core::eventInfo& e) {
 		mat.rotate(0.2f*(e.x() - mouse.x), 0.0f, 1.0f, 0.0f);
 		mat.rotate(0.2f*(e.y() - mouse.y), 1.0f, 0.0f, 0.0f);
 		mat.translate(point.x, point.y, point.z);
-		view->left = view->left*mat;
+		view->left *= mat;
 		view->updateMatrix();
 		invalidate();
 		wg->clearTasks();
@@ -102,23 +102,20 @@ int Controller::onMouseMove(const core::eventInfo& e) {
 	}
 	else if (dragging) {
 		vec4 d;
-		matrixf rot = view->left;
-		rot[12] = rot[13] = rot[14] = 0.0f;
-		rot.invert();
-		vec4 normal = rot*vec4(0.0f, 0.0f, 1.0f, 1.0f);
-		vec4 point = clickPoint;
-		normal.w = -core::Math::dot3(normal, point);
+		matrixf rot = view->left.normalMatrix();
+		vec4 plane = rot*vec4(0.0f, 0.0f, 1.0f, 0.0f);
+		//vec4 point(0.0f);
+		//normal.w = -core::Math::dot3(normal, point);
 
 		core::Ray ray = getRay((float)e.x(), (float)e.y());
 		core::Ray lray = getRay((float)mouse.x, (float)mouse.y);
-		vec4s t0 = core::SSE::rayPlaneT(ray.sr0, ray.sr1, vec4s(normal));
-		vec4s t1 = core::SSE::rayPlaneT(lray.sr0, lray.sr1, vec4s(normal));
+		vec4s t0 = core::SSE::rayPlaneT(ray.sr0, ray.sr1, vec4s(plane));
+		vec4s t1 = core::SSE::rayPlaneT(lray.sr0, lray.sr1, vec4s(plane));
 		vec4s delta = (ray.sr0 + ray.sr1*t0) - (lray.sr0 + lray.sr1*t1);
 
 
 		delta.store(d);
 		matrixf mat;
-		mat.init();
 		mat.translate(d.x, d.y, d.z);
 		view->right = mat*view->right;
 		view->updateMatrix();

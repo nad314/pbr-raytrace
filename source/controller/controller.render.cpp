@@ -8,7 +8,7 @@ void Controller::getPoint(const float x, const float y) {
 	core::simdView& view = (static_cast<RenderWindow*>(parent))->view;
 	core::PBVH& bvh = storage->pbvh;
 
-	core::Ray ray = core::Renderer::unproject(view, matrixs(view.mat.inverted()), (float)x, (float)Storage::get().realtimeImage->height - y);
+	core::Ray ray = core::Renderer::unproject(view, view._mm_imvp, (float)x, (float)Storage::get().realtimeImage->height - y);
 
 	static std::pair<int, float> stack[256];
 	int* priority = new int[bvh.inner.size()];
