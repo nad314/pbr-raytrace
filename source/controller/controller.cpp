@@ -85,14 +85,14 @@ int Controller::onMouseMove(const core::eventInfo& e) {
 	if (storage->pbvh.pointCount < 1 || benchMode)
 		return e;
 	if (rotating) {
-		matrixf mat;
 		clickPoint.w = 1.0f;
 		vec4 point = view->left*clickPoint;
-		mat.translate(-point.x, -point.y, -point.z);
-		mat.rotate(0.2f*(e.x() - mouse.x), 0.0f, 1.0f, 0.0f);
-		mat.rotate(0.2f*(e.y() - mouse.y), 1.0f, 0.0f, 0.0f);
-		mat.translate(point.x, point.y, point.z);
-		view->left *= mat;
+
+		view->left.translate(-point.x, -point.y, -point.z);
+		view->left.rotate(0.2f*(e.x() - mouse.x), 0.0f, 1.0f, 0.0f);
+		view->left.rotate(0.2f*(e.y() - mouse.y), 1.0f, 0.0f, 0.0f);
+		view->left.translate(point.x, point.y, point.z);
+		
 		view->updateMatrix();
 		invalidate();
 		wg->clearTasks();
@@ -102,16 +102,16 @@ int Controller::onMouseMove(const core::eventInfo& e) {
 	}
 	else if (dragging) {
 		vec4 d;
-		matrixf rot = view->left.normalMatrix();
-		vec4 plane = rot*vec4(0.0f, 0.0f, 1.0f, 0.0f);
-		//vec4 point(0.0f);
-		//normal.w = -core::Math::dot3(normal, point);
+		const matrixf rot = view->left.normalMatrix().inverted();
+		vec4 plane = (rot*vec4(0.0f, 0.0f, 1.0f, 1.0f)).normalize3d();
+		plane.w = -core::Math::dot3(plane, clickPoint);
 
 		core::Ray ray = getRay((float)e.x(), (float)e.y());
 		core::Ray lray = getRay((float)mouse.x, (float)mouse.y);
 		vec4s t0 = core::SSE::rayPlaneT(ray.sr0, ray.sr1, vec4s(plane));
 		vec4s t1 = core::SSE::rayPlaneT(lray.sr0, lray.sr1, vec4s(plane));
 		vec4s delta = (ray.sr0 + ray.sr1*t0) - (lray.sr0 + lray.sr1*t1);
+		delta = matrixs(rot.inverted())*delta;
 
 
 		delta.store(d);
