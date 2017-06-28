@@ -2,7 +2,7 @@
 
 namespace core {
 	void PBSShader::update(const simdView& view) {
-		nmat = view.rotation.normalMatrix();
+		nmat = view.left.normalMatrix();
 		material = Storage::get().material;
 		envStrength = Settings::environmentStrength;
 	}

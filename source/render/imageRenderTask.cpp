@@ -84,7 +84,7 @@ template<>
 		vec4i rect;
 		const vec4s clearColor = vec4s(0.2f).w1();
 
-		const matrixs sNormalMatrix = view.rotation.normalMatrix();
+		const matrixs sNormalMatrix = view.left.normalMatrix();
 		//const matrixs sNormalMatrix;
 		while (getNextRect(rect)) {
 			const vec2i c = current;

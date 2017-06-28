@@ -4,7 +4,7 @@ namespace core {
 	void VolumetricShader::update(const simdView& view) {
 		//matrixf inv = view.rotation*view.translation;
 		//inv.invert();
-		nmat = view.rotation.normalMatrix();
+		nmat = view.left.normalMatrix();
 		material = Storage::get().material;
 		envStrength = Settings::environmentStrength;
 		bounces = Settings::maxBounces;

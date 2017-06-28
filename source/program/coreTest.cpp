@@ -63,7 +63,7 @@ int CoreTest::main() {
 	//controller->benchMode = true;
 
 	storage->realtimeImage = &(static_cast<core::Image&>(rw));
-	rw.view.rotation.init();
+	rw.view.left.init();
 	rw.view.updateMatrix();
 
 	wnd.setFormTitle("Core Renderer - Ready!");
@@ -109,19 +109,16 @@ int CoreTest::main() {
 		timer.stop();
 
 		if (controller->getMode() == 1) {
-			controller->view->rotation.init();
-			//controller->view->rotation.rotate(10.0f, 1.0f, 0.0f, 0.0f);
-			controller->view->rotation.rotate(controller->benchTimer.stop().s()*30.0f, 0.0f, 1.0f, 0.0f);
+			controller->view->left.init();
+			controller->view->left.rotate(controller->benchTimer.stop().s()*30.0f, 0.0f, 1.0f, 0.0f);
 			controller->view->updateMatrix();
 			controller->wg->pushTask<core::progRenderTask>(&storage->pbvh, controller->view);
 			controller->invalidate();
 			controller->clearSIMDFrame();
 		} else if (controller->getMode() == 2) {
-			controller->view->rotation.init();
-			//controller->view->rotation.rotate(10.0f, 1.0f, 0.0f, 0.0f);
-			controller->view->rotation.rotate(1.0f * controller->frameCounter, 0.0f, 1.0f, 0.0f); //1.0 == 30fps
+			controller->view->left.init();
+			controller->view->left.rotate(1.0f * controller->frameCounter, 0.0f, 1.0f, 0.0f); //1.0 == 30fps
 			controller->view->updateMatrix();
-			//controller->wg->pushTask<core::imageRenderTask>(&storage->pbvh, controller->view);
 			controller->invalidate();
 			controller->fullRender();
 			if (1 || storage->renderedSamples >= Settings::maxSamples) {

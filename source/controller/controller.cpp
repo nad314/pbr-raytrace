@@ -87,12 +87,12 @@ int Controller::onMouseMove(const core::eventInfo& e) {
 	if (rotating) {
 		matrixf mat;
 		clickPoint.w = 1.0f;
-		vec4 point = view->rotation*clickPoint;
+		vec4 point = view->left*clickPoint;
 		mat.translate(-point.x, -point.y, -point.z);
 		mat.rotate(0.2f*(e.x() - mouse.x), 0.0f, 1.0f, 0.0f);
 		mat.rotate(0.2f*(e.y() - mouse.y), 1.0f, 0.0f, 0.0f);
 		mat.translate(point.x, point.y, point.z);
-		view->rotation = view->rotation*mat;
+		view->left = view->left*mat;
 		view->updateMatrix();
 		invalidate();
 		wg->clearTasks();
@@ -102,7 +102,7 @@ int Controller::onMouseMove(const core::eventInfo& e) {
 	}
 	else if (dragging) {
 		vec4 d;
-		matrixf rot = view->rotation;
+		matrixf rot = view->left;
 		rot[12] = rot[13] = rot[14] = 0.0f;
 		rot.invert();
 		vec4 normal = rot*vec4(0.0f, 0.0f, 1.0f, 1.0f);
@@ -120,7 +120,7 @@ int Controller::onMouseMove(const core::eventInfo& e) {
 		matrixf mat;
 		mat.init();
 		mat.translate(d.x, d.y, d.z);
-		view->rotation = mat*view->rotation;
+		view->right = mat*view->right;
 		view->updateMatrix();
 		wg->clearTasks();
 		wg->pushTask<core::subRenderTask>(&storage->pbvh, view);
@@ -135,91 +135,13 @@ int Controller::onMouseMove(const core::eventInfo& e) {
 int Controller::onKeyDown(const core::eventInfo& e) {
 	if (benchMode)
 		return e;
-/*
-	switch (e.wP) {
-	case VK_F12: {
-		break;
-		bool done = false;
-		view->clear();
-		storage->renderedSamples = Settings::maxSamples;
-		core::renderShowTask task(view, 16);
-		core::RenderShader shader(*view);
-		wg->clearTasks().pushTask<core::imageRenderTask>(&storage->pbvh, view, 32, &storage->volumetricShader);
-		core::Timer<float> t;
-		t.start();
-		std::thread t0 = std::thread(&core::Renderer::WorkerGroup::executeAsync, wg, &done);
-		t0.detach();
-		while (true) {
-			std::unique_lock<std::mutex> lk(task.mutex);
-			if (done == true)
-				break;
-			task.cv.wait(lk);
-			GL::drawImageInverted(task.img);
-			GL::swapBuffers(*parent);
-		}
-		if (t0.joinable())
-			t0.join();
-		GL::drawImageInverted(view->img);
-		GL::swapBuffers(*parent);
-		t.stop();
-		core::Debug::print("Render Time: %.2fs\n", t.ms()/1000.0f);
-
-		core::Path::pushDir();
-		core::Path::goHome();
-		view->saveTransform("data/view.transform");
-		core::Path::popDir();
-		core::Image img = view->img;
-		img.flipV();
-		break;
-	}
-	case VK_F11: {
-		home();
-		invalidate();
-		break;
-	}
-	case VK_F8: {
-		view->mode = view->mode == 1 ? 0 : 1;
-		view->updateMatrix();
-		clearSIMDFrame();
-		invalidate();
-		break;
-	}
-
-	case '1': {
-		storage->pbvh.setRadius(sqrt(storage->pbvh.radiusSquared) * 1.05f);
-		invalidate();
-		break;
-	}
-	case '2': {
-		storage->pbvh.setRadius(sqrt(storage->pbvh.radiusSquared) / 1.05f);
-		invalidate();
-		break;
-	}
-	case 'S': {
-		if (!GetAsyncKeyState(VK_CONTROL))
-			break;
-		std::string path = core::Path::getSaveFileName("Cloud\0*.cloud\0\0");
-		if (path != "") {
-			storage->cloud.saveAtomic(path.c_str(), sqrt(storage->pbvh.radiusSquared));
-		}
-	}
-	case 'O': {
-		if (!GetAsyncKeyState(VK_CONTROL))
-			break;
-		std::string path = core::Path::getOpenFileName("Cloud\0*.cloud\0OBJ\0*.obj\0\0");
-		if (path != "") {
-			storage->load(path.c_str());
-		}
-	}
-	default: break;
-	}
-*/
+	//add keyboard input
 	return e;
 }
 
 void Controller::home() {
 	view->home();
-	view->translation.translate(0.0f, 0.0f, -2.5f);
+	view->right.translate(0.0f, 0.0f, -2.5f);
 	view->updateMatrix();
 	view->updateProjectionMatrix(*Storage::get().realtimeImage);
 	clearSIMDFrame();

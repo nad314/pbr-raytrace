@@ -5,12 +5,12 @@ namespace core {
 	void RenderShader::update(const simdView& view) {
 		__lightPos = vec4s(-0.5f, -0.5f, 50.0f, 1.0f);
 
-		matrixf modelview = view.rotation*view.translation;
+		matrixf modelview = view.modelview;
 		matrixf inv = modelview;
 		inv.invert();
 		sinv = inv;
 		lightPos = sinv*__lightPos;
-		nmat = view.rotation.normalMatrix();
+		nmat = view.left.normalMatrix();
 		smat = view.mat;
 		matrixf ninv = modelview.normalMatrix();
 		ninv.invert();
