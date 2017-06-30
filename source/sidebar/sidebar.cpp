@@ -6,17 +6,17 @@ template<>
 Sidebar* core::Getter<Sidebar>::getter = NULL;
 
 void Sidebar::onOpening() {
-	Surface::onOpening();
+	Frame::onOpening();
 }
 
 void Sidebar::onOpened() {
-	Surface::onOpened();
+	Frame::onOpened();
 	setBackColor(Color(64, 64, 68, 255));
 	char t[256];
 	vec4b hc = vec4b(200, 200, 200, 255);
 	vec4b tc = vec4b(200, 200, 200, 255);
 
-	push(header[0].make(nextVertical() + vec4i(8, 20, 240, 32), "- Settings -", *this).setColor(hc).setAlign(1));
+	push(header[0].make(nextVertical() + vec4i(8, 0, 240, 40), "- Settings -", *this).setColor(hc).setAlign(1));
 	push(label[9].make(nextVertical() + vec4i(8, 8, 240, 20), "Shader", *this).setColor(tc));
 	push(slider[9].make(nextVertical() + vec4i(8, 2, 240, 22), 3, *this, [](float pos, core::Control& c, core::Surface& f)->void {	
 		int p = (int)(pos*2.0f);
@@ -232,18 +232,18 @@ int Sidebar::onLButtonDown(const core::eventInfo& e) {
 	/*
 	if (Controller::get().busy)
 		return e;*/
-	return Surface::onLButtonDown(e);
+	return Frame::onLButtonDown(e);
 }
 
 int Sidebar::onLButtonUp(const core::eventInfo& e) {
 	/*
 	if (Controller::get().busy)
 		return e;*/
-	return Surface::onLButtonUp(e);
+	return Frame::onLButtonUp(e);
 }
 
 int Sidebar::onResize(const core::eventInfo& e) {
-	Surface::onResize(e);
+	Frame::onResize(e);
 	Rect fullRect = getSurfaceDim() + Rect(0, 24, 0, 0);
 	return 0;
 }
