@@ -53,7 +53,7 @@ namespace core {
 				const int my = std::min(gy + square, h);
 				for (int i = gy; i < my-my%2; i+=2) {
 					for (int j = gx; j < mx-mx%2; j+=2) {
-						core::Renderer::unproject(ray, view, sinv, (float)j, (float)h - i);
+						core::Renderer::unproject(ray, view, sinv, (float)j, (float)i);
 						const float d = bvh.findFirst(ray, stack, priority, true);
 
 						if (d > 0.0f) {

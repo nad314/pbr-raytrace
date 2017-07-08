@@ -55,7 +55,7 @@ public:
 		return core::Renderer::unproject(*view, 
 		view->_mm_imvp, 
 		(float)x, 
-		(float)storage->realtimeImage->height - y);
+		(float)y);
 	}
 
 
