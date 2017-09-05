@@ -35,14 +35,14 @@ namespace core {
 		const vec4s ndh = vec4s(0.0f).max(N.dot3(H));
 
 		const vec4s specFactor = mix(vec4s(0.04f), material.base, material.metallic);
-		const vec4s fresnel = fresnelFactor(specFactor, ndv).w1();
-		const vec4s specular = (GGX_BRDF_Fast(ndl, ndv, ndh, fresnel, roughness) + fresnel).min(1.0f);
+		const vec4s fresnel = brdf::fresnelFactor(specFactor, ndv).w1();
+		const vec4s specular = (brdf::GGX_BRDF_Fast(ndl, ndv, ndh, fresnel, roughness) + fresnel).min(1.0f);
 
         //reflection values
 		const int low = std::max(0, (int)(roughness[0]*8) - 1);
 		const int high = std::min(7, low + 1);
 		const float interp = roughness[0]*8.0f - high;
-		const vec4s rdir = (nmat*reflect(V, N)).normalized3d();
+		const vec4s rdir = (nmat*SSE::reflect(V, N)).normalized3d();
 		const vec4s envspec = mix(envMap(data.hdriMipmap[low], rdir), envMap(data.hdriMipmap[high], rdir), interp) * envStrength;
 
         //diffuse environment

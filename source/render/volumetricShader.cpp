@@ -35,9 +35,9 @@ namespace core {
 		//const vec4s hdv = vec4s(0.001f).max(H.dot3(V));
 
 		const vec4s specular = mix(vec4s(0.04f), material.base, material.metallic);
-		const vec4s fresnel = fresnelFactor(specular, ndv).w1();
+		const vec4s fresnel = brdf::fresnelFactor(specular, ndv).w1();
 
-		const vec4s rdir = reflect(V, L);
+		const vec4s rdir = SSE::reflect(V, L);
 		vec4s envdiff(0.0f);
 		vec4s envspec(0.0f);
 	
@@ -52,7 +52,7 @@ namespace core {
 			envspec = getColor(reflectRay, bvh, stack, rek - 1);
 
 		//maybe multiply cooktorrance with H.dot3(L)?
-		const vec4s iblspec = (GGX_BRDF_Fast(ndl, ndv, ndh, fresnel, roughness) + fresnel).min(1.0f);
+		const vec4s iblspec = (brdf::GGX_BRDF_Fast(ndl, ndv, ndh, fresnel, roughness) + fresnel).min(1.0f);
 
 		lightRay.sr0 = point + newDir*vec4s(0.001f);
 		lightRay.sr1 = newDir;

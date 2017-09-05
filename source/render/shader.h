@@ -47,6 +47,4 @@ namespace core {
 		void update(const simdView& view);
 		const vec4s getColor(const Ray& ray, const float& d, const vec4s& normal, const vec4s& color, const PBVH& bvh, std::pair<int, float>* stack, int* priority) const;
 	};
-
-	vec4s envMap(const Image& img, const vec4s& r);
 }

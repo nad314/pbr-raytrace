@@ -24,12 +24,12 @@ namespace core {
 		//const vec4s hdv = vec4s(0.001f).max(H.dot3(V));
 
 		const vec4s specFactor = mix(vec4s(0.04f), material.base, material.metallic);
-		const vec4s fresnel = fresnelFactor(specFactor, ndv).w1();
+		const vec4s fresnel = brdf::fresnelFactor(specFactor, ndv).w1();
         //maybe multiply cooktorrance with H.dot3(L)?
-		const vec4s specular = (GGX_BRDF_Fast(ndl, ndv, ndh, fresnel, roughness) + fresnel).min(1.0f); 
+		const vec4s specular = (brdf::GGX_BRDF_Fast(ndl, ndv, ndh, fresnel, roughness) + fresnel).min(1.0f); 
 
         //reflection values
-		const vec4s rdir = reflect(V, L);
+		const vec4s rdir = SSE::reflect(V, L);
 		const vec4s envspec = envMap(hdri, (nmat*rdir).normalized3d()) * envStrength;
 
         //diffuse environment
