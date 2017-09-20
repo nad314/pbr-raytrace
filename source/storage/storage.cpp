@@ -44,7 +44,7 @@ int Storage::load(const char* path) {
 	cloudTree.build(cloud);
 	pbvh.build(cloudTree);
 	if (rad < 0.0f) {
-		rad = pbvh.estimateRadius();
+		rad = pbvh.estimateRadius() * 2.0f;
 		pbvh.setRadius(rad);
 	} else pbvh.radiusSquared = rad*rad;
 	cloudTree.dispose();
