@@ -51,9 +51,6 @@
     <ClCompile Include="render\renderShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="simdImage\simdImage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="render\progRenderTask.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -72,7 +69,7 @@
     <ClCompile Include="menuBar\menuBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="randuin\randuin.cpp">
+    <ClCompile Include="render\pbsShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -108,9 +105,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="render\shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="simdImage\simdImage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="render\progRenderTask.h">

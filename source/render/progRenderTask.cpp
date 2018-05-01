@@ -1,6 +1,6 @@
 #include <main> 
 
-namespace core {
+namespace oven {
 	std::atomic_int progRenderTask::tc;
 	void progRenderTask::execute(Worker* pWorker) {
 		if (pWorker == NULL)
@@ -36,9 +36,9 @@ namespace core {
 		memset(priority, 0, bvh.inner.size() * sizeof(int));
 
 		Storage& data = Storage::get();
-		//core::VolumetricShader& shader = data.volumetricShader;
-		//core::RenderShader& shader = data.shader;
-		const core::Renderer::PixelShader& shader = Controller::get().getShader();
+		//oven::VolumetricShader& shader = data.volumetricShader;
+		//oven::RenderShader& shader = data.shader;
+		const oven::Renderer::PixelShader& shader = Controller::get().getShader();
 
 		vec2 offset = vec2(rand() % 128, rand() % 128) / 128;
 
@@ -56,7 +56,7 @@ namespace core {
 				const int my = std::min(gy + square, h);
 				for (int i = gy; i < my; ++i) {
 					for (int j = gx; j < mx; ++j) {
-						core::Renderer::unproject(ray, view, sinv, (float)j + offset.x, (float)i + offset.y);
+						oven::Renderer::unproject(ray, view, sinv, (float)j + offset.x, (float)i + offset.y);
 						const float d = bvh.findFirst(ray, stack, priority, true);
 
 						if (d > 0.0f)

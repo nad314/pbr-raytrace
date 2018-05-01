@@ -5,6 +5,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR message, 
 #else
 int main(void){
 #endif
-	core::Debug::enable();
-	return core::FormInit()(new CoreTest);
+	oven::Debug::enable();
+	return oven::FormInit()(new CoreTest);
 }

@@ -1,10 +1,10 @@
 #pragma once
 
-class CoreTest final : public core::Module, public core::SIMD {
+class CoreTest final : public oven::Module, public oven::SIMD {
 private:
 	MainWindow wnd;
-	core::Timer<float> timer;
-	core::Timer<float> globalTimer;
+	oven::Timer<float> timer;
+	oven::Timer<float> globalTimer;
 
 	Storage* storage;
 	Controller* controller;

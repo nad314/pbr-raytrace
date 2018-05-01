@@ -1,5 +1,5 @@
 #include <main>
-namespace core {
+namespace oven {
 #ifndef __WIN
 template<>
 #endif
@@ -11,13 +11,13 @@ template<>
 		pbvh = pB;
 		pview = pW;
 		current = vec2i(0, 0);
-		core::Image& img = Storage::get().renderImage;
+		oven::Image& img = Storage::get().renderImage;
 		squares = vec2i(std::ceil((float)img.width/squareSize), std::ceil((float)img.height/squareSize));
 	}
 
 
 	bool imageRenderTask::getNextRect(vec4i& rect) {
-		core::Image& img = *Storage::get().realtimeImage;
+		oven::Image& img = *Storage::get().realtimeImage;
 		static std::mutex mutex;
 		std::unique_lock<std::mutex> lk(mutex);
 		const vec2i c = current;
@@ -66,21 +66,21 @@ template<>
 		memset(priority, 0, bvh.inner.size() * sizeof(int));
 
 		Storage& data = Storage::get();
-		//core::VolumetricShader& shader = data.volumetricShader;
-		//core::RenderShader& shader = data.shader;
-		const core::Renderer::PixelShader& shader = Controller::get().getShader();
+		//oven::VolumetricShader& shader = data.volumetricShader;
+		//oven::RenderShader& shader = data.shader;
+		const oven::Renderer::PixelShader& shader = Controller::get().getShader();
 
 		vec4s envScale = Settings::environmentStrength;
 		const int ms = Settings::maxSamples;
 		const float sms = sqrt((float)ms);
 		const vec2 offset = vec2(0.0f, 0.0f);
 		/*
-		core::simdImage env;
+		oven::simdImage env;
 		env = data.volumetricShader.hdri;
-		core::simdImage frame;
+		oven::simdImage frame;
 		frame = data.simdFrame;*/
-		core::simdImage& env = data.hdri;
-		core::simdImage& frame = data.simdFrame;
+		oven::simdImage& env = data.hdri;
+		oven::simdImage& frame = data.simdFrame;
 		vec4i rect;
 		const vec4s clearColor = vec4s(0.2f).w1();
 
@@ -95,7 +95,7 @@ template<>
 				for (int i = rect.y; i < rect.w; ++i) {
 					for (int j = rect.x; j < rect.z; ++j) {
 						vec4s& simdFrag = frame.at(j, i);
-						core::Renderer::unproject(ray, view, sinv, (float)j + offset.x, (float)h - i + offset.y);
+						oven::Renderer::unproject(ray, view, sinv, (float)j + offset.x, (float)h - i + offset.y);
 						const float d = bvh.findFirst(ray, stack, priority, true);
 
 						if (d > 0.0f)
@@ -129,9 +129,9 @@ template<>
 				const float p = std::min(1.0f, (float)(c.x + c.y*squares.x)/(squares.x*squares.y));
 				Statusbar::prog(p);
 				
-				//core::Surface& rw = MainWindow::get().getRenderWindow();
-				//rw.onPaint(core::eventInfo(SDL_Event()));
-				MainWindow::get().onPaint(core::eventInfo(SDL_Event()));
+				//oven::Surface& rw = MainWindow::get().getRenderWindow();
+				//rw.onPaint(oven::eventInfo(SDL_Event()));
+				//MainWindow::get().onPaint(oven::eventInfo(SDL_Event()));
 			}
 			
 		}

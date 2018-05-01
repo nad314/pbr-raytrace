@@ -1,6 +1,6 @@
 #include <main> 
 
-namespace core {
+namespace oven {
 	void RenderTask::execute(Worker* pWorker) {
 		if (pWorker == NULL)
 			return;
@@ -29,7 +29,7 @@ namespace core {
 
 		vec4s envScale = Settings::environmentStrength;
 		Storage& data = Storage::get();
-		const core::Renderer::PixelShader& shader = Controller::get().getShader();
+		const oven::Renderer::PixelShader& shader = Controller::get().getShader();
 
 		__m128i dfv = _mm_cvtps_epi32(vec4s(0.2f).w1()*vec4s(255.0f));
 		dfv = _mm_packus_epi16(dfv, dfv);
@@ -49,7 +49,7 @@ namespace core {
 				const int my = std::min(gy + square, h);
 				for (int i = gy; i < my; ++i) {
 					for (int j = gx; j < mx; ++j) {
-						core::Renderer::unproject(ray, view, sinv, (float)j, (float)i);
+						oven::Renderer::unproject(ray, view, sinv, (float)j, (float)i);
 						const float d = bvh.findFirst(ray, stack, priority, true);
 
 						if (d > 0.0f) {

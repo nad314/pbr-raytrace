@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{EEA0CCEB-E81D-46AD-9F46-C7A99AD4A3EE}</ProjectGuid>
     <RootNamespace>pbrraytrace</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -71,8 +71,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\</OutDir>
     <IntDir>$(SolutionDir)bin\</IntDir>
-    <IncludePath>$(SolutionDir)..\core\core;$(SolutionDir)..\core-tracing\core-tracing;$(SolutionDir)..\core-forms\core-forms;$(SolutionDir)pbr-raytrace;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\clib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\liboven\source;$(SolutionDir)source;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\liboven\build64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -117,7 +117,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>core64.lib;core-forms64.lib;core-tracing64.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>liboven64-core.lib;liboven64-avx.lib;liboven64-forms.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -128,9 +128,9 @@
     <ClCompile Include="menuBar\menuBar.cpp" />
     <ClCompile Include="program\coreTest.cpp" />
     <ClCompile Include="program\main.cpp" />
-    <ClCompile Include="randuin\randuin.cpp" />
     <ClCompile Include="renderWindow\renderWindow.cpp" />
     <ClCompile Include="render\imageRenderTask.cpp" />
+    <ClCompile Include="render\pbsShader.cpp" />
     <ClCompile Include="render\progRenderTask.cpp" />
     <ClCompile Include="render\renderShader.cpp" />
     <ClCompile Include="render\renderTask.cpp" />
@@ -138,7 +138,6 @@
     <ClCompile Include="render\volumetricShader.cpp" />
     <ClCompile Include="settings\settings.cpp" />
     <ClCompile Include="sidebar\sidebar.cpp" />
-    <ClCompile Include="simdImage\simdImage.cpp" />
     <ClCompile Include="statusbar\statusbar.cpp" />
     <ClCompile Include="storage\storage.cpp" />
   </ItemGroup>
@@ -160,7 +159,6 @@
     <ClInclude Include="render\subRenderTask.h" />
     <ClInclude Include="settings\settings.h" />
     <ClInclude Include="sidebar\sidebar.h" />
-    <ClInclude Include="simdImage\simdImage.h" />
     <ClInclude Include="statusbar\statusbar.h" />
     <ClInclude Include="storage\storage.h" />
   </ItemGroup>

@@ -5,10 +5,10 @@ void Controller::render() {
 }
 
 void Controller::getPoint(const float x, const float y) {
-	core::simdView& view = (static_cast<RenderWindow*>(parent))->view;
-	core::PBVH& bvh = storage->pbvh;
+	oven::simdView& view = (static_cast<RenderWindow*>(parent))->view;
+	oven::PBVH& bvh = storage->pbvh;
 
-	core::Ray ray = core::Renderer::unproject(view, view._mm_imvp, (float)x, (float)y);
+	oven::Ray ray = oven::Renderer::unproject(view, view._mm_imvp, (float)x, (float)y);
 
 	static std::pair<int, float> stack[256];
 	int* priority = new int[bvh.inner.size()];
@@ -36,7 +36,7 @@ inline std::string formatTime(const int& ms) {
 }
 
 void Controller::fullRender() {
-	core::Form* wnd = dynamic_cast<core::Form*>(parent->getRoot());
+	oven::Form* wnd = dynamic_cast<oven::Form*>(parent->getRoot());
 	if (!wnd)
 		return;
 	veryBusy = 1;
@@ -45,9 +45,9 @@ void Controller::fullRender() {
 	bool done = false;
 	//view->clear();
 	storage->renderedSamples = Settings::maxSamples;
-	core::RenderShader shader(*view);
-	wg->clearTasks().pushTask<core::imageRenderTask>(&storage->pbvh, view);
-	core::Timer<float> t;
+	oven::RenderShader shader(*view);
+	wg->clearTasks().pushTask<oven::imageRenderTask>(&storage->pbvh, view);
+	oven::Timer<float> t;
 
 	t.start();
 	wg->executeLocal();
@@ -60,6 +60,6 @@ void Controller::fullRender() {
 	//print message
 	char msg[256];
 	sprintf(msg, "Frame %d: %s", frameCounter, formatTime((int)t.ms()).c_str());
-	core::Debug::info(msg);
-	core::Debug::print(msg);
+	oven::Debug::info(msg);
+	oven::Debug::print(msg);
 }

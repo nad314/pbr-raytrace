@@ -3,11 +3,11 @@
 #ifndef __WIN
 template<>
 #endif
-Statusbar* core::Getter<Statusbar>::getter = NULL;
+Statusbar* oven::Getter<Statusbar>::getter = NULL;
 
 void Statusbar::onOpening() {
 	Surface::onOpening();
-	setBackColor(core::Theme::controlBackColor);
+	setBackColor(oven::Theme::controlBackColor);
 	memset(text, 0, 256);
 }
 
@@ -21,10 +21,10 @@ void Statusbar::onOpened() {
 	setControlColors();
 }
 
-void Statusbar::onStartPaint(const core::eventInfo& e) {
+void Statusbar::onStartPaint(const oven::eventInfo& e) {
 	__invalidate();
 	Surface::onStartPaint(e);
-	core::Font& f = core::Font::get();
+	oven::Font& f = oven::Font::get();
 	vec4b c = f.getColor();
 	Color clr = vec4b(200, 200, 200, 255);
 	f.setColor(clr);
@@ -32,7 +32,7 @@ void Statusbar::onStartPaint(const core::eventInfo& e) {
 	f.setColor(c);
 }
 
-void Statusbar::onEndPaint(const core::eventInfo& e) {
+void Statusbar::onEndPaint(const oven::eventInfo& e) {
 	Surface::onEndPaint(e);
 }
 

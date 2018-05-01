@@ -11,14 +11,13 @@
 #include <atomic>
 #include <sstream>
 
-#include <core>
-#include <core-forms>
-#include <core-tracing>
+#include <oven-core>
+#include <oven-forms>
+#include <oven-avx>
 using namespace coreTypes;
-using namespace core::opengl;
+using namespace oven::opengl;
 
 //core component
-#include <simdImage/simdImage.h>
 #include <render/shader.h>
 #include <render/brdf.h>
 #include <render/renderTask.h>

@@ -1,27 +1,27 @@
 #pragma once
 
-class Statusbar final : public core::Surface, public core::Debugger, public core::Getter<Statusbar> {
+class Statusbar final : public oven::Surface, public oven::Debugger, public oven::Getter<Statusbar> {
 protected:
 	FILE* output;
 	char text[256];
 	std::mutex iomutex;
 public:
-	core::ProgBar progBar;
+	oven::ProgBar progBar;
 	Statusbar() :Surface(), Debugger() {
 		set(*this);
-		core::Debug::attach(this);
-		core::Debug::enable();
-		core::Path::pushDir();
-		core::Path::goHome();
+		oven::Debug::attach(this);
+		oven::Debug::enable();
+		oven::Path::pushDir();
+		oven::Path::goHome();
 		output = fopen("log.txt", "w");
-		core::Path::popDir();
+		oven::Path::popDir();
 	}
 	~Statusbar() { fclose(output); }
 	void onOpening() override;
 	void onOpened() override;
 
-	void onStartPaint(const core::eventInfo& e) override;
-	void onEndPaint(const core::eventInfo& e) override;
+	void onStartPaint(const oven::eventInfo& e) override;
+	void onEndPaint(const oven::eventInfo& e) override;
 	int onReshape() override;
 	void print(const char* s) override;
 	void log(const char* s) override;

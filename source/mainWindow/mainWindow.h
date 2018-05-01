@@ -1,19 +1,19 @@
 #pragma once
 
-class MainWindow final : public core::Form, public core::Getter<MainWindow>, public core::SIMD {
+class MainWindow final : public oven::Form, public oven::Getter<MainWindow>, public oven::SIMD {
 private:
 	RenderWindow rwnd;
 	Statusbar statusbar;
 	Sidebar sidebar;
 	MenuBar menubar;
 public:
-	inline core::Surface& getRenderWindow() { return rwnd; }
+	inline oven::Surface& getRenderWindow() { return rwnd; }
 	void onOpening() override;
 	void onOpened() override;
 	void onClosing() override;
 	
-	int onResize(const core::eventInfo& e) override;
-	int onDropFiles(const core::eventInfo& e) override;
-	void onEndPaint(const core::eventInfo& e) override;
+	int onResize(const oven::eventInfo& e) override;
+	int onDropFiles(const oven::eventInfo& e) override;
+	void onEndPaint(const oven::eventInfo& e) override;
 };
 

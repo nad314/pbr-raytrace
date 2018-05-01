@@ -1,6 +1,6 @@
 #pragma once
 
-namespace core {
+namespace oven {
 	struct Material {
 		float metallic;
 		float roughness;
@@ -39,7 +39,7 @@ namespace core {
 		const vec4s getColor(const Ray& ray, const PBVH& bvh, std::pair<int, float>* stack, int rek) const;
 		const vec4s getColor(const Ray& ray, const float& d, const vec4s& normal, const vec4s& color, const PBVH& bvh, std::pair<int, float>* stack, int* priority) const;
 	};
-
+	
 	struct PBSShader final : public Renderer::PixelShader, public SIMD {
 		Material material;
 		matrixs nmat;

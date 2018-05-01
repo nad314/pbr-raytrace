@@ -1,5 +1,5 @@
 #pragma once
-namespace core {
+namespace oven {
 	struct imageRenderTask : public Worker::Task {
 		static int squareSize;
 		static vec2i squares;

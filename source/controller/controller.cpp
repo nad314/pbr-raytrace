@@ -3,21 +3,21 @@
 #ifndef __WIN
 template<>
 #endif
-Controller* core::Getter<Controller>::getter = NULL;
+Controller* oven::Getter<Controller>::getter = NULL;
 
-Controller::Controller(core::RenderSurface* p, Storage* st) {
+Controller::Controller(oven::RenderSurface* p, Storage* st) {
 	set(*this);
 	storage = st;
 	parent = p;
 	p->attach(this);
 	view = &(static_cast<RenderWindow*>(parent))->view;
 	samples = 2;
-	wg = new core::WorkerGroup();
+	wg = new oven::WorkerGroup();
 	makeSIMDFrame();
 	timer.start();
 }
 
-int Controller::onLButtonDown(const core::eventInfo& e) {
+int Controller::onLButtonDown(const oven::eventInfo& e) {
 	if (storage->pbvh.pointCount < 1 || dragging || benchMode)
 		return e;
 	rotating = 1;
@@ -29,7 +29,7 @@ int Controller::onLButtonDown(const core::eventInfo& e) {
 	return e;
 }
 
-int Controller::onLButtonUp(const core::eventInfo& e) {
+int Controller::onLButtonUp(const oven::eventInfo& e) {
 	if (storage->pbvh.pointCount < 1 || benchMode)
 		return e;
 	if (rotating || dragging)
@@ -39,7 +39,7 @@ int Controller::onLButtonUp(const core::eventInfo& e) {
 	return e;
 }
 
-int Controller::onRButtonDown(const core::eventInfo& e) {
+int Controller::onRButtonDown(const oven::eventInfo& e) {
 	if (storage->pbvh.pointCount < 1 || rotating || benchMode)
 		return e;
 	dragging = 1;
@@ -51,7 +51,7 @@ int Controller::onRButtonDown(const core::eventInfo& e) {
 	return e;
 }
 
-int Controller::onRButtonUp(const core::eventInfo& e) {
+int Controller::onRButtonUp(const oven::eventInfo& e) {
 	if (storage->pbvh.pointCount < 1 || benchMode)
 		return e;
 	if (rotating || dragging)
@@ -61,7 +61,7 @@ int Controller::onRButtonUp(const core::eventInfo& e) {
 	return e;
 }
 
-int Controller::onMousewheel(const core::eventInfo& e) {
+int Controller::onMousewheel(const oven::eventInfo& e) {
 	if (storage->pbvh.pointCount < 1 || benchMode)
 		return e;
 	if (e.delta() < 0) {
@@ -74,14 +74,14 @@ int Controller::onMousewheel(const core::eventInfo& e) {
 	else view->fov /= 1.2f;
 	view->updateProjectionMatrix(*(Storage::get().realtimeImage));
 	view->updateMatrix();
-	wg->pushTask<core::subRenderTask>(&storage->pbvh, view);
+	wg->pushTask<oven::subRenderTask>(&storage->pbvh, view);
 	clearSIMDFrame();
 	invalidate();
 	timer.start();
 	return e;
 }
 
-int Controller::onMouseMove(const core::eventInfo& e) {
+int Controller::onMouseMove(const oven::eventInfo& e) {
 	if (storage->pbvh.pointCount < 1 || benchMode)
 		return e;
 	if (rotating) {
@@ -96,7 +96,7 @@ int Controller::onMouseMove(const core::eventInfo& e) {
 		view->updateMatrix();
 		invalidate();
 		wg->clearTasks();
-		wg->pushTask<core::subRenderTask>(&storage->pbvh, view);
+		wg->pushTask<oven::subRenderTask>(&storage->pbvh, view);
 		//clearSIMDFrame();
 		timer.start();
 	}
@@ -104,12 +104,12 @@ int Controller::onMouseMove(const core::eventInfo& e) {
 		vec4 d;
 		const matrixf rot = view->left.normalMatrix().inverted();
 		vec4 plane = (rot*vec4(0.0f, 0.0f, 1.0f, 1.0f)).normalize3d();
-		plane.w = -core::Math::dot3(plane, clickPoint);
+		plane.w = -oven::Math::dot3(plane, clickPoint);
 
-		core::Ray ray = getRay((float)e.x(), (float)e.y());
-		core::Ray lray = getRay((float)mouse.x, (float)mouse.y);
-		vec4s t0 = core::SSE::rayPlaneT(ray.sr0, ray.sr1, vec4s(plane));
-		vec4s t1 = core::SSE::rayPlaneT(lray.sr0, lray.sr1, vec4s(plane));
+		oven::Ray ray = getRay((float)e.x(), (float)e.y());
+		oven::Ray lray = getRay((float)mouse.x, (float)mouse.y);
+		vec4s t0 = oven::SSE::rayPlaneT(ray.sr0, ray.sr1, vec4s(plane));
+		vec4s t1 = oven::SSE::rayPlaneT(lray.sr0, lray.sr1, vec4s(plane));
 		vec4s delta = (ray.sr0 + ray.sr1*t0) - (lray.sr0 + lray.sr1*t1);
 		delta = matrixs(rot.inverted())*delta;
 
@@ -120,16 +120,16 @@ int Controller::onMouseMove(const core::eventInfo& e) {
 		view->right = mat*view->right;
 		view->updateMatrix();
 		wg->clearTasks();
-		wg->pushTask<core::subRenderTask>(&storage->pbvh, view);
+		wg->pushTask<oven::subRenderTask>(&storage->pbvh, view);
 		invalidate();
 		//clearSIMDFrame();
 		timer.start();
 	}
-	mouse = core::vec2i(e.x(), e.y());
+	mouse = oven::vec2i(e.x(), e.y());
 	return e;
 }
 
-int Controller::onKeyDown(const core::eventInfo& e) {
+int Controller::onKeyDown(const oven::eventInfo& e) {
 	if (benchMode)
 		return e;
 	//add keyboard input
@@ -176,8 +176,8 @@ void Controller::setMode(const int& m){
 }
 
 
-bool Controller::loadHDRI(const std::string& path) const {
-	std::string ext = core::Path::getExt(path);
+bool Controller::loadHDRI(const std::string& path) {
+	std::string ext = oven::Path::getExt(path);
 	Storage& data = Storage::get();
 
 	if (ext == "hdr") {

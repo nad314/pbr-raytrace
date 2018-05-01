@@ -1,6 +1,6 @@
 #pragma once
 
-namespace core {
+namespace oven {
 	inline vec4s envMap(const Image& img, const vec4s& r) {
 		const vec4s m(r);
 		const float my = asin(m[1])/(M_PI/2.0f); //mapped y
@@ -18,12 +18,12 @@ namespace core {
 	}
 
 	inline const vec4s mcrotate(const vec4s& v, const vec4s& roughness) {
-		const vec4s rv = core::RanduinWrynn::topdeck() * roughness;
+		const vec4s rv = oven::RanduinWrynn::topdeck() * roughness;
 		return (v + rv).normalized3d();
 	}
 
 	inline const vec4s mcrotate(const vec4s& v) {
-		const vec4s rv = core::RanduinWrynn::topdeck();
+		const vec4s rv = oven::RanduinWrynn::topdeck();
 		return (v + rv*0.9f).normalized3d(); //we do just a tiny bit of importance sampling to avoid impossible colisions
 	}
 }

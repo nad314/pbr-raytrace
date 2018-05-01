@@ -1,6 +1,6 @@
 #include <main>
 
-namespace core {
+namespace oven {
 
 	void RenderShader::update(const simdView& view) {
 		__lightPos = vec4s(-0.5f, -0.5f, 50.0f, 1.0f);

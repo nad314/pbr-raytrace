@@ -3,7 +3,7 @@
 #ifndef __WIN
 template<>
 #endif
-Sidebar* core::Getter<Sidebar>::getter = NULL;
+Sidebar* oven::Getter<Sidebar>::getter = NULL;
 
 void Sidebar::onOpening() {
 	Frame::onOpening();
@@ -18,7 +18,7 @@ void Sidebar::onOpened() {
 
 	push(header[0].make(nextVertical() + vec4i(8, 0, 240, 40), "- Settings -", *this).setColor(hc).setAlign(1));
 	push(label[9].make(nextVertical() + vec4i(8, 8, 240, 20), "Shader", *this).setColor(tc));
-	push(slider[9].make(nextVertical() + vec4i(8, 2, 240, 22), 3, *this, [](float pos, core::Control& c, core::Surface& f)->void {	
+	push(slider[9].make(nextVertical() + vec4i(8, 2, 240, 22), 3, *this, [](float pos, oven::Control& c, oven::Surface& f)->void {	
 		int p = (int)(pos*2.0f);
 		Controller& ct = Controller::get();
 		if (ct.veryBusy)
@@ -40,7 +40,7 @@ void Sidebar::onOpened() {
 		}
 	}).setPos((float)0.0f));
 	push(label[10].make(nextVertical() + vec4i(8, 8, 240, 20), "Mode", *this).setColor(tc));
-	push(slider[10].make(nextVertical() + vec4i(8, 2, 240, 22), 3, *this, [](float pos, core::Control& c, core::Surface& f)->void {	
+	push(slider[10].make(nextVertical() + vec4i(8, 2, 240, 22), 3, *this, [](float pos, oven::Control& c, oven::Surface& f)->void {	
 		int p = (int)(pos*2.0f);
 		Controller& ct = Controller::get();
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
@@ -64,7 +64,7 @@ void Sidebar::onOpened() {
 
 
 	push(label[0].make(nextVertical() + vec4i(8, 8, 240, 20), "Samples: 128", *this).setColor(tc));
-	push(slider[0].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
+	push(slider[0].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, oven::Control& c, oven::Surface& f)->void {
 		if (Controller::get().veryBusy)
 			return;
 		int samples = (int)(Settings::maxSampleCap * pos);
@@ -85,7 +85,7 @@ void Sidebar::onOpened() {
 
 	sprintf(t, "Threads: %d", std::thread::hardware_concurrency());
 	push(label[1].make(nextVertical() + vec4i(8, 4, 200, 16), t, *this).setColor(tc));
-	push(slider[1].make(nextVertical() + vec4i(8, 2, 240, 22), std::thread::hardware_concurrency(), *this, [](float pos, core::Control& c, core::Surface& f)->void {
+	push(slider[1].make(nextVertical() + vec4i(8, 2, 240, 22), std::thread::hardware_concurrency(), *this, [](float pos, oven::Control& c, oven::Surface& f)->void {
 		if (Controller::get().veryBusy)
 			return;
 		int threads = (int)((float)(std::thread::hardware_concurrency()-1) * pos) + 1;
@@ -97,12 +97,12 @@ void Sidebar::onOpened() {
 		sb.label[1].setText(t).invalidate();
 		sb.__invalidate();
 		delete Controller::get().wg;
-		Controller::get().wg = new core::WorkerGroup(threads);
+		Controller::get().wg = new oven::WorkerGroup(threads);
 	}).setPos(1.0f));
 
 	sprintf(t, "Light Bounces: %d", std::thread::hardware_concurrency());
 	push(label[8].make(nextVertical() + vec4i(8, 4, 200, 16), t, *this).setColor(tc));
-	push(slider[8].make(nextVertical() + vec4i(8, 2, 240, 22), 7, *this, [](float pos, core::Control& c, core::Surface& f)->void {
+	push(slider[8].make(nextVertical() + vec4i(8, 2, 240, 22), 7, *this, [](float pos, oven::Control& c, oven::Surface& f)->void {
 		if (Controller::get().veryBusy)
 			return;
 		int bounces = (int)(7.0f * pos) + 1;
@@ -120,7 +120,7 @@ void Sidebar::onOpened() {
 
 	push(header[1].make(nextVertical() + vec4i(8, 28, 240, 40), "- Material -", *this).setColor(hc).setAlign(1));
 	push(label[2].make(nextVertical() + vec4i(8, 8, 240, 20), "Roughness", *this).setColor(tc));
-	push(slider[2].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
+	push(slider[2].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, oven::Control& c, oven::Surface& f)->void {
 		if (Controller::get().veryBusy)
 			return;
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
@@ -135,7 +135,7 @@ void Sidebar::onOpened() {
 	}));
 
 	push(label[3].make(nextVertical() + vec4i(8, 4, 240, 16), "Metallic", *this).setColor(tc));
-	push(slider[3].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
+	push(slider[3].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, oven::Control& c, oven::Surface& f)->void {
 		if (Controller::get().veryBusy)
 			return;
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
@@ -151,7 +151,7 @@ void Sidebar::onOpened() {
 
 	push(header[2].make(nextVertical() + vec4i(8, 28, 240, 40), "- Color -", *this).setColor(hc).setAlign(1));
 	push(label[4].make(nextVertical() + vec4i(8, 8, 240, 20), "Red:", *this).setColor(tc));
-	push(slider[4].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
+	push(slider[4].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, oven::Control& c, oven::Surface& f)->void {
 		if (Controller::get().veryBusy)
 			return;
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
@@ -170,7 +170,7 @@ void Sidebar::onOpened() {
 	}));
 
 	push(label[5].make(nextVertical() + vec4i(8, 4, 240, 16), "Green:", *this).setColor(tc));
-	push(slider[5].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
+	push(slider[5].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, oven::Control& c, oven::Surface& f)->void {
 		if (Controller::get().veryBusy)
 			return;
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
@@ -189,7 +189,7 @@ void Sidebar::onOpened() {
 	}));
 
 	push(label[6].make(nextVertical() + vec4i(8, 4, 240, 16), "Blue:", *this).setColor(tc));
-	push(slider[6].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
+	push(slider[6].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, oven::Control& c, oven::Surface& f)->void {
 		if (Controller::get().veryBusy)
 			return;
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
@@ -209,7 +209,7 @@ void Sidebar::onOpened() {
 
 	push(header[3].make(nextVertical() + vec4i(8, 28, 240, 40), "- Environment -", *this).setColor(hc).setAlign(1));
 	push(label[7].make(nextVertical() + vec4i(8, 8, 240, 20), "Strength:", *this).setColor(tc));
-	push(slider[7].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, core::Control& c, core::Surface& f)->void {
+	push(slider[7].make(nextVertical() + vec4i(8, 2, 240, 22), 0, *this, [](float pos, oven::Control& c, oven::Surface& f)->void {
 		if (Controller::get().veryBusy)
 			return;
 		Sidebar& sb = dynamic_cast<Sidebar&>(f);
@@ -228,21 +228,21 @@ void Sidebar::onOpened() {
 	setControlColors();
 }
 
-int Sidebar::onLButtonDown(const core::eventInfo& e) {
+int Sidebar::onLButtonDown(const oven::eventInfo& e) {
 	/*
 	if (Controller::get().busy)
 		return e;*/
 	return Frame::onLButtonDown(e);
 }
 
-int Sidebar::onLButtonUp(const core::eventInfo& e) {
+int Sidebar::onLButtonUp(const oven::eventInfo& e) {
 	/*
 	if (Controller::get().busy)
 		return e;*/
 	return Frame::onLButtonUp(e);
 }
 
-int Sidebar::onResize(const core::eventInfo& e) {
+int Sidebar::onResize(const oven::eventInfo& e) {
 	Frame::onResize(e);
 	Rect fullRect = getSurfaceDim() + Rect(0, 24, 0, 0);
 	return 0;

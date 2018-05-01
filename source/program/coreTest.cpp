@@ -10,19 +10,19 @@ int CoreTest::loadData() {
 }
 
 int CoreTest::onLoad() {
-	std::string inst = core::CPUID::vectorInstructions();
-	core::Debug::info("CPU: (%dx) %s", std::thread::hardware_concurrency(), core::CPUID::brandName().c_str());
-	core::Debug::info("Instructions: %s", inst.c_str());
+	std::string inst = oven::CPUID::vectorInstructions();
+	oven::Debug::info("CPU: (%dx) %s", std::thread::hardware_concurrency(), oven::CPUID::brandName().c_str());
+	oven::Debug::info("Instructions: %s", inst.c_str());
 	if (inst.find("avx") == std::string::npos) {
-		core::Debug::error("AVX not supported. Quitting.");
+		oven::Debug::error("AVX not supported. Quitting.");
 		return 1;
 	}
 
-	core::Path::goHome();
-	core::Path::mkdir("../capture");
-	core::Path::mkdir("../turntable");
-	core::RanduinWrynn::construct(40960);
-	//core::Debug::enable();
+	oven::Path::goHome();
+	oven::Path::mkdir("../capture");
+	oven::Path::mkdir("../turntable");
+	oven::RanduinWrynn::construct(40960);
+	//oven::Debug::enable();
 	return 0;
 }
 
@@ -34,7 +34,7 @@ int CoreTest::onDispose() {
 int CoreTest::onStart() {
 	wnd.open();
 	/*GL::setVsync(0);/*
-	core::eventInfo e(wnd, WM_PAINT, wnd.width, wnd.height);
+	oven::eventInfo e(wnd, WM_PAINT, wnd.width, wnd.height);
 	wnd.onPaint(e);*/
 	glClear(GL_COLOR_BUFFER_BIT);
 	GL::swapBuffers(wnd);
@@ -62,7 +62,7 @@ int CoreTest::main() {
 	controller = new Controller(&rw, storage);
 	//controller->benchMode = true;
 
-	storage->realtimeImage = &(static_cast<core::Image&>(rw));
+	storage->realtimeImage = &(static_cast<oven::Image&>(rw));
 	rw.view.left.init();
 	rw.view.updateMatrix();
 
@@ -78,7 +78,7 @@ int CoreTest::main() {
 	
 	//storage->simdFrame.make(rw.surfaceWidth(), rw.surfaceHeight());
 	controller->clearSIMDFrame();
-	controller->wg->pushTask<core::progRenderTask>(&storage->pbvh, controller->view);
+	controller->wg->pushTask<oven::progRenderTask>(&storage->pbvh, controller->view);
 	controller->timer.start();
 	
 	GL::makeCurrent(wnd);
@@ -102,8 +102,8 @@ int CoreTest::main() {
 
 		timer.start();
 		//Render Multithreaded
-		core::Renderer::invalidate();
-		core::RanduinWrynn::mulligan();
+		oven::Renderer::invalidate();
+		oven::RanduinWrynn::mulligan();
 		if (storage->pbvh.pointCount > 0 && controller->getMode()!=2)
 			controller->render();
 		timer.stop();
@@ -112,7 +112,7 @@ int CoreTest::main() {
 			controller->view->left.init();
 			controller->view->left.rotate(controller->benchTimer.stop().s()*30.0f, 0.0f, 1.0f, 0.0f);
 			controller->view->updateMatrix();
-			controller->wg->pushTask<core::progRenderTask>(&storage->pbvh, controller->view);
+			controller->wg->pushTask<oven::progRenderTask>(&storage->pbvh, controller->view);
 			controller->invalidate();
 			controller->clearSIMDFrame();
 		} else if (controller->getMode() == 2) {
@@ -123,8 +123,8 @@ int CoreTest::main() {
 			controller->fullRender();
 			if (1 || storage->renderedSamples >= Settings::maxSamples) {
 				//save image
-				core::Path::goHome();
-				core::Image img = rw.image();
+				oven::Path::goHome();
+				oven::Image img = rw.image();
 				img.flipV();
 				char path[256];
 				sprintf(path, "../turntable/img-%04d.png", controller->frameCounter);
@@ -140,7 +140,7 @@ int CoreTest::main() {
 			}
 		}
 		else if ((storage->renderedSamples < Settings::maxSamples || Settings::maxSamples == 0) && controller->timer.stop().ms()>100.0f) {
-			controller->wg->pushTask<core::progRenderTask>(&storage->pbvh, controller->view);
+			controller->wg->pushTask<oven::progRenderTask>(&storage->pbvh, controller->view);
 			controller->invalidate();
 			if (dirty)
 				controller->clearSIMDFrame();
@@ -158,7 +158,7 @@ int CoreTest::main() {
 		const float rt = controller->renderTime/1000.0f;	
 		if (/*1 || storage->renderedSamples == Settings::maxSamples*/controller->getMode() != 2) {
 			if (storage->pbvh.pointCount > 0)
-				core::Debug::print("Points: %d - Atom: %.3fmm - Avg: %.2fms - Cur: %.2fms - Samples: %d: %d - Time: %02d:%02d:%02d", 
+				oven::Debug::print("Points: %d - Atom: %.3fmm - Avg: %.2fms - Cur: %.2fms - Samples: %d: %d - Time: %02d:%02d:%02d", 
 					storage->cloud.points.count(), sqrt(storage->pbvh.radiusSquared)*1000.0f, renderTime / nframes, timer.ms(), controller->frameCounter, storage->renderedSamples, (int)(rt/3600.0f), (int)(rt/60.0f)%60, (int)(rt)%60);
 			Statusbar::get().prog(Settings::maxSamples == 0 ? 0.0f : (float)storage->renderedSamples/ Settings::maxSamples);
 			//printf("%.2f\n", timer.ms());

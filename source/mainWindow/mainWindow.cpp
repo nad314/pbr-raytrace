@@ -3,7 +3,7 @@
 #ifndef __WIN
 template<>
 #endif
-MainWindow* core::Getter<MainWindow>::getter = NULL;
+MainWindow* oven::Getter<MainWindow>::getter = NULL;
 
 void MainWindow::onOpening() {
 	Form::onOpening();
@@ -29,7 +29,7 @@ void MainWindow::onClosing() {
 	Form::onClosing();
 }
 
-int MainWindow::onResize(const core::eventInfo &e) {
+int MainWindow::onResize(const oven::eventInfo &e) {
 	Form::onResize(e);
 	if (width < 1 || height < 1)
 		return e;
@@ -40,15 +40,15 @@ int MainWindow::onResize(const core::eventInfo &e) {
 	return e;
 }
 
-void MainWindow::onEndPaint(const core::eventInfo& e) {
+void MainWindow::onEndPaint(const oven::eventInfo& e) {
 	Form::onEndPaint(e);
 	/*
-	core::Renderer::drawRect(rwnd.getSurfaceRect().expand(1), core::Color(31, 31, 31, 255), *this);
-	core::Renderer::drawRect(sidebar.getSurfaceRect().expand(1), core::Color(31, 31, 31, 255), *this);
+	oven::Renderer::drawRect(rwnd.getSurfaceRect().expand(1), oven::Color(31, 31, 31, 255), *this);
+	oven::Renderer::drawRect(sidebar.getSurfaceRect().expand(1), oven::Color(31, 31, 31, 255), *this);
 	*/
 }
 
-int MainWindow::onDropFiles(const core::eventInfo& e) {
+int MainWindow::onDropFiles(const oven::eventInfo& e) {
 	Controller& c = Controller::get();
 	std::string path = e.droppedFile();
 

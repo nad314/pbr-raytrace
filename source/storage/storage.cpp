@@ -2,7 +2,7 @@
 #ifndef __WIN
 template<>
 #endif
-Storage* core::Getter<Storage>::getter = NULL;
+Storage* oven::Getter<Storage>::getter = NULL;
 
 void Storage::dispose() {
 	cloud.dispose();
@@ -11,12 +11,12 @@ void Storage::dispose() {
 }
 
 int Storage::load(const char* path) {
-	core::Debug::info("Loading '%s'", path);
+	oven::Debug::info("Loading '%s'", path);
 	float rad = -1.0f;
 	dispose();
-	std::string ext = core::Path::getExt(path);
-	core::Path::goHome();
-	core::Timer<float> timer;
+	std::string ext = oven::Path::getExt(path);
+	oven::Path::goHome();
+	oven::Timer<float> timer;
 	timer.start();
 	for (auto& i : ext)
 		i = toupper(i);
@@ -50,13 +50,13 @@ int Storage::load(const char* path) {
 	cloudTree.dispose();
 
 	char title[256];
-	sprintf(title, "Core Renderer - %c%s%c", 39, core::Path::getFileName(path).c_str(), 39);
+	sprintf(title, "Core Renderer - %c%s%c", 39, oven::Path::getFileName(path).c_str(), 39);
 	MainWindow::get().setFormTitle(title);
 
 	Controller& controller = Controller::get();
 	controller.home();
 	controller.invalidate();
 
-	core::Debug::info("Load complete in %.2fms", timer.stop().ms());
+	oven::Debug::info("Load complete in %.2fms", timer.stop().ms());
 	return 0;
 }

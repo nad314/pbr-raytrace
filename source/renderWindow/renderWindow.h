@@ -1,15 +1,15 @@
 #pragma once
-class RenderWindow final : public core::RenderSurface, public core::SIMD {
+class RenderWindow final : public oven::RenderSurface, public oven::SIMD {
 private:
 public:
-	core::simdView view;
+	oven::simdView view;
 	bool alive = 0;
-	//core::Image* imgptr = NULL;
+	//oven::Image* imgptr = NULL;
 
-	inline operator core::simdView&() { return view; }
+	inline operator oven::simdView&() { return view; }
 	/*
-	inline virtual core::Image& image() { return imgptr?*imgptr:view.img; }
-	inline operator core::Image&() { return imgptr?*imgptr:view.img; }
+	inline virtual oven::Image& image() { return imgptr?*imgptr:view.img; }
+	inline operator oven::Image&() { return imgptr?*imgptr:view.img; }
 */
 	void onOpening() override;
 	void onOpened() override;

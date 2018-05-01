@@ -1,24 +1,24 @@
 #pragma once
-struct Storage: public core::SIMD, public core::Getter<Storage> {
-	core::PointCloud cloud;
-	core::PointOctree cloudTree;
-	core::PBVH pbvh;
+struct Storage: public oven::SIMD, public oven::Getter<Storage> {
+	oven::PointCloud cloud;
+	oven::PointOctree cloudTree;
+	oven::PBVH pbvh;
 
-	core::RenderShader shader;
-	core::VolumetricShader volumetricShader;
-	core::PBSShader pbsShader;
+	oven::RenderShader shader;
+	oven::VolumetricShader volumetricShader;
+	oven::PBSShader pbsShader;
 
-	core::simdImage simdFrame;
+	oven::simdImage simdFrame;
 
-	core::simdImage hdri;
-	core::simdImage hdriDiff; //preconvolved
-	core::simdImage hdriMipmap[8];
+	oven::simdImage hdri;
+	oven::simdImage hdriDiff; //preconvolved
+	oven::simdImage hdriMipmap[8];
 
 	int renderedSamples;
-	core::Image renderImage;
-	core::Image* realtimeImage;
+	oven::Image renderImage;
+	oven::Image* realtimeImage;
 
-	core::Material material;
+	oven::Material material;
 
 	Storage(){ set(*this); }
 	int load(const char* path);
