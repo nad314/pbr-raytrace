@@ -11,9 +11,9 @@
 #include <atomic>
 #include <sstream>
 
-#include <oven-core>
-#include <oven-forms>
-#include <oven-avx>
+#include <liboven/oven-core>
+#include <liboven/oven-forms>
+#include <liboven/oven-avx>
 using namespace coreTypes;
 using namespace oven::opengl;
 
