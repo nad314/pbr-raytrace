@@ -8,7 +8,7 @@ void Controller::getPoint(const float x, const float y) {
 	oven::simdView& view = (static_cast<RenderWindow*>(parent))->view;
 	oven::PBVH& bvh = storage->pbvh;
 
-	oven::Ray ray = oven::Renderer::unproject(view, view._mm_imvp, (float)x, (float)y);
+	oven::Ray ray = oven::Renderer::unproject(view, (float)x, (float)y);
 
 	static std::pair<int, float> stack[256];
 	int* priority = new int[bvh.inner.size()];

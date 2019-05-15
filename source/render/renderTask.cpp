@@ -49,7 +49,7 @@ namespace oven {
 				const int my = std::min(gy + square, h);
 				for (int i = gy; i < my; ++i) {
 					for (int j = gx; j < mx; ++j) {
-						oven::Renderer::unproject(ray, view, sinv, (float)j, (float)i);
+						oven::Renderer::unproject(ray, view, (float)j, (float)i);
 						const float d = bvh.findFirst(ray, stack, priority, true);
 
 						if (d > 0.0f) {

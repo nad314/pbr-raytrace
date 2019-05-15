@@ -6,9 +6,9 @@ CC = g++ -std=gnu++11 -msse -msse2 -msse3 -msse4 -mavx -mstackrealign -pthread -
 #WARN = -Wall -fpermissive -Wno-write-strings -Wno-unused-result -Wno-unknown-pragmas -Wno-format-security -Wno-parentheses
 WARN = -w -fpermissive
 DEFINE =
-INCLUDE = -I"./source" -I"../core/source" -I"../core-tracing/source" -I"../core-forms/source" -I"/usr/include"
+INCLUDE = -I"./source" -I"../liboven/source" -I"../core-tracing/source" -I"../core-forms/source" -I"/usr/include"
 FLAGS = -O2 $(INCLUDE) $(WARN) $(DEFINE)
-LIBS = -L"lib" -lpthread -lfreetype -lSDL2 -lGL -lGLU -lcore -lcore-tracing -lcore-forms 
+LIBS = -L"lib" -lpthread -lfreetype -lSDL2 -lGL -lGLU -loven-core -loven-avx -loven-forms -lgtk-3
 
 DEPDIR = .d
 DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.Td
@@ -32,7 +32,6 @@ SRC = \
 	renderWindow/renderWindow.cpp \
 	settings/settings.cpp \
 	sidebar/sidebar.cpp \
-	simdImage/simdImage.cpp \
 	statusbar/statusbar.cpp \
 	storage/storage.cpp
 

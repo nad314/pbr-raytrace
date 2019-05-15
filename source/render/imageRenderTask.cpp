@@ -95,7 +95,7 @@ template<>
 				for (int i = rect.y; i < rect.w; ++i) {
 					for (int j = rect.x; j < rect.z; ++j) {
 						vec4s& simdFrag = frame.at(j, i);
-						oven::Renderer::unproject(ray, view, sinv, (float)j + offset.x, (float)h - i + offset.y);
+						oven::Renderer::unproject(ray, view, (float)j + offset.x, (float)h - i + offset.y);
 						const float d = bvh.findFirst(ray, stack, priority, true);
 
 						if (d > 0.0f)

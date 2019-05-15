@@ -52,8 +52,7 @@ public:
 
 	//inlines
 	inline oven::Ray getRay(const float x, const float y) const {
-		return oven::Renderer::unproject(*view, 
-		view->_mm_imvp, 
+		return oven::Renderer::unproject(*view,
 		(float)x, 
 		(float)y);
 	}
