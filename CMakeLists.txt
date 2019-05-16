@@ -1,12 +1,13 @@
 cmake_minimum_required (VERSION 3.10)
 project(pbr-raytrace)
 
+if (NOT TARGET oven-core)
 if (EXISTS "${PROJECT_SOURCE_DIR}/../liboven")
     add_subdirectory(../liboven liboven)
 endif()
-
 if (NOT TARGET oven-core)
     find_package(Oven REQUIRED)
+endif()
 endif()
 
 set(SRCS
