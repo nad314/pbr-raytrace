@@ -14,8 +14,8 @@ void MenuBar::onOpened() {
 	vec4b tc = vec4b(200, 200, 200, 255);
 
 	oven::Path::pushDir();
-	oven::Path::goHome();
-	img.loadPng("../data/image/open.png");
+	oven::Path::cd(common::source_directory);
+	img.loadPng("data/image/open.png");
 	img.linearDownscale(30, 30);
 	img.flipV();
 	push(button[0].make(nextHorizontal() + vec4i(0, 0, 30, 30), &img, *this, [](oven::Control& c, oven::Surface& f)->void {
@@ -28,7 +28,7 @@ void MenuBar::onOpened() {
 	}));
 	button[0].prerender();
 
-	img.loadPng("../data/image/solid.png");
+	img.loadPng("data/image/solid.png");
 	img.linearDownscale(30, 30);
 	img.flipV();
 	push(button[1].make(nextHorizontal() + vec4i(2, 0, 32, 30), &img, *this, [](oven::Control& c, oven::Surface& f)->void {
@@ -43,7 +43,7 @@ void MenuBar::onOpened() {
 	}));
 	button[1].prerender();
 
-	img.loadPng("../data/image/cameraReset.png");
+	img.loadPng("data/image/cameraReset.png");
 	img.linearDownscale(30, 30);
 	img.flipV();
 	push(button[2].make(nextHorizontal() + vec4i(16, 0, 46, 30), &img, *this, [](oven::Control& c, oven::Surface& f)->void {
@@ -52,7 +52,7 @@ void MenuBar::onOpened() {
 	}));
 	button[2].prerender();
 
-	img.loadPng("../data/image/capture.png");
+	img.loadPng("data/image/capture.png");
 	img.linearDownscale(30, 30);
 	img.flipV();
 	push(button[3].make(nextHorizontal() + vec4i(2, 0, 32, 30), &img, *this, [](oven::Control& c, oven::Surface& f)->void {
@@ -64,9 +64,9 @@ void MenuBar::onOpened() {
 		#ifdef __WIN
 		path = form->getFileDialog("PNG\0*.png\0\0", 1);
 		#else
-		oven::Path::goHome();
+		oven::Path::cd(common::source_directory);
 		time_t t = std::time(nullptr);
-		path = "../capture/capture.png"+ std::to_string(t);
+		path = "capture/capture.png"+ std::to_string(t);
 		#endif
 		if (path != "") {
 			path = oven::Path::pushExt("png", path);

@@ -10,6 +10,10 @@ if (NOT TARGET oven-core)
 endif()
 endif()
 
+configure_file(
+  ${PROJECT_SOURCE_DIR}/source/program/config.h.cmake
+  ${PROJECT_SOURCE_DIR}/source/program/config.h)
+
 set(SRCS
 	source/controller/controller.cpp 
 	source/controller/controller.render.cpp 

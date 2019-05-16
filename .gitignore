@@ -26,7 +26,7 @@ bld/
 .d/
 .bin/
 .vscode/
-
+source/program/config.h
 
 # Visual Studio 2015 cache/options directory
 .vs/

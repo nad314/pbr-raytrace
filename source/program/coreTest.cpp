@@ -1,12 +1,14 @@
 #include <main>
 
 int CoreTest::loadData() {
-	if (!Controller::get().loadHDRI("../data/hdri/pond_bridge_night_1k.hdr"))
+	oven::Path::DirSaver ds;
+	if (!oven::Path::cd(common::source_directory))
+		return 0;
+	if (!Controller::get().loadHDRI("data/hdri/pond_bridge_night_1k.hdr"))
 		return 0;
 	if (1||controller->benchMode)
-		return storage->load("../data/model/pantherUniform.cloud");
-	else
-		return 0;
+		return storage->load("data/model/pantherUniform.cloud");
+	return 0;
 }
 
 int CoreTest::onLoad() {
@@ -89,7 +91,7 @@ int CoreTest::main() {
 	rw.drawable = 1;
 	bool dirty = 0;
 
-	
+	oven::Debug::print("Got here");
 	
 	while (!done) {
 		while (wnd.peekMessageAsync(done))

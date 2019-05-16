@@ -15,7 +15,8 @@ int Storage::load(const char* path) {
 	float rad = -1.0f;
 	dispose();
 	std::string ext = oven::Path::getExt(path);
-	oven::Path::goHome();
+	oven::Path::DirSaver ds;
+	oven::Path::cd(common::source_directory);
 	oven::Timer<float> timer;
 	timer.start();
 	for (auto& i : ext)

@@ -18,6 +18,7 @@ using namespace coreTypes;
 using namespace oven::opengl;
 
 //core component
+#include "config.h"
 #include <render/shader.h>
 #include <render/brdf.h>
 #include <render/renderTask.h>
