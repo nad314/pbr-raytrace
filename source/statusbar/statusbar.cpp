@@ -56,7 +56,7 @@ void Statusbar::print(const char* s) {
 
 void Statusbar::log(const char* s) {
 	std::lock_guard<std::mutex> lock(iomutex);
-	fprintf(output, s);
+	fprintf(output, "%s", s);
 	printf("%s\n", s);
 }
 
@@ -67,7 +67,7 @@ void Statusbar::info(const char* s) {
 
 void Statusbar::error(const char* s) {
 	std::lock_guard<std::mutex> lock(iomutex);
-	fprintf(output, s);
+	fprintf(output, "%s", s);
 }
 
 void Statusbar::prog(const float& amount) {

@@ -33,5 +33,5 @@ set(SRCS
 add_executable(${PROJECT_NAME} ${SRCS})
 target_include_directories(${PROJECT_NAME} PUBLIC source)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 14)
-
+target_compile_options(${PROJECT_NAME} PUBLIC -Wno-misleading-indentation)
 target_link_libraries(${PROJECT_NAME} PRIVATE oven-avx oven-forms)

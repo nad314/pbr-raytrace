@@ -1,5 +1,5 @@
 #pragma once
-class RenderWindow final : public oven::RenderSurface, public oven::SIMD {
+class RenderWindow final : public oven::RenderSurface {
 private:
 public:
 	oven::simdView view;

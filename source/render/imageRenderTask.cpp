@@ -1,13 +1,11 @@
 #include <main>
 namespace oven {
-#ifndef __WIN
-template<>
-#endif
-	int imageRenderTask::squareSize = 16;
+	int imageRenderTask::squareSize;
 	vec2i imageRenderTask::squares;
 	vec2i imageRenderTask::current;
 
 	imageRenderTask::imageRenderTask(PBVH* pB, simdView* pW) {
+		squareSize = 16;
 		pbvh = pB;
 		pview = pW;
 		current = vec2i(0, 0);

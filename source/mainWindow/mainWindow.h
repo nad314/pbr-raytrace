@@ -1,6 +1,6 @@
 #pragma once
 
-class MainWindow final : public oven::Form, public oven::Getter<MainWindow>, public oven::SIMD {
+class MainWindow final : public oven::Form, public oven::Getter<MainWindow> {
 private:
 	RenderWindow rwnd;
 	Statusbar statusbar;
